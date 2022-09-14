@@ -2,4 +2,4 @@
 
 A React Template made with Vite.
 
-Libs: Redux toolkit, Mantine, @reach/router, rome, dayjs, cypress.
+Libs: Redux toolkit, Mantine, rome, dayjs, cypress.
