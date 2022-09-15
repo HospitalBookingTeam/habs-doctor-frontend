@@ -1,6 +1,6 @@
 import { AuthForm } from '@/entities/auth'
 import { useGetRoomListQuery, useLoginMutation } from '@/store/auth/api'
-import { createStyles, Image, Text } from '@mantine/core'
+import { createStyles, Image, LoadingOverlay, Text } from '@mantine/core'
 import { Stack } from '@mantine/core'
 import {
 	Paper,
@@ -30,13 +30,14 @@ const useStyles = createStyles((theme) => ({
 		maxWidth: 450,
 		width: '100%',
 		margin: '0 auto',
+		position: 'relative',
 	},
 }))
 
 const Login = () => {
 	const { classes } = useStyles()
 	const [login, { isLoading }] = useLoginMutation()
-	const { data: roomData } = useGetRoomListQuery()
+	const { data: roomData, isLoading: isLoadingRoomData } = useGetRoomListQuery()
 
 	const roomOptions = roomData?.map((item) => ({
 		...item,
@@ -85,6 +86,7 @@ const Login = () => {
 			<form onSubmit={form.onSubmit(onSubmit)}>
 				<Stack className={classes.layout}>
 					<Stack justify="center" px={12} className={classes.formHolder}>
+						<LoadingOverlay visible={isLoadingRoomData} overlayBlur={2} />
 						<Title order={2} align="center" mt="md" mb={50}>
 							Chào mừng bạn đến với Bệnh Viện
 						</Title>
@@ -100,7 +102,7 @@ const Login = () => {
 							withAsterisk={true}
 							autoComplete="current-password"
 							label="Password"
-							placeholder="123123"
+							placeholder="123"
 							mt="md"
 							size="md"
 							{...form.getInputProps('password')}
@@ -112,7 +114,7 @@ const Login = () => {
 							size="md"
 							label="Phòng khám"
 							placeholder="Vui lòng chọn một"
-							data={roomOptions}
+							data={roomOptions ?? []}
 							searchable={true}
 							nothingFound="Không có ai thay thế"
 							{...form.getInputProps('roomId')}

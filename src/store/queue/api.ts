@@ -30,6 +30,12 @@ export const queueApi = api.injectEndpoints({
 				{ type: 'Record' as const, id: 'LIST' },
 			],
 		}),
+		confirmCheckupFromQueueById: build.mutation<void, number>({
+			query: (queueId) => ({
+				url: `checkup-queue/confirm/${queueId}`,
+				method: 'POST',
+			}),
+		}),
 	}),
 })
 
@@ -37,8 +43,14 @@ export const {
 	useGetCheckupQueueQuery,
 	useGetCheckupRecordByIdQuery,
 	useGetIcdListQuery,
+	useConfirmCheckupFromQueueByIdMutation,
 } = queueApi
 
 export const {
-	endpoints: { getCheckupQueue, getCheckupRecordById, getIcdList },
+	endpoints: {
+		getCheckupQueue,
+		getCheckupRecordById,
+		getIcdList,
+		confirmCheckupFromQueueById,
+	},
 } = queueApi

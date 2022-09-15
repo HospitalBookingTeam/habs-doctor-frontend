@@ -9,6 +9,7 @@ import { Provider } from 'react-redux'
 import { persistor, store } from './store'
 import { PersistGate } from 'redux-persist/integration/react'
 import { ModalsProvider } from '@mantine/modals'
+import { NotificationsProvider } from '@mantine/notifications'
 
 ReactDOM.createRoot(document.getElementById('root') as HTMLElement).render(
 	<React.StrictMode>
@@ -22,12 +23,14 @@ ReactDOM.createRoot(document.getElementById('root') as HTMLElement).render(
 						white: '#f9f9f9',
 					}}
 				>
-					<ModalsProvider>
-						<GlobalStyles />
-						<Router>
-							<App />
-						</Router>
-					</ModalsProvider>
+					<NotificationsProvider>
+						<ModalsProvider>
+							<GlobalStyles />
+							<Router>
+								<App />
+							</Router>
+						</ModalsProvider>
+					</NotificationsProvider>
 				</MantineProvider>
 			</PersistGate>
 		</Provider>
