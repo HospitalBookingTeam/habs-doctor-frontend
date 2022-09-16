@@ -114,3 +114,5 @@ const QueueDetail = () => {
 	)
 }
 export default QueueDetail
+
+//TODO: Verify whether the doctor can start treatment for this patient. If the patient is not confirmed.

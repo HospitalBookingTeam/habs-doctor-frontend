@@ -93,3 +93,12 @@ export type RecordItem = {
 export type CheckupRecordByIdResponse = {
 	data: RecordItem[]
 } & PaginationData
+
+export type CheckupFormData = {
+	bloodPressure?: number
+	temperature?: number
+	pulse?: number
+	doctorAdvice?: string
+	diagnosis?: string
+	icdDiseaseId?: number
+}

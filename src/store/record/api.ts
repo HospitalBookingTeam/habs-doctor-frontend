@@ -1,5 +1,5 @@
 import { Medicine } from '@/entities/medicine'
-import { CheckupRecordByIdResponse } from '@/entities/record'
+import { CheckupFormData, CheckupRecordByIdResponse } from '@/entities/record'
 import { api } from '../api'
 
 export const recordApi = api.injectEndpoints({
@@ -31,12 +31,37 @@ export const recordApi = api.injectEndpoints({
 				{ type: 'Record' as const, id: 'HISTORY', patientId },
 			],
 		}),
+		updateCheckupRecordById: build.mutation<
+			void,
+			CheckupFormData & { id: number; patientId: number }
+		>({
+			query: (body) => {
+				const { bloodPressure, pulse, temperature, ...restOfBody } = body
+				return {
+					url: `checkup-records/${body.id}`,
+					method: 'PUT',
+					body: {
+						bloodPressure: bloodPressure || null,
+						pulse: pulse || null,
+						temperature: temperature || null,
+						...restOfBody,
+					},
+				}
+			},
+		}),
 	}),
 })
 
-export const { useGetMedicineListQuery, useGetCheckupRecordByPatientIdQuery } =
-	recordApi
+export const {
+	useGetMedicineListQuery,
+	useGetCheckupRecordByPatientIdQuery,
+	useUpdateCheckupRecordByIdMutation,
+} = recordApi
 
 export const {
-	endpoints: { getMedicineList, getCheckupRecordByPatientId },
+	endpoints: {
+		getMedicineList,
+		getCheckupRecordByPatientId,
+		updateCheckupRecordById,
+	},
 } = recordApi
