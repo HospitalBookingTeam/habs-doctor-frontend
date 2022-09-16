@@ -1,5 +1,10 @@
 import { Medicine } from '@/entities/medicine'
-import { CheckupFormData, CheckupRecordByIdResponse } from '@/entities/record'
+import { Operation } from '@/entities/operation'
+import {
+	CheckupFormData,
+	CheckupRecordByIdResponse,
+	RequestReExam,
+} from '@/entities/record'
 import { api } from '../api'
 
 export const recordApi = api.injectEndpoints({
@@ -31,6 +36,17 @@ export const recordApi = api.injectEndpoints({
 				{ type: 'Record' as const, id: 'HISTORY', patientId },
 			],
 		}),
+		getOperationList: build.query<Operation[], void>({
+			query: () => ({
+				url: 'operations',
+			}),
+			providesTags: (result = []) => [
+				...result.map(
+					({ id }) => ({ type: 'Record', field: 'operation', id } as const)
+				),
+				{ type: 'Record' as const, field: 'operation' as const, id: 'LIST' },
+			],
+		}),
 		updateCheckupRecordById: build.mutation<
 			void,
 			CheckupFormData & { id: number; patientId: number }
@@ -59,21 +75,32 @@ export const recordApi = api.injectEndpoints({
 				body,
 			}),
 		}),
+		requestReExamById: build.mutation<void, RequestReExam>({
+			query: (body) => ({
+				url: `patient/${body.id}/reexam`,
+				method: 'POST',
+				body,
+			}),
+		}),
 	}),
 })
 
 export const {
 	useGetMedicineListQuery,
 	useGetCheckupRecordByPatientIdQuery,
+	useGetOperationListQuery,
 	useUpdateCheckupRecordByIdMutation,
 	useUpdateCheckupRecordMedicationByIdMutation,
+	useRequestReExamByIdMutation,
 } = recordApi
 
 export const {
 	endpoints: {
 		getMedicineList,
 		getCheckupRecordByPatientId,
+		getOperationList,
 		updateCheckupRecordById,
 		updateCheckupRecordMedicationById,
+		requestReExamById,
 	},
 } = recordApi
