@@ -1,51 +1,185 @@
-import { Button, Select, Stack, Text } from '@mantine/core'
-import { openConfirmModal, closeAllModals } from '@mantine/modals'
+import { useGetCheckupRecordByIdQuery } from '@/store/queue/api'
+import {
+	useGetOperationListQuery,
+	useRequestOperationsByIdMutation,
+} from '@/store/record/api'
+import {
+	Button,
+	Stack,
+	Text,
+	Modal,
+	MultiSelect,
+	SimpleGrid,
+	Paper,
+} from '@mantine/core'
+import { showNotification } from '@mantine/notifications'
+import { useNavigate, useParams } from 'react-router-dom'
+import { useState } from 'react'
+import OperationsTable from '@/components/Table/OperationsTable'
+import { useForm } from '@mantine/form'
+import {
+	RequestOperationsForm,
+	RequestOperationsResponse,
+} from '@/entities/operation'
 
-const RequestOperations = () => {
+const RequestOperationsButton = () => {
+	const navigate = useNavigate()
+	const { id: queueId } = useParams()
+	const { data: checkupData, isSuccess: isCheckupDataSuccess } =
+		useGetCheckupRecordByIdQuery(Number(queueId), {
+			skip: !queueId,
+		})
+
+	const [responseData, setResponseData] = useState<RequestOperationsResponse[]>(
+		[]
+	)
+
+	const [requestOperationsMutation, { isLoading: isLoadingRequestOperations }] =
+		useRequestOperationsByIdMutation()
+	const { data: operationList, isLoading: isLoadingOperationList } =
+		useGetOperationListQuery()
+
+	const form = useForm<RequestOperationsForm>({
+		initialValues: {
+			examOperationIds: [],
+		},
+	})
+
+	const [opened, setOpened] = useState(false)
+
+	const onSubmit = async (values: RequestOperationsForm) => {
+		if (!checkupData) {
+			showNotification({
+				title: 'Thông tin người bệnh không tồn tại',
+				message: <Text>Vui lòng kiểm tra lại thông tin khám bệnh.</Text>,
+				color: 'red',
+			})
+			return
+		}
+		await requestOperationsMutation({
+			id: checkupData.id,
+			...values,
+		})
+			.unwrap()
+			.then((payload) => {
+				console.log('payload request operations', payload)
+				setResponseData(payload)
+				showNotification({
+					title: 'Yêu cầu xét nghiệm thành công',
+					message: <Text></Text>,
+				})
+				// navigate('/')
+			})
+	}
+
+	const showResponse = !!responseData?.length
+
 	return (
-		<Button
-			fullWidth={true}
-			color="green"
-			variant="outline"
-			onClick={() =>
-				openConfirmModal({
-					size: 'xl',
-					title: 'Yêu cầu xét nghiệm',
-					closeOnClickOutside: false,
-					closeOnConfirm: false,
-					labels: { confirm: 'Tiếp tục', cancel: 'Hủy' },
-					children: (
+		<>
+			<Modal
+				opened={opened}
+				onClose={() => {
+					setOpened(false)
+					if (showResponse) {
+						navigate('/')
+					}
+				}}
+				title={showResponse ? 'Thông tin xét nghiệm' : 'Yêu cầu xét nghiệm'}
+				closeOnClickOutside={showResponse}
+				centered={true}
+				size="70%"
+				withCloseButton={!isLoadingRequestOperations}
+			>
+				<SimpleGrid cols={3} sx={{ display: showResponse ? 'grid' : 'none' }}>
+					{responseData?.map((item) => (
+						<Paper key={item.operationId} shadow="md" p="md">
+							<Stack>
+								<Text weight={700}>{item.operationName}</Text>
+								<ResponseRow
+									label="STT"
+									content={item.numericalOrder.toString()}
+								/>
+								<ResponseRow
+									label="Nơi khám"
+									content={`Phòng ${item.roomNumber} - Tầng ${item.floor}`}
+								/>
+							</Stack>
+						</Paper>
+					))}
+				</SimpleGrid>
+				<form
+					onSubmit={form.onSubmit(onSubmit)}
+					style={{ display: showResponse ? 'none' : 'block' }}
+				>
+					<Stack>
+						<Text>Vui lòng chọn các xét nghiệm dưới đây</Text>
+
 						<Stack>
-							<Select
+							<MultiSelect
 								mt="md"
 								size="sm"
-								multiple={true}
 								label="Các xét nghiệm yêu cầu"
-								placeholder="Chọn một"
-								data={[{ value: '10001', label: 'Phòng 101' }]}
+								placeholder="Chọn xét nghiệm"
+								data={
+									operationList?.map((item) => ({
+										value: item.id,
+										label: item.name,
+									})) ?? []
+								}
 								searchable
 								nothingFound="Không tìm thấy dữ liệu"
+								{...form.getInputProps('examOperationIds')}
+							/>
+
+							<OperationsTable
+								data={operationList?.filter((item) =>
+									form.values.examOperationIds?.includes(item.id)
+								)}
 							/>
 						</Stack>
-					),
-					onConfirm: () =>
-						openConfirmModal({
-							title: 'This is modal at second layer',
-							labels: { confirm: 'Close modal', cancel: 'Back' },
-							closeOnConfirm: false,
-							children: (
-								<Text size="sm">
-									When this modal is closed modals state will revert to first
-									modal
-								</Text>
-							),
-							onConfirm: closeAllModals,
-						}),
-				})
-			}
-		>
-			Yêu cầu xét nghiệm
-		</Button>
+						<Stack mt="md" sx={{ flexDirection: 'row' }} justify="end">
+							<Button
+								variant="default"
+								color="dark"
+								onClick={() => setOpened(false)}
+								disabled={isLoadingRequestOperations}
+							>
+								Quay lại
+							</Button>
+							<Button type="submit" loading={isLoadingRequestOperations}>
+								Xác nhận
+							</Button>
+						</Stack>
+					</Stack>
+				</form>
+			</Modal>
+			<Button
+				fullWidth={true}
+				color="green"
+				variant="outline"
+				onClick={() => {
+					setOpened(true)
+					form.reset()
+				}}
+			>
+				Yêu cầu xét nghiệm
+			</Button>
+		</>
 	)
 }
-export default RequestOperations
+
+const ResponseRow = ({
+	label,
+	content,
+}: {
+	label: string
+	content: string
+}) => (
+	<Stack sx={{ flexDirection: 'row' }}>
+		<Text color="dimmed" sx={{ width: 80 }}>
+			{label}
+		</Text>
+		<Text>{content}</Text>
+	</Stack>
+)
+export default RequestOperationsButton

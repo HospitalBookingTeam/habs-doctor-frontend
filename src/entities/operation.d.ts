@@ -9,3 +9,17 @@ export interface Operation {
 	roomTypeId: number
 	departmentId?: any
 }
+
+export type RequestOperationsForm = Omit<RequestOperations, 'id'>
+export type RequestOperations = {
+	id: number
+	examOperationIds: number[]
+}
+
+export type RequestOperationsResponse = {
+	numericalOrder: number
+	roomNumber: string
+	floor: string
+	operationId: number
+	operationName: string
+}

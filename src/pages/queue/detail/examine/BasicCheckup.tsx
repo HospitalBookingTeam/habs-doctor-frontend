@@ -81,8 +81,8 @@ const BasicCheckup = () => {
 				bloodPressure: checkupData?.bloodPressure,
 				pulse: checkupData?.pulse,
 				temperature: checkupData?.temperature,
-				doctorAdvice: checkupData?.doctorAdvice,
-				diagnosis: checkupData?.diagnosis,
+				doctorAdvice: checkupData?.doctorAdvice ?? '',
+				diagnosis: checkupData?.diagnosis ?? '',
 				icdDiseaseId: checkupData?.icdDiseaseId,
 			})
 		}

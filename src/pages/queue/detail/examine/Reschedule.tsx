@@ -39,7 +39,6 @@ const Reschedule = () => {
 		},
 	})
 
-	console.log('form.values.examOperationIds', form.values.examOperationIds)
 	const onSubmit = async (values: RequestReExamForm) => {
 		if (!checkupData) {
 			showNotification({

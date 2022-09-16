@@ -1,5 +1,10 @@
+import { Department, DepartmentRequest } from '@/entities/department'
 import { Medicine } from '@/entities/medicine'
-import { Operation } from '@/entities/operation'
+import {
+	Operation,
+	RequestOperations,
+	RequestOperationsResponse,
+} from '@/entities/operation'
 import {
 	CheckupFormData,
 	CheckupRecordByIdResponse,
@@ -47,6 +52,17 @@ export const recordApi = api.injectEndpoints({
 				{ type: 'Record' as const, field: 'operation' as const, id: 'LIST' },
 			],
 		}),
+		getDepartmentList: build.query<Department[], void>({
+			query: () => ({
+				url: 'departments',
+			}),
+			providesTags: (result = []) => [
+				...result.map(
+					({ id }) => ({ type: 'Record', field: 'department', id } as const)
+				),
+				{ type: 'Record' as const, field: 'department' as const, id: 'LIST' },
+			],
+		}),
 		updateCheckupRecordById: build.mutation<
 			void,
 			CheckupFormData & { id: number; patientId: number }
@@ -82,6 +98,33 @@ export const recordApi = api.injectEndpoints({
 				body,
 			}),
 		}),
+		updateStatusRecord: build.mutation<
+			void,
+			{ status: number; id: number; patientId: number }
+		>({
+			query: (body) => ({
+				url: `checkup-records/${body.id}`,
+				method: 'PUT',
+				body,
+			}),
+		}),
+		requestRedirectDepartmentsById: build.mutation<void, DepartmentRequest>({
+			query: (body) => ({
+				url: `checkup-records/${body.id}/redirect`,
+				method: 'POST',
+				body,
+			}),
+		}),
+		requestOperationsById: build.mutation<
+			RequestOperationsResponse[],
+			RequestOperations
+		>({
+			query: (body) => ({
+				url: `checkup-records/${body.id}/tests`,
+				method: 'POST',
+				body,
+			}),
+		}),
 	}),
 })
 
@@ -89,9 +132,13 @@ export const {
 	useGetMedicineListQuery,
 	useGetCheckupRecordByPatientIdQuery,
 	useGetOperationListQuery,
+	useGetDepartmentListQuery,
 	useUpdateCheckupRecordByIdMutation,
 	useUpdateCheckupRecordMedicationByIdMutation,
 	useRequestReExamByIdMutation,
+	useUpdateStatusRecordMutation,
+	useRequestRedirectDepartmentsByIdMutation,
+	useRequestOperationsByIdMutation,
 } = recordApi
 
 export const {
@@ -99,8 +146,12 @@ export const {
 		getMedicineList,
 		getCheckupRecordByPatientId,
 		getOperationList,
+		getDepartmentList,
 		updateCheckupRecordById,
 		updateCheckupRecordMedicationById,
 		requestReExamById,
+		updateStatusRecord,
+		requestRedirectDepartmentsById,
+		requestOperationsById,
 	},
 } = recordApi

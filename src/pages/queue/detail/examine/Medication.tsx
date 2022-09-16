@@ -70,7 +70,6 @@ const Medication = () => {
 	})
 
 	const onSubmit = async (values: MedicineRequest) => {
-		console.log('values', values)
 		if (!checkupData) {
 			showNotification({
 				title: 'Thông tin người bệnh không tồn tại',
@@ -194,10 +193,11 @@ const Medication = () => {
 		if (isCheckupDataSuccess) {
 			form.setValues({
 				note: checkupData?.prescription?.note,
-				details: checkupData?.prescription?.details?.map((item) => ({
-					...item,
-					key: item.id.toString(),
-				})),
+				details:
+					checkupData?.prescription?.details?.map((item) => ({
+						...item,
+						key: item.id.toString(),
+					})) ?? [],
 			})
 		}
 	}, [isCheckupDataSuccess, checkupData])
@@ -233,7 +233,7 @@ const Medication = () => {
 
 				<Textarea
 					sx={{
-						display: form.values.details.length ? 'block' : 'none',
+						display: form.values.details?.length ? 'block' : 'none',
 					}}
 					label="Lưu ý"
 					placeholder="Vd. Không uống nước có ga sau khi uống thuốc"
@@ -252,6 +252,7 @@ const Medication = () => {
 						sx={{ maxWidth: 250 }}
 						variant="outline"
 						leftIcon={<IconPlus />}
+						type="button"
 						onClick={() => form.insertListItem('details', DEFAULT_MED)}
 					>
 						Thêm thuốc
