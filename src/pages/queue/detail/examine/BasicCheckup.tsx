@@ -86,7 +86,7 @@ const BasicCheckup = () => {
 				icdDiseaseId: checkupData?.icdDiseaseId,
 			})
 		}
-	}, [isCheckupDataSuccess, checkupData, form])
+	}, [isCheckupDataSuccess, checkupData])
 
 	return (
 		<Stack mt={'md'}>

@@ -49,6 +49,16 @@ export const recordApi = api.injectEndpoints({
 				}
 			},
 		}),
+		updateCheckupRecordMedicationById: build.mutation<
+			void,
+			{ id: number; note?: string; details?: any[] }
+		>({
+			query: (body) => ({
+				url: `checkup-records/${body.id}/prescription`,
+				method: 'POST',
+				body,
+			}),
+		}),
 	}),
 })
 
@@ -56,6 +66,7 @@ export const {
 	useGetMedicineListQuery,
 	useGetCheckupRecordByPatientIdQuery,
 	useUpdateCheckupRecordByIdMutation,
+	useUpdateCheckupRecordMedicationByIdMutation,
 } = recordApi
 
 export const {
@@ -63,5 +74,6 @@ export const {
 		getMedicineList,
 		getCheckupRecordByPatientId,
 		updateCheckupRecordById,
+		updateCheckupRecordMedicationById,
 	},
 } = recordApi

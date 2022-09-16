@@ -12,17 +12,18 @@ export interface Medicine {
 }
 
 export interface MedicineDetail {
+	key?: string
 	quantity: number
-	usage: string
-	morningDose: number
-	middayDose: number
-	eveningDose: number
-	nightDose: number
+	usage?: string
+	morningDose?: number
+	middayDose?: number
+	eveningDose?: number
+	nightDose?: number
 	medicineId: number
-	medicineName: string
+	medicineName?: string
 }
 
 export interface MedicineRequest {
-	note: string
+	note?: string
 	details: MedicineDetail[]
 }
