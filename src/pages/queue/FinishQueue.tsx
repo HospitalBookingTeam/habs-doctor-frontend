@@ -1,9 +1,13 @@
 import LayoutAppShell from '@/components/Layout'
 import { QueueTable } from '@/components/Table'
+import ProgressQueueTable from '@/components/Table/ProgressQueueTable'
 import { CheckupQueue } from '@/entities/queue'
 import { selectAuth } from '@/store/auth/selectors'
 import { useAppSelector } from '@/store/hooks'
-import { useGetCheckupQueueQuery } from '@/store/queue/api'
+import {
+	useGetCheckupQueueQuery,
+	useGetFinishedCheckupQueueQuery,
+} from '@/store/queue/api'
 import { Stack, Title, Grid, TextInput, Paper, Loader } from '@mantine/core'
 import { useDebouncedState } from '@mantine/hooks'
 import { IconSearch } from '@tabler/icons'
@@ -15,7 +19,7 @@ const SEARCH_OPTIONS = {
 	keys: ['patientName'],
 }
 
-const Queue = () => {
+const FinishQueue = () => {
 	const authData = useAppSelector(selectAuth)
 
 	const [queueData, setQueueData] = useState<CheckupQueue | undefined>(
@@ -23,7 +27,7 @@ const Queue = () => {
 	)
 	const [value, setValue] = useDebouncedState('', 200)
 
-	const { data, isLoading } = useGetCheckupQueueQuery(
+	const { data, isLoading } = useGetFinishedCheckupQueueQuery(
 		authData?.information?.room.roomId as number,
 		{
 			refetchOnFocus: true,
@@ -51,7 +55,7 @@ const Queue = () => {
 				mb="sm"
 			>
 				<Title order={1} size="h3">
-					Hàng chờ khám
+					Danh sách người bệnh đã khám
 				</Title>
 				<TextInput
 					placeholder="Tìm kiếm người bệnh"
@@ -63,9 +67,9 @@ const Queue = () => {
 				/>
 			</Stack>
 			<Paper p="md">
-				<QueueTable data={queueData} isLoading={isLoading} />
+				<ProgressQueueTable data={queueData} isLoading={isLoading} />
 			</Paper>
 		</Stack>
 	)
 }
-export default Queue
+export default FinishQueue

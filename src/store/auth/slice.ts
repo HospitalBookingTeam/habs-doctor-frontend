@@ -7,8 +7,6 @@ const initialState: AuthState = {
 	token: '',
 	isAuthenticated: false,
 	information: undefined,
-	room: undefined,
-	roomId: undefined,
 }
 
 export const authSlice = createSlice({

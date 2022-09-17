@@ -5,7 +5,7 @@ import { api } from '../api'
 
 export const queueApi = api.injectEndpoints({
 	endpoints: (build) => ({
-		getCheckupQueue: build.query<CheckupQueue, number>({
+		getCheckupQueue: build.query<CheckupQueue, number | undefined>({
 			query: (roomId) => ({
 				url: 'checkup-queue',
 				params: { 'room-id': roomId },
@@ -15,7 +15,31 @@ export const queueApi = api.injectEndpoints({
 				{ type: 'Queue' as const, id: 'LIST' },
 			],
 		}),
-		getCheckupRecordById: build.query<CheckupRecord, number | undefined>({
+		getFinishedCheckupQueue: build.query<CheckupQueue, number>({
+			query: (roomId) => ({
+				url: 'checkup-queue/finished',
+				params: { 'room-id': roomId },
+			}),
+			providesTags: (result = []) => [
+				...result.map(
+					({ id }) => ({ type: 'Queue', field: 'finished', id } as const)
+				),
+				{ type: 'Queue' as const, id: 'FINISHED_LIST' },
+			],
+		}),
+		getTestingCheckupQueue: build.query<CheckupQueue, number>({
+			query: (roomId) => ({
+				url: 'checkup-queue/testing',
+				params: { 'room-id': roomId },
+			}),
+			providesTags: (result = []) => [
+				...result.map(
+					({ id }) => ({ type: 'Queue', field: 'testing', id } as const)
+				),
+				{ type: 'Queue' as const, id: 'TESTING_L*IST' },
+			],
+		}),
+		getCheckupRecordById: build.query<CheckupRecord, number>({
 			query: (id) => ({
 				url: `checkup-records/${id}`,
 			}),
@@ -41,6 +65,8 @@ export const queueApi = api.injectEndpoints({
 
 export const {
 	useGetCheckupQueueQuery,
+	useGetFinishedCheckupQueueQuery,
+	useGetTestingCheckupQueueQuery,
 	useGetCheckupRecordByIdQuery,
 	useGetIcdListQuery,
 	useConfirmCheckupFromQueueByIdMutation,
@@ -49,6 +75,8 @@ export const {
 export const {
 	endpoints: {
 		getCheckupQueue,
+		getFinishedCheckupQueue,
+		getTestingCheckupQueue,
 		getCheckupRecordById,
 		getIcdList,
 		confirmCheckupFromQueueById,
