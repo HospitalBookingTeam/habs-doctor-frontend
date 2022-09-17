@@ -148,11 +148,15 @@ export function NavbarSimpleColored({ opened }: { opened: boolean }) {
 		>
 			<Navbar.Section grow>
 				<Text weight={500} size="sm" className={classes.title} mb="xs">
-					Bác sĩ
+					Bác sĩ {authData?.information?.name}
 				</Text>
 				<Group className={classes.header} position="apart">
 					{/* <MantineLogo size={28} inverted /> */}
-					<Code className={classes.version}>Phòng</Code>
+					<Code className={classes.version}>
+						Phòng {authData?.information?.room?.roomNumber} -{' '}
+						{authData?.information?.room?.roomTypeName}{' '}
+						{authData?.information?.room?.departmentName}
+					</Code>
 				</Group>
 				{links}
 			</Navbar.Section>
