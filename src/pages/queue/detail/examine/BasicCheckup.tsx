@@ -20,6 +20,7 @@ import {
 	Button,
 	Center,
 	LoadingOverlay,
+	Paper,
 } from '@mantine/core'
 
 import { useForm } from '@mantine/form'
@@ -91,6 +92,15 @@ const BasicCheckup = () => {
 	return (
 		<Stack mt={'md'}>
 			<Stack>
+				<Stack>
+					<Title order={3} size="h6">
+						Triệu chứng
+					</Title>
+					<Paper>
+						<Text>{checkupData?.clinicalSymptom ?? '---'}</Text>
+					</Paper>
+					<Divider />
+				</Stack>
 				<Title order={3} size="h6">
 					Chỉ số đo
 				</Title>

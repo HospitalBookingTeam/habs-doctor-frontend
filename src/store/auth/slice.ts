@@ -15,7 +15,6 @@ export const authSlice = createSlice({
 	reducers: {
 		logout: (state) => {
 			state = { ...initialState }
-			console.log('state', state)
 			removeLocalItem('persist:root')
 			return state
 		},

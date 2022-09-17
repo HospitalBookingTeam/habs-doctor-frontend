@@ -29,7 +29,7 @@ const TestingQueue = () => {
 	const [value, setValue] = useDebouncedState('', 200)
 
 	const { data, isLoading } = useGetTestingCheckupQueueQuery(
-		authData?.information?.room.roomId as number,
+		authData?.information?.room?.id as number,
 		{
 			refetchOnFocus: true,
 			skip: !authData?.information,
