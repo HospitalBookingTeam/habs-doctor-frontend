@@ -93,3 +93,30 @@ export type RecordItem = {
 export type CheckupRecordByIdResponse = {
 	data: RecordItem[]
 } & PaginationData
+
+export type CheckupFormData = {
+	bloodPressure?: number
+	temperature?: number
+	pulse?: number
+	doctorAdvice?: string
+	diagnosis?: string
+	icdDiseaseId?: number
+}
+
+export type RequiredTestReExam = {
+	examOperationIds?: number[]
+}
+export type RequestReExam = {
+	id: number
+	patientId: number
+	departmentId: number
+	requiredTest: RequiredTestReExam
+	note?: string
+	reExamDate?: string
+}
+
+export type RequestReExamForm = Omit<
+	RequestReExam,
+	'id' | 'patientId' | 'departmentId' | 'requiredTest'
+> &
+	RequiredTestReExam

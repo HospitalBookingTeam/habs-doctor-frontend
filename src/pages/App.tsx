@@ -4,9 +4,12 @@ import { Container, LoadingOverlay } from '@mantine/core'
 import { selectIsAuthenticated } from '@/store/auth/selectors'
 import { useAppSelector } from '@/store/hooks'
 import QueueDetail from './queue/detail'
+import LayoutAppShell from '@/components/Layout'
 
 const Login = lazy(() => import('@/pages/auth'))
 const Queue = lazy(() => import('@/pages/queue'))
+const FinishedQueue = lazy(() => import('@/pages/queue/FinishQueue'))
+const TestingQueue = lazy(() => import('@/pages/queue/TestingQueue'))
 
 function App() {
 	return (
@@ -20,6 +23,10 @@ function App() {
 						<Route element={<RequireAuth />}>
 							<Route index element={<Queue />} />
 							<Route path=":id" element={<QueueDetail />} />
+							<Route path="finished" element={<Outlet />}>
+								<Route index element={<FinishedQueue />} />
+							</Route>
+							<Route path="testing" element={<TestingQueue />} />
 						</Route>
 
 						<Route path="/login" element={<IsUserRedirect />}>
@@ -41,7 +48,13 @@ const RequireAuth = () => {
 		navigate('/login')
 	}, [isAuthenticated, navigate])
 
-	return isAuthenticated ? <Outlet /> : <Navigate to={'/login'} />
+	return isAuthenticated ? (
+		<LayoutAppShell>
+			<Outlet />
+		</LayoutAppShell>
+	) : (
+		<Navigate to={'/login'} />
+	)
 }
 const IsUserRedirect = () => {
 	const isAuthenticated = useAppSelector(selectIsAuthenticated)

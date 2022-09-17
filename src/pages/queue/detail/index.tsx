@@ -7,7 +7,10 @@ import { IconId, IconStethoscope } from '@tabler/icons'
 import { useState } from 'react'
 import { useParams, useSearchParams } from 'react-router-dom'
 import ExamineTabs from './examine'
-import RequestOperations from './examine/modals/RequestOperations'
+import FinishRecord from './examine/modals/FinishRecord'
+import RequestDepartments from './examine/modals/RedirectDepartments'
+import RequestEmergency from './examine/modals/RequestEmergency'
+import RequestOperationsButton from './examine/modals/RequestOperations'
 import PatientRecord from './record'
 
 const QueueDetail = () => {
@@ -84,14 +87,10 @@ const QueueDetail = () => {
 								</Tabs.List>
 							</Paper>
 							<Stack align="flex-end" mb="md" sx={{ width: 200 }}>
-								<Button fullWidth={true}>Hoàn thành khám bệnh</Button>
-								<RequestOperations />
-								<Button fullWidth={true} color="green" variant="outline">
-									Chuyển khoa
-								</Button>
-								<Button fullWidth={true} color="green" variant="outline">
-									Nhập viện
-								</Button>
+								<FinishRecord />
+								<RequestOperationsButton />
+								<RequestDepartments />
+								<RequestEmergency />
 							</Stack>
 						</Stack>
 
@@ -114,3 +113,5 @@ const QueueDetail = () => {
 	)
 }
 export default QueueDetail
+
+//TODO: Verify whether the doctor can start treatment for this patient. If the patient is not confirmed.

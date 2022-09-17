@@ -10,7 +10,6 @@ const useStyles = createStyles((theme) => ({
 }))
 
 const PatientInfo = ({ data }: { data?: Patient }) => {
-	console.log('person data', data)
 	return (
 		<Stack>
 			<Title order={3} size="h6">

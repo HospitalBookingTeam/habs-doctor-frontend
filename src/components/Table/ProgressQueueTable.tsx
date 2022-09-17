@@ -27,47 +27,11 @@ interface QueueTableProps {
 	isLoading?: boolean
 }
 
-export function QueueTable({ data, isLoading }: QueueTableProps) {
+const ProgressQueueTable = ({ data, isLoading }: QueueTableProps) => {
 	const theme = useMantineTheme()
 	const navigate = useNavigate()
-	const [confirmQueueCheckupById, { isLoading: isLoadingConfirm }] =
-		useConfirmCheckupFromQueueByIdMutation()
-
-	const openModal = (patientName: string, queueId: number) =>
-		openConfirmModal({
-			title: 'Xác nhận khám bệnh',
-			children: (
-				<Text size="sm">
-					Bạn sẽ khám người bệnh{' '}
-					<Text color="orange" inherit component="span">
-						{patientName}
-					</Text>
-					. Vui lòng tiếp tục để xác nhận.
-				</Text>
-			),
-			centered: true,
-			labels: { confirm: 'Tiếp tục', cancel: 'Quay lại' },
-			onCancel: () => console.log('Cancel'),
-			onConfirm: () => handleConfirmQueueCheckupById(queueId),
-		})
-
-	const handleConfirmQueueCheckupById = async (queueId: number) => {
-		await confirmQueueCheckupById(queueId)
-			.unwrap()
-			.then((payload) => navigate(`/${queueId}`))
-			.catch((error) =>
-				showNotification({
-					title: 'Lỗi xác nhận khám bệnh',
-					message: 'Đã có người bệnh khác đang khám.',
-					color: 'red',
-				})
-			)
-	}
 
 	const rows = data?.map((item) => {
-		const isInProgress =
-			item?.status === CheckupRecordStatus.DANG_KHAM ||
-			item?.status === CheckupRecordStatus.CHECKED_IN_SAU_XN
 		return (
 			<Fragment key={item.id}>
 				<Grid.Col span={1} sx={{ textAlign: 'center' }}>
@@ -107,25 +71,6 @@ export function QueueTable({ data, isLoading }: QueueTableProps) {
 				</Grid.Col>
 				<Grid.Col span={4}>
 					<Group spacing={'sm'} position="right">
-						<Button
-							variant={isInProgress ? 'gradient' : 'filled'}
-							color="green"
-							gradient={
-								isInProgress
-									? { from: 'teal', to: 'lime', deg: 105 }
-									: undefined
-							}
-							onClick={() => {
-								if (isInProgress) {
-									navigate(`/${item.id}`)
-									return
-								}
-								openModal(item.patientName, item.id)
-							}}
-							sx={{ width: 140 }}
-						>
-							{isInProgress ? 'Tiếp tục khám' : 'Khám bệnh'}
-						</Button>
 						<Button color="cyan" sx={{ width: 140 }}>
 							Xem hồ sơ
 						</Button>
@@ -165,10 +110,11 @@ export function QueueTable({ data, isLoading }: QueueTableProps) {
 					<Loader size="lg" />
 				</Center>
 				<Grid sx={{ width: '100%' }} gutter="md" mt="md" align={'baseline'}>
-					<LoadingOverlay visible={isLoadingConfirm} />
 					{rows}
 				</Grid>
 			</ScrollArea>
 		</>
 	)
 }
+
+export default ProgressQueueTable

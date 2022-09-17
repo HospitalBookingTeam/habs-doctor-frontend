@@ -2,23 +2,17 @@ import { useState, useEffect } from 'react'
 import { createStyles, Navbar, Group, Code, Text, Button } from '@mantine/core'
 import {
 	IconBellRinging,
-	IconFingerprint,
-	IconKey,
-	IconSettings,
-	Icon2fa,
-	IconDatabaseImport,
 	IconReceipt2,
-	IconSwitchHorizontal,
 	IconLogout,
 	IconPackage,
 } from '@tabler/icons'
-import { useNavigate } from 'react-router-dom'
+import { useLocation, useNavigate } from 'react-router-dom'
 import { useAppDispatch, useAppSelector } from '@/store/hooks'
 import { logout } from '@/store/auth/slice'
-import { selectAuth, selectIsAuthenticated } from '@/store/auth/selectors'
+import { selectAuth } from '@/store/auth/selectors'
 
 const useStyles = createStyles((theme, _params, getRef) => {
-	const icon = getRef('icon')
+	const icon: string = getRef('icon')
 	return {
 		navbar: {
 			backgroundColor: theme.fn.variant({
@@ -107,13 +101,14 @@ const useStyles = createStyles((theme, _params, getRef) => {
 
 const data = [
 	{ link: '/', label: 'Hàng chờ khám', icon: IconBellRinging },
-	{ link: '', label: 'Đợi kết quả', icon: IconPackage },
-	{ link: '', label: 'Người bệnh đã khám', icon: IconReceipt2 },
+	{ link: '/testing', label: 'Đợi kết quả', icon: IconPackage },
+	{ link: '/finished', label: 'Người bệnh đã khám', icon: IconReceipt2 },
 ]
 
 export function NavbarSimpleColored({ opened }: { opened: boolean }) {
+	const location = useLocation()
 	const { classes, cx } = useStyles()
-	const [active, setActive] = useState('/')
+	const [active, setActive] = useState(location.pathname)
 	const navigate = useNavigate()
 	const dispatch = useAppDispatch()
 	const authData = useAppSelector(selectAuth)
@@ -127,7 +122,7 @@ export function NavbarSimpleColored({ opened }: { opened: boolean }) {
 			key={item.label}
 			onClick={(event) => {
 				event.preventDefault()
-				setActive(item.label)
+				setActive(item.link)
 				navigate(item.link)
 			}}
 		>

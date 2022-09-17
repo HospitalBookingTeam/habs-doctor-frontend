@@ -18,7 +18,6 @@ const useStyles = createStyles((theme) => ({
 }))
 
 const PatientRecords = ({ data }: { data?: RecordItem[] }) => {
-	console.log('person data', data)
 	return (
 		<Stack>
 			<Title order={3} size="h6">

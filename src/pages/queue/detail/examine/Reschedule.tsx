@@ -1,50 +1,131 @@
-import { Button, Stack, Select, Textarea } from '@mantine/core'
+import OperationsTable from '@/components/Table/OperationsTable'
+import { RequestReExamForm } from '@/entities/record'
+import { useGetCheckupRecordByIdQuery } from '@/store/queue/api'
+import {
+	useGetOperationListQuery,
+	useRequestReExamByIdMutation,
+} from '@/store/record/api'
+import {
+	Button,
+	Stack,
+	Textarea,
+	MultiSelect,
+	Text,
+	LoadingOverlay,
+} from '@mantine/core'
 import { DatePicker } from '@mantine/dates'
+import { useForm } from '@mantine/form'
+import { showNotification } from '@mantine/notifications'
 import { IconCalendar } from '@tabler/icons'
 import 'dayjs/locale/vi'
+import { useParams } from 'react-router-dom'
 
 const Reschedule = () => {
+	const { data: operationList, isLoading: isLoadingOperationList } =
+		useGetOperationListQuery()
+	const [requestReExamMutation, { isLoading: isLoadingRequestReExamMutation }] =
+		useRequestReExamByIdMutation()
+	const { id: queueId } = useParams()
+	const { data: checkupData, isSuccess: isCheckupDataSuccess } =
+		useGetCheckupRecordByIdQuery(Number(queueId), {
+			skip: !queueId,
+		})
+
+	const form = useForm<RequestReExamForm>({
+		initialValues: {
+			examOperationIds: [],
+			note: '',
+			reExamDate: undefined,
+		},
+	})
+
+	const onSubmit = async (values: RequestReExamForm) => {
+		if (!checkupData) {
+			showNotification({
+				title: 'Thông tin người bệnh không tồn tại',
+				message: <Text>Vui lòng kiểm tra lại thông tin khám bệnh.</Text>,
+				color: 'red',
+			})
+			return
+		}
+
+		console.log('values', values)
+		await requestReExamMutation({
+			id: checkupData.id,
+			patientId: checkupData.patientId,
+			departmentId: checkupData.departmentId,
+			requiredTest: {
+				examOperationIds: values.examOperationIds,
+			},
+			note: values.note,
+			reExamDate: values.reExamDate,
+		})
+			.unwrap()
+			.then(() =>
+				showNotification({
+					title: 'Hẹn tái khám thành công',
+					message: <Text>Lịch tái khám đã được cập nhật.</Text>,
+				})
+			)
+	}
+
 	return (
 		<Stack mt="sm">
-			<Stack
-				sx={{ flexDirection: 'row' }}
-				justify={'space-between'}
-				align="baseline"
-			>
-				<Stack align="start" sx={{ width: '40%' }}>
-					<DatePicker
-						locale="vi"
-						inputFormat="DD/MM/YYYY"
-						placeholder="Chọn ngày dự kiến"
-						label="Ngày dự kiến"
-						icon={<IconCalendar />}
-					/>
+			<LoadingOverlay visible={isLoadingRequestReExamMutation} />
+			<form onSubmit={form.onSubmit(onSubmit)}>
+				<Stack>
+					<Stack justify={'space-between'} sx={{ flexDirection: 'row' }}>
+						<DatePicker
+							locale="vi"
+							inputFormat="DD/MM/YYYY"
+							placeholder="Chọn ngày dự kiến"
+							label="Ngày dự kiến"
+							icon={<IconCalendar />}
+							{...form.getInputProps('reExamDate')}
+							sx={{ minWidth: 200 }}
+						/>
 
-					<Textarea
-						label="Ghi chú"
-						placeholder="Viết ghi chú cho người bệnh"
-						minRows={2}
-						maxRows={4}
-						sx={{ minWidth: '100%' }}
-					/>
-				</Stack>
+						<Textarea
+							label="Ghi chú"
+							placeholder="Viết ghi chú cho người bệnh"
+							minRows={2}
+							maxRows={4}
+							sx={{ minWidth: 450 }}
+							{...form.getInputProps('note')}
+						/>
+					</Stack>
 
-				<Stack sx={{ width: '60%' }}>
-					<Select
-						mt="md"
-						size="sm"
-						multiple={true}
-						label="Các xét nghiệm yêu cầu"
-						placeholder="Pick one"
-						data={[{ value: '10001', label: 'Phòng 101' }]}
-						searchable
-						nothingFound="Không tìm thấy dữ liệu"
-					/>
+					<Stack>
+						<MultiSelect
+							mt="md"
+							size="sm"
+							label="Các xét nghiệm yêu cầu"
+							placeholder="Chọn xét nghiệm"
+							data={
+								operationList?.map((item) => ({
+									...item,
+									value: item.id,
+									label: item.name,
+								})) ?? []
+							}
+							searchable
+							nothingFound="Không tìm thấy dữ liệu"
+							{...form.getInputProps('examOperationIds')}
+						/>
+
+						<OperationsTable
+							data={operationList?.filter((item) =>
+								form.values.examOperationIds?.includes(item.id)
+							)}
+						/>
+					</Stack>
 				</Stack>
-			</Stack>
-			<Stack align={'center'} my="sm">
-				<Button color="cyan">Xác nhận tái khám</Button>
-			</Stack>
+				<Stack align={'center'} my="sm">
+					<Button color="cyan" type="submit" disabled={isLoadingOperationList}>
+						Xác nhận tái khám
+					</Button>
+				</Stack>
+			</form>
 		</Stack>
 	)
 }
