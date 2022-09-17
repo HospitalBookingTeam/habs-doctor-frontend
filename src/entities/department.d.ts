@@ -12,7 +12,7 @@ export type DepartmentResponse = {
 }
 
 export type DepartmentRequestDetail = {
-	departmentId: number
+	departmentId?: number
 	clinicalSymptom: string
 }
 

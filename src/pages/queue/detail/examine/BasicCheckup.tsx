@@ -148,7 +148,7 @@ const BasicCheckup = () => {
 							<Select
 								size="sm"
 								label="Chẩn đoán"
-								placeholder="Pick one"
+								placeholder="Chọn chẩn đoán phù hợp"
 								data={
 									data?.map((item: Icd) => ({
 										value: item.id,

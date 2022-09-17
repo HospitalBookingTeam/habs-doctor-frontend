@@ -1,4 +1,8 @@
-import { Department, DepartmentRequest } from '@/entities/department'
+import {
+	Department,
+	DepartmentRequest,
+	DepartmentResponse,
+} from '@/entities/department'
 import { Medicine } from '@/entities/medicine'
 import {
 	Operation,
@@ -108,7 +112,10 @@ export const recordApi = api.injectEndpoints({
 				body,
 			}),
 		}),
-		requestRedirectDepartmentsById: build.mutation<void, DepartmentRequest>({
+		requestRedirectDepartmentsById: build.mutation<
+			DepartmentResponse[],
+			DepartmentRequest
+		>({
 			query: (body) => ({
 				url: `checkup-records/${body.id}/redirect`,
 				method: 'POST',

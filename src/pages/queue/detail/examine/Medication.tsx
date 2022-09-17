@@ -133,7 +133,6 @@ const Medication = () => {
 								medData?.map((item) => ({
 									value: item.id,
 									label: item.name,
-									...item,
 								})) ?? []
 							}
 							searchable
