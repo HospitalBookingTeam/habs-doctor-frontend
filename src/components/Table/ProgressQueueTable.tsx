@@ -1,10 +1,9 @@
-import { CheckupQueue, CheckupQueueItem } from '@/entities/queue'
-import { useConfirmCheckupFromQueueByIdMutation } from '@/store/queue/api'
-import { CheckupRecordStatus } from '@/utils/renderEnums'
+import { CheckupQueue } from '@/entities/queue'
+import { translateCheckupRecordStatus } from '@/utils/renderEnums'
+
 import {
-	Avatar,
 	Badge,
-	Table,
+	Stack,
 	Group,
 	Text,
 	Center,
@@ -14,11 +13,8 @@ import {
 	Grid,
 	Divider,
 	Button,
-	LoadingOverlay,
 	Loader,
 } from '@mantine/core'
-import { openConfirmModal } from '@mantine/modals'
-import { showNotification } from '@mantine/notifications'
 import { Fragment } from 'react'
 import { useNavigate } from 'react-router-dom'
 
@@ -31,24 +27,24 @@ const ProgressQueueTable = ({ data, isLoading }: QueueTableProps) => {
 	const theme = useMantineTheme()
 	const navigate = useNavigate()
 
-	const rows = data?.map((item) => {
+	const rows = data?.map((item, index) => {
+		const isEven = index % 2 === 0
 		return (
-			<Fragment key={item.id}>
+			<Grid
+				sx={{
+					backgroundColor: isEven ? 'white' : 'whitesmoke',
+					width: '100%',
+				}}
+				py="sm"
+				key={item.id}
+			>
 				<Grid.Col span={1} sx={{ textAlign: 'center' }}>
-					<Anchor<'a'>
-						size="sm"
-						href="#"
-						onClick={(event) => event.preventDefault()}
-					>
-						{item.numericalOrder}
-					</Anchor>
+					{item.numericalOrder}
 				</Grid.Col>
 				<Grid.Col span={4}>
-					<Group spacing="sm">
-						<Text size="sm" weight={500}>
-							{item.patientName}
-						</Text>
-					</Group>
+					<Text size="sm" weight={500}>
+						{item.patientName}
+					</Text>
 				</Grid.Col>
 
 				<Grid.Col span={2} sx={{ textAlign: 'center' }}>
@@ -56,7 +52,7 @@ const ProgressQueueTable = ({ data, isLoading }: QueueTableProps) => {
 						// color={jobColors[item.status.toLowerCase()]}
 						variant={theme.colorScheme === 'dark' ? 'light' : 'outline'}
 					>
-						{item.status}
+						{translateCheckupRecordStatus(item.status, item.isReExam)}
 					</Badge>
 				</Grid.Col>
 
@@ -76,10 +72,7 @@ const ProgressQueueTable = ({ data, isLoading }: QueueTableProps) => {
 						</Button>
 					</Group>
 				</Grid.Col>
-				<Grid.Col span={12}>
-					<Divider />
-				</Grid.Col>
-			</Fragment>
+			</Grid>
 		)
 	})
 
@@ -98,7 +91,6 @@ const ProgressQueueTable = ({ data, isLoading }: QueueTableProps) => {
 				</Grid.Col>
 				<Grid.Col span={4}></Grid.Col>
 			</Grid>
-			<Divider />
 			<ScrollArea sx={{ height: 450 }}>
 				<Center
 					sx={{
@@ -109,9 +101,9 @@ const ProgressQueueTable = ({ data, isLoading }: QueueTableProps) => {
 				>
 					<Loader size="lg" />
 				</Center>
-				<Grid sx={{ width: '100%' }} gutter="md" mt="md" align={'baseline'}>
+				<Stack sx={{ width: '100%' }} mt="sm">
 					{rows}
-				</Grid>
+				</Stack>
 			</ScrollArea>
 		</>
 	)

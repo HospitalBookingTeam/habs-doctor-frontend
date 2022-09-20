@@ -39,21 +39,7 @@ export const queueApi = api.injectEndpoints({
 				{ type: 'Queue' as const, id: 'TESTING_L*IST' },
 			],
 		}),
-		getCheckupRecordById: build.query<CheckupRecord, number>({
-			query: (id) => ({
-				url: `checkup-records/${id}`,
-			}),
-			providesTags: (result) => [{ type: 'Queue' as const, id: result?.id }],
-		}),
-		getIcdList: build.query<Icd[], void>({
-			query: () => ({
-				url: `icd`,
-			}),
-			providesTags: (result = []) => [
-				...result.map(({ id }) => ({ type: 'Record', id } as const)),
-				{ type: 'Record' as const, id: 'LIST' },
-			],
-		}),
+
 		confirmCheckupFromQueueById: build.mutation<void, number>({
 			query: (queueId) => ({
 				url: `checkup-queue/confirm/${queueId}`,
@@ -67,8 +53,7 @@ export const {
 	useGetCheckupQueueQuery,
 	useGetFinishedCheckupQueueQuery,
 	useGetTestingCheckupQueueQuery,
-	useGetCheckupRecordByIdQuery,
-	useGetIcdListQuery,
+
 	useConfirmCheckupFromQueueByIdMutation,
 } = queueApi
 
@@ -77,8 +62,7 @@ export const {
 		getCheckupQueue,
 		getFinishedCheckupQueue,
 		getTestingCheckupQueue,
-		getCheckupRecordById,
-		getIcdList,
+
 		confirmCheckupFromQueueById,
 	},
 } = queueApi

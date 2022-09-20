@@ -19,6 +19,7 @@ import {
 	Button,
 	LoadingOverlay,
 	Loader,
+	Stack,
 } from '@mantine/core'
 import { openConfirmModal } from '@mantine/modals'
 import { showNotification } from '@mantine/notifications'
@@ -33,8 +34,14 @@ const OperationsTable = ({ data }: OperationTableProps) => {
 	const theme = useMantineTheme()
 
 	const rows = data?.map((item, index) => {
+		const isEven = index % 2 === 0
+
 		return (
-			<Fragment key={item.id}>
+			<Grid
+				key={item.id}
+				sx={{ backgroundColor: isEven ? 'white' : 'whitesmoke', width: '100%' }}
+				py="sm"
+			>
 				<Grid.Col span={1} sx={{ textAlign: 'center' }}>
 					{index + 1}
 				</Grid.Col>
@@ -59,10 +66,7 @@ const OperationsTable = ({ data }: OperationTableProps) => {
 				<Grid.Col span={2}>
 					<Text>{formatCurrency(item.price)}</Text>
 				</Grid.Col>
-				<Grid.Col span={12}>
-					<Divider />
-				</Grid.Col>
-			</Fragment>
+			</Grid>
 		)
 	})
 
@@ -81,11 +85,10 @@ const OperationsTable = ({ data }: OperationTableProps) => {
 				<Grid.Col span={3}>Ghi chú</Grid.Col>
 				<Grid.Col span={2}>Giá</Grid.Col>
 			</Grid>
-			<Divider />
 			<ScrollArea sx={{ maxHeight: 300 }}>
-				<Grid sx={{ width: '100%' }} gutter="md" mt="md" align={'baseline'}>
+				<Stack sx={{ width: '100%' }} mt="md">
 					{rows}
-				</Grid>
+				</Stack>
 			</ScrollArea>
 			<Grid sx={{ width: '100%' }}>
 				<Grid.Col span={2} offset={8}>

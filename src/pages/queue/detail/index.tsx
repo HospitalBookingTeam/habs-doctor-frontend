@@ -1,6 +1,6 @@
 import BackButton from '@/components/Button/BackButton'
 import LayoutAppShell from '@/components/Layout'
-import { useGetCheckupRecordByIdQuery } from '@/store/queue/api'
+import { useGetCheckupRecordByIdQuery } from '@/store/record/api'
 import { Badge } from '@mantine/core'
 import { Button, Paper, Stack, Tabs, Title, Box } from '@mantine/core'
 import { IconId, IconStethoscope } from '@tabler/icons'

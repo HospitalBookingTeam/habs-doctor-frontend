@@ -3,6 +3,7 @@ import {
 	DepartmentRequest,
 	DepartmentResponse,
 } from '@/entities/department'
+import { Icd } from '@/entities/icd'
 import { Medicine } from '@/entities/medicine'
 import {
 	Operation,
@@ -11,6 +12,7 @@ import {
 } from '@/entities/operation'
 import {
 	CheckupFormData,
+	CheckupRecord,
 	CheckupRecordByIdResponse,
 	RequestReExam,
 } from '@/entities/record'
@@ -43,6 +45,21 @@ export const recordApi = api.injectEndpoints({
 			}),
 			providesTags: (result, error, { patientId }) => [
 				{ type: 'Record' as const, id: 'HISTORY', patientId },
+			],
+		}),
+		getCheckupRecordById: build.query<CheckupRecord, number>({
+			query: (id) => ({
+				url: `checkup-records/${id}`,
+			}),
+			providesTags: (result) => [{ type: 'Record' as const, id: result?.id }],
+		}),
+		getIcdList: build.query<Icd[], void>({
+			query: () => ({
+				url: `icd`,
+			}),
+			providesTags: (result = []) => [
+				...result.map(({ id }) => ({ type: 'Record', id } as const)),
+				{ type: 'Record' as const, id: 'LIST' },
 			],
 		}),
 		getOperationList: build.query<Operation[], void>({
@@ -138,6 +155,8 @@ export const recordApi = api.injectEndpoints({
 export const {
 	useGetMedicineListQuery,
 	useGetCheckupRecordByPatientIdQuery,
+	useGetCheckupRecordByIdQuery,
+	useGetIcdListQuery,
 	useGetOperationListQuery,
 	useGetDepartmentListQuery,
 	useUpdateCheckupRecordByIdMutation,
@@ -152,6 +171,8 @@ export const {
 	endpoints: {
 		getMedicineList,
 		getCheckupRecordByPatientId,
+		getCheckupRecordById,
+		getIcdList,
 		getOperationList,
 		getDepartmentList,
 		updateCheckupRecordById,

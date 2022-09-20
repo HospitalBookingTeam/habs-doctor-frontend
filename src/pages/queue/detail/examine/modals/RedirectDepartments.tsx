@@ -3,7 +3,7 @@ import {
 	DepartmentRequestDetail,
 	DepartmentResponse,
 } from '@/entities/department'
-import { useGetCheckupRecordByIdQuery } from '@/store/queue/api'
+import { useGetCheckupRecordByIdQuery } from '@/store/record/api'
 import {
 	useGetDepartmentListQuery,
 	useRequestRedirectDepartmentsByIdMutation,
@@ -20,6 +20,7 @@ import {
 	Divider,
 	SimpleGrid,
 	Paper,
+	Group,
 } from '@mantine/core'
 import { useForm } from '@mantine/form'
 import { randomId } from '@mantine/hooks'
@@ -131,9 +132,13 @@ const RequestDepartments = () => {
 				centered={true}
 				// withCloseButton={!isLoadingUpdateStatus}
 			>
-				<SimpleGrid cols={3} sx={{ display: showResponse ? 'grid' : 'none' }}>
+				<Group
+					position="center"
+					grow={true}
+					sx={{ display: showResponse ? 'flex' : 'none' }}
+				>
 					{responseData?.map((item) => (
-						<Paper key={item.roomId} shadow="md" p="md">
+						<Paper withBorder key={item.roomId} shadow="md" p="md">
 							<Stack>
 								<Text weight={700}>{item.departmentName}</Text>
 								<ResponseRow
@@ -147,7 +152,7 @@ const RequestDepartments = () => {
 							</Stack>
 						</Paper>
 					))}
-				</SimpleGrid>
+				</Group>
 
 				<form
 					onSubmit={form.onSubmit(onSubmit)}

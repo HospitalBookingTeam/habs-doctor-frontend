@@ -10,6 +10,8 @@ const Login = lazy(() => import('@/pages/auth'))
 const Queue = lazy(() => import('@/pages/queue'))
 const FinishedQueue = lazy(() => import('@/pages/queue/FinishQueue'))
 const TestingQueue = lazy(() => import('@/pages/queue/TestingQueue'))
+const RecordHistory = lazy(() => import('@/pages/history'))
+const NotFound = lazy(() => import('@/components/NotFound/NotFoundPage'))
 
 function App() {
 	return (
@@ -27,12 +29,16 @@ function App() {
 								<Route index element={<FinishedQueue />} />
 							</Route>
 							<Route path="testing" element={<TestingQueue />} />
+							<Route path="records" element={<Outlet />}>
+								<Route path=":id" element={<RecordHistory />} />
+							</Route>
 						</Route>
 
 						<Route path="/login" element={<IsUserRedirect />}>
 							<Route index element={<Login />} />
 						</Route>
 					</Route>
+					<Route path="*" element={<NotFound />} />
 				</Routes>
 			</Container>
 		</Suspense>

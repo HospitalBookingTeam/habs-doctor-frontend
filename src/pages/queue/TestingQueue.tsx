@@ -9,16 +9,12 @@ import {
 	useGetFinishedCheckupQueueQuery,
 	useGetTestingCheckupQueueQuery,
 } from '@/store/queue/api'
+import { SEARCH_OPTIONS } from '@/utils/constants'
 import { Stack, Title, Grid, TextInput, Paper, Loader } from '@mantine/core'
 import { useDebouncedState } from '@mantine/hooks'
 import { IconSearch } from '@tabler/icons'
 import Fuse from 'fuse.js'
 import { useEffect, useState } from 'react'
-
-const SEARCH_OPTIONS = {
-	includeScore: true,
-	keys: ['patientName'],
-}
 
 const TestingQueue = () => {
 	const authData = useAppSelector(selectAuth)
