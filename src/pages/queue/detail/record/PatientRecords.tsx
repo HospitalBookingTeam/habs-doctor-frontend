@@ -20,7 +20,7 @@ const useStyles = createStyles((theme) => ({
 const PatientRecords = ({ data }: { data?: RecordItem[] }) => {
 	return (
 		<Stack>
-			<Title order={3} size="h6">
+			<Title order={3} size="h4">
 				Lịch sử khám bệnh
 			</Title>
 
@@ -28,6 +28,7 @@ const PatientRecords = ({ data }: { data?: RecordItem[] }) => {
 				{data?.map((item) => (
 					<PatientRecordRow
 						key={item.id}
+						id={item.id}
 						doctorName={item?.doctorName}
 						departmentName={item?.departmentName}
 						date={item?.date}
@@ -48,7 +49,7 @@ const PatientRecordRow = ({
 	return (
 		<Paper
 			component={Link}
-			to={`/records?id=${id}`}
+			to={`/records/${id}`}
 			target="_blank"
 			p="md"
 			className={classes.card}

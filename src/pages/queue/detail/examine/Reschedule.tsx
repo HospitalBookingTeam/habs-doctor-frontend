@@ -1,6 +1,6 @@
 import OperationsTable from '@/components/Table/OperationsTable'
 import { RequestReExamForm } from '@/entities/record'
-import { useGetCheckupRecordByIdQuery } from '@/store/queue/api'
+import { useGetCheckupRecordByIdQuery } from '@/store/record/api'
 import {
 	useGetOperationListQuery,
 	useRequestReExamByIdMutation,
@@ -84,15 +84,6 @@ const Reschedule = () => {
 							{...form.getInputProps('reExamDate')}
 							sx={{ minWidth: 200 }}
 						/>
-
-						<Textarea
-							label="Ghi chú"
-							placeholder="Viết ghi chú cho người bệnh"
-							minRows={2}
-							maxRows={4}
-							sx={{ minWidth: 450 }}
-							{...form.getInputProps('note')}
-						/>
 					</Stack>
 
 					<Stack>
@@ -103,7 +94,6 @@ const Reschedule = () => {
 							placeholder="Chọn xét nghiệm"
 							data={
 								operationList?.map((item) => ({
-									...item,
 									value: item.id,
 									label: item.name,
 								})) ?? []
@@ -118,10 +108,18 @@ const Reschedule = () => {
 								form.values.examOperationIds?.includes(item.id)
 							)}
 						/>
+						<Textarea
+							label="Ghi chú"
+							placeholder="Viết ghi chú cho người bệnh"
+							minRows={2}
+							maxRows={4}
+							sx={{ minWidth: 450 }}
+							{...form.getInputProps('note')}
+						/>
 					</Stack>
 				</Stack>
 				<Stack align={'center'} my="sm">
-					<Button color="cyan" type="submit" disabled={isLoadingOperationList}>
+					<Button type="submit" disabled={isLoadingOperationList}>
 						Xác nhận tái khám
 					</Button>
 				</Stack>

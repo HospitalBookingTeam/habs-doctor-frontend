@@ -1,6 +1,6 @@
-import { useGetCheckupRecordByIdQuery } from '@/store/queue/api'
+import { useGetCheckupRecordByIdQuery } from '@/store/record/api'
 import { useGetCheckupRecordByPatientIdQuery } from '@/store/record/api'
-import { Stack } from '@mantine/core'
+import { Divider, Stack } from '@mantine/core'
 import { useState } from 'react'
 import { useParams } from 'react-router-dom'
 import PatientInfo from './PatientInfo'
@@ -27,8 +27,11 @@ const PatientRecord = () => {
 	)
 
 	return (
-		<Stack sx={{ gap: 60 }}>
+		<Stack sx={{ gap: 40 }} p="sm">
 			<PatientInfo data={data?.patientData} />
+
+			<Divider />
+
 			<PatientRecords data={recordData?.data} />
 		</Stack>
 	)

@@ -1,4 +1,4 @@
-import { useGetCheckupRecordByIdQuery } from '@/store/queue/api'
+import { useGetCheckupRecordByIdQuery } from '@/store/record/api'
 import {
 	useGetMedicineListQuery,
 	useUpdateCheckupRecordMedicationByIdMutation,
@@ -14,7 +14,7 @@ import { Accordion } from '@mantine/core'
 import {
 	Stack,
 	Grid,
-	Divider,
+	TextInput,
 	ScrollArea,
 	Center,
 	Loader,
@@ -29,6 +29,7 @@ import { IconPlus, IconTrash } from '@tabler/icons'
 import { Fragment, useState } from 'react'
 import { useParams } from 'react-router-dom'
 import { MedicineRequest } from '@/entities/medicine'
+import useGlobalStyles from '@/utils/useGlobalStyles'
 
 const DEFAULT_MED = {
 	key: randomId(),
@@ -47,6 +48,7 @@ const useStyles = createStyles((theme) => ({
 	},
 }))
 const Medication = () => {
+	const { classes: globalClasses } = useGlobalStyles()
 	const [value, setValue] = useState<string[]>(['0'])
 	const { data: medData, isLoading } = useGetMedicineListQuery()
 	const { id: queueId } = useParams()
@@ -66,6 +68,21 @@ const Medication = () => {
 		initialValues: {
 			note: '',
 			details: [],
+		},
+		validateInputOnChange: true,
+		validate: {
+			details: {
+				quantity: (value: number) =>
+					!value || value <= 0 || value > 1000 ? true : null,
+				morningDose: (value) =>
+					!value || value <= 0 || value > 1000 ? true : null,
+				middayDose: (value) =>
+					!value || value <= 0 || value > 1000 ? true : null,
+				eveningDose: (value) =>
+					!value || value <= 0 || value > 1000 ? true : null,
+				nightDose: (value) =>
+					!value || value <= 0 || value > 1000 ? true : null,
+			},
 		},
 	})
 
@@ -96,97 +113,119 @@ const Medication = () => {
 			)
 	}
 
-	const rows = form.values.details?.map((item, index: number) => (
-		<Accordion.Item
-			key={item.key}
-			value={index.toString()}
-			className={classes.accordion}
-		>
-			<Stack
-				sx={{ flexDirection: 'row' }}
-				align="center"
-				justify="space-between"
+	const rows = form.values.details?.map((item, index: number) => {
+		const medItem = medData?.find((_item) => _item.id === item.medicineId)
+		return (
+			<Accordion.Item
+				key={item.key}
+				value={index.toString()}
+				className={classes.accordion}
 			>
-				<Accordion.Control>
-					<Box>
-						Thuốc {index + 1} -{' '}
-						{medData?.find((_item) => _item.id === item.medicineId)?.name}
-					</Box>
-				</Accordion.Control>
-				<ActionIcon
-					color="red"
-					size="sm"
-					mr="sm"
-					onClick={() => form.removeListItem('details', index)}
+				<Stack
+					sx={{ flexDirection: 'row' }}
+					align="center"
+					justify="space-between"
 				>
-					<IconTrash />
-				</ActionIcon>
-			</Stack>
-			<Accordion.Panel>
-				<Grid>
-					<Grid.Col span={6}>
-						<Select
-							size="sm"
-							label="Tên thuốc"
-							placeholder="Thuốc"
-							data={
-								medData?.map((item) => ({
-									value: item.id,
-									label: item.name,
-								})) ?? []
-							}
-							searchable
-							nothingFound="Không có dữ liệu"
-							{...form.getInputProps(`details.${index}.medicineId`)}
-						/>
-					</Grid.Col>
-
-					<Grid.Col span={6}>
-						<NumberInput
-							label="Số lượng"
-							hideControls={true}
-							{...form.getInputProps(`details.${index}.quantity`)}
-						/>
-					</Grid.Col>
-
-					<Grid.Col span={3}>
-						<NumberInput
-							label="Sáng"
-							{...form.getInputProps(`details.${index}.morningDose`)}
-						/>
-					</Grid.Col>
-					<Grid.Col span={3}>
-						<NumberInput
-							label="Trưa"
-							{...form.getInputProps(`details.${index}.middayDose`)}
-						/>
-					</Grid.Col>
-					<Grid.Col span={3}>
-						<NumberInput
-							label="Chiều"
-							{...form.getInputProps(`details.${index}.eveningDose`)}
-						/>
-					</Grid.Col>
-					<Grid.Col span={3}>
-						<NumberInput
-							label="Tối"
-							{...form.getInputProps(`details.${index}.nightDose`)}
-						/>
-					</Grid.Col>
-					<Grid.Col span={12}>
-						<Textarea
-							label="Hướng dẫn sử dụng"
-							placeholder="Vd. Uống 3 buổi"
-							autosize
-							minRows={2}
-							maxRows={4}
-							{...form.getInputProps(`details.${index}.usage`)}
-						/>
-					</Grid.Col>
-				</Grid>
-			</Accordion.Panel>
-		</Accordion.Item>
-	))
+					<Accordion.Control>
+						<Box>
+							Thuốc {index + 1} - {medItem?.name}
+						</Box>
+					</Accordion.Control>
+					<ActionIcon
+						color="red"
+						size="sm"
+						mr="sm"
+						onClick={() => form.removeListItem('details', index)}
+					>
+						<IconTrash />
+					</ActionIcon>
+				</Stack>
+				<Accordion.Panel>
+					<Grid>
+						<Grid.Col span={6}>
+							<Select
+								size="sm"
+								label="Tên thuốc"
+								placeholder="Thuốc"
+								data={
+									medData?.map((item) => ({
+										value: item.id,
+										label: item.name,
+									})) ?? []
+								}
+								searchable
+								nothingFound="Không có dữ liệu"
+								{...form.getInputProps(`details.${index}.medicineId`)}
+							/>
+						</Grid.Col>
+						<Grid.Col span={2}>
+							<TextInput
+								readOnly={true}
+								label="Đơn vị"
+								defaultValue={medItem?.unit}
+								variant="filled"
+							/>
+						</Grid.Col>
+						<Grid.Col span={2}>
+							<TextInput
+								readOnly={true}
+								label="Hàm lượng"
+								defaultValue={medItem?.unit}
+								variant="filled"
+							/>
+						</Grid.Col>
+						<Grid.Col span={2}></Grid.Col>
+						<Grid.Col span={2}>
+							<NumberInput
+								label="Số ngày sử dụng"
+								hideControls={true}
+								className={globalClasses.numberInput}
+								{...form.getInputProps(`details.${index}.quantity`)}
+							/>
+						</Grid.Col>
+						<Grid.Col span={2}>
+							<NumberInput
+								label="Sáng"
+								className={globalClasses.numberInput}
+								{...form.getInputProps(`details.${index}.morningDose`)}
+							/>
+						</Grid.Col>
+						<Grid.Col span={2}>
+							<NumberInput
+								label="Trưa"
+								className={globalClasses.numberInput}
+								{...form.getInputProps(`details.${index}.middayDose`)}
+							/>
+						</Grid.Col>
+						<Grid.Col span={2}>
+							<NumberInput
+								label="Chiều"
+								className={globalClasses.numberInput}
+								{...form.getInputProps(`details.${index}.eveningDose`)}
+							/>
+						</Grid.Col>
+						<Grid.Col span={2}>
+							<NumberInput
+								label="Tối"
+								className={globalClasses.numberInput}
+								{...form.getInputProps(`details.${index}.nightDose`)}
+							/>
+						</Grid.Col>
+						<Grid.Col span={12}>
+							<Textarea
+								label="Hướng dẫn sử dụng"
+								placeholder="Vd. Uống 3 buổi"
+								autosize
+								minRows={2}
+								maxRows={4}
+								{...form.getInputProps(`details.${index}.usage`)}
+							/>
+						</Grid.Col>
+					</Grid>
+				</Accordion.Panel>
+			</Accordion.Item>
+		)
+	})
 
 	useEffect(() => {
 		if (isCheckupDataSuccess) {
@@ -247,7 +286,6 @@ const Medication = () => {
 						size="md"
 						disabled={isLoading}
 						fullWidth
-						color="cyan"
 						sx={{ maxWidth: 250 }}
 						variant="outline"
 						leftIcon={<IconPlus />}
@@ -260,7 +298,6 @@ const Medication = () => {
 					<Button
 						type="submit"
 						size="md"
-						color="cyan"
 						disabled={isLoading}
 						fullWidth
 						sx={{ maxWidth: 250 }}

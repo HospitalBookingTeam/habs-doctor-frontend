@@ -3,7 +3,7 @@ import { CheckupFormData } from '@/entities/record'
 import {
 	useGetCheckupRecordByIdQuery,
 	useGetIcdListQuery,
-} from '@/store/queue/api'
+} from '@/store/record/api'
 import { useUpdateCheckupRecordByIdMutation } from '@/store/record/api'
 import { useEffect } from 'react'
 
@@ -27,8 +27,10 @@ import { useForm } from '@mantine/form'
 import { showNotification } from '@mantine/notifications'
 import { IconTemperatureCelsius } from '@tabler/icons'
 import { useParams } from 'react-router-dom'
+import useGlobalStyles from '@/utils/useGlobalStyles'
 
 const BasicCheckup = () => {
+	const { classes: globalClasses, cx: cxGlobal } = useGlobalStyles()
 	const { data, isLoading } = useGetIcdListQuery()
 	const { id: queueId } = useParams()
 	const { data: checkupData, isSuccess: isCheckupDataSuccess } =
@@ -48,8 +50,15 @@ const BasicCheckup = () => {
 			diagnosis: '',
 			icdDiseaseId: undefined,
 		},
-
-		validate: {},
+		validateInputOnChange: true,
+		validate: {
+			pulse: (value: number) =>
+				Number(value) < 50 || Number(value) > 150 ? true : null,
+			bloodPressure: (value: number) =>
+				Number(value) < 50 || Number(value) > 120 ? true : null,
+			temperature: (value: number) =>
+				Number(value) < 36 || Number(value) > 38.5 ? true : null,
+		},
 	})
 
 	const onSubmit = async (values: CheckupFormData) => {
@@ -108,11 +117,14 @@ const BasicCheckup = () => {
 				<form onSubmit={form.onSubmit(onSubmit)}>
 					<LoadingOverlay visible={isLoadingUpdateRecord} />
 					<Grid gutter="xl">
-						<Grid.Col span={4}>
+						<Grid.Col span={3}>
 							<NumberInput
 								label="Nhịp tim"
 								placeholder="vd. 100"
 								size="sm"
+								className={cxGlobal(globalClasses.numberInput, {
+									[globalClasses.width60]: true,
+								})}
 								rightSectionWidth={60}
 								rightSection={
 									<Text px="sm" color="gray">
@@ -122,11 +134,14 @@ const BasicCheckup = () => {
 								{...form.getInputProps('bloodPressure')}
 							/>
 						</Grid.Col>
-						<Grid.Col span={4}>
+						<Grid.Col span={3}>
 							<NumberInput
 								label="Huyết áp"
 								placeholder="vd. 100"
 								size="sm"
+								className={cxGlobal(globalClasses.numberInput, {
+									[globalClasses.width60]: true,
+								})}
 								rightSectionWidth={60}
 								rightSection={
 									<Text px="sm" color="gray">
@@ -136,11 +151,14 @@ const BasicCheckup = () => {
 								{...form.getInputProps('pulse')}
 							/>
 						</Grid.Col>
-						<Grid.Col span={4}>
+						<Grid.Col span={3}>
 							<NumberInput
 								label="Nhiệt độ"
 								placeholder="vd. 37.5"
 								size="sm"
+								className={cxGlobal(globalClasses.numberInput, {
+									[globalClasses.width60]: true,
+								})}
 								precision={1}
 								rightSectionWidth={60}
 								rightSection={

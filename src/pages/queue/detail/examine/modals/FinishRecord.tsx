@@ -1,4 +1,4 @@
-import { useGetCheckupRecordByIdQuery } from '@/store/queue/api'
+import { useGetCheckupRecordByIdQuery } from '@/store/record/api'
 import { useUpdateStatusRecordMutation } from '@/store/record/api'
 import { CheckupRecordStatus } from '@/utils/renderEnums'
 import { Button, Stack, Text, Modal } from '@mantine/core'

@@ -1,4 +1,4 @@
-import { useGetCheckupRecordByIdQuery } from '@/store/queue/api'
+import { useGetCheckupRecordByIdQuery } from '@/store/record/api'
 import {
 	useGetOperationListQuery,
 	useRequestOperationsByIdMutation,
@@ -9,7 +9,7 @@ import {
 	Text,
 	Modal,
 	MultiSelect,
-	SimpleGrid,
+	Group,
 	Paper,
 } from '@mantine/core'
 import { showNotification } from '@mantine/notifications'
@@ -90,9 +90,13 @@ const RequestOperationsButton = () => {
 				size="70%"
 				withCloseButton={!isLoadingRequestOperations}
 			>
-				<SimpleGrid cols={3} sx={{ display: showResponse ? 'grid' : 'none' }}>
+				<Group
+					position="center"
+					grow={true}
+					sx={{ display: showResponse ? 'flex' : 'none' }}
+				>
 					{responseData?.map((item) => (
-						<Paper key={item.operationId} shadow="md" p="md">
+						<Paper withBorder key={item.operationId} shadow="md" p="md">
 							<Stack>
 								<Text weight={700}>{item.operationName}</Text>
 								<ResponseRow
@@ -106,7 +110,7 @@ const RequestOperationsButton = () => {
 							</Stack>
 						</Paper>
 					))}
-				</SimpleGrid>
+				</Group>
 				<form
 					onSubmit={form.onSubmit(onSubmit)}
 					style={{ display: showResponse ? 'none' : 'block' }}

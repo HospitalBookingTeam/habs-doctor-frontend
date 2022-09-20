@@ -20,6 +20,9 @@ const GlobalStyles = () => {
 					lineHeight: theme.lineHeight,
 					margin: 0,
 				},
+				'.mantine-Modal-title': {
+					fontWeight: 700,
+				},
 			})}
 		/>
 	)

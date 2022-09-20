@@ -7,3 +7,8 @@ export const KEYS = {
 		BASE_API: import.meta.env.VITE_API_DOCTOR,
 	},
 }
+
+export const SEARCH_OPTIONS = {
+	keys: ['patientName'],
+	threshold: 0.5,
+}

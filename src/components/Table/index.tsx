@@ -1,6 +1,10 @@
 import { CheckupQueue, CheckupQueueItem } from '@/entities/queue'
 import { useConfirmCheckupFromQueueByIdMutation } from '@/store/queue/api'
-import { CheckupRecordStatus } from '@/utils/renderEnums'
+import { formatDate } from '@/utils/formats'
+import {
+	CheckupRecordStatus,
+	translateCheckupRecordStatus,
+} from '@/utils/renderEnums'
 import {
 	Avatar,
 	Badge,
@@ -16,9 +20,11 @@ import {
 	Button,
 	LoadingOverlay,
 	Loader,
+	Stack,
 } from '@mantine/core'
 import { openConfirmModal } from '@mantine/modals'
 import { showNotification } from '@mantine/notifications'
+import { IconChevronRight } from '@tabler/icons'
 import { Fragment } from 'react'
 import { useNavigate } from 'react-router-dom'
 
@@ -64,27 +70,25 @@ export function QueueTable({ data, isLoading }: QueueTableProps) {
 			)
 	}
 
-	const rows = data?.map((item) => {
+	const rows = data?.map((item, index) => {
 		const isInProgress =
 			item?.status === CheckupRecordStatus.DANG_KHAM ||
 			item?.status === CheckupRecordStatus.CHECKED_IN_SAU_XN
+		const isEven = index % 2 === 0
+
 		return (
-			<Fragment key={item.id}>
-				<Grid.Col span={1} sx={{ textAlign: 'center' }}>
-					<Anchor<'a'>
-						size="sm"
-						href="#"
-						onClick={(event) => event.preventDefault()}
-					>
-						{item.numericalOrder}
-					</Anchor>
+			<Grid
+				key={item.id}
+				sx={{ backgroundColor: isEven ? 'white' : 'whitesmoke', width: '100%' }}
+				py="sm"
+			>
+				<Grid.Col span={2} sx={{ textAlign: 'center' }}>
+					{item.numericalOrder}
 				</Grid.Col>
 				<Grid.Col span={4}>
-					<Group spacing="sm">
-						<Text size="sm" weight={500}>
-							{item.patientName}
-						</Text>
-					</Group>
+					<Text size="sm" weight={500}>
+						{item.patientName}
+					</Text>
 				</Grid.Col>
 
 				<Grid.Col span={2} sx={{ textAlign: 'center' }}>
@@ -92,29 +96,22 @@ export function QueueTable({ data, isLoading }: QueueTableProps) {
 						// color={jobColors[item.status.toLowerCase()]}
 						variant={theme.colorScheme === 'dark' ? 'light' : 'outline'}
 					>
-						{item.status}
+						{translateCheckupRecordStatus(item.status, item.isReExam)}
 					</Badge>
 				</Grid.Col>
 
-				<Grid.Col span={1} sx={{ textAlign: 'center' }}>
-					<Badge
-						size="sm"
-						variant={item.isReExam ? 'light' : 'outline'}
-						color="gray"
-					>
-						{item.isReExam ? 'Có' : 'Không'}
-					</Badge>
+				<Grid.Col span={2}>
+					<Text align="center">
+						{formatDate(item?.estimatedStartTime, 'HH:mm')}
+					</Text>
 				</Grid.Col>
-				<Grid.Col span={4}>
-					<Group spacing={'sm'} position="right">
+				<Grid.Col span={2}>
+					<Stack align={'end'}>
 						<Button
 							variant={isInProgress ? 'gradient' : 'filled'}
+							rightIcon={isInProgress ? <IconChevronRight /> : null}
 							color="green"
-							gradient={
-								isInProgress
-									? { from: 'teal', to: 'lime', deg: 105 }
-									: undefined
-							}
+							gradient={{ from: 'teal', to: 'lime', deg: 105 }}
 							onClick={() => {
 								if (isInProgress) {
 									navigate(`/${item.id}`)
@@ -122,38 +119,31 @@ export function QueueTable({ data, isLoading }: QueueTableProps) {
 								}
 								openModal(item.patientName, item.id)
 							}}
-							sx={{ width: 140 }}
+							sx={{ width: 170 }}
 						>
 							{isInProgress ? 'Tiếp tục khám' : 'Khám bệnh'}
 						</Button>
-						<Button color="cyan" sx={{ width: 140 }}>
-							Xem hồ sơ
-						</Button>
-					</Group>
+					</Stack>
 				</Grid.Col>
-				<Grid.Col span={12}>
-					<Divider />
-				</Grid.Col>
-			</Fragment>
+			</Grid>
 		)
 	})
 
 	return (
 		<>
 			<Grid color="gray.1" pb="md" sx={{ width: '100%' }}>
-				<Grid.Col span={1} sx={{ textAlign: 'center' }}>
-					STT
+				<Grid.Col span={2} sx={{ textAlign: 'center' }}>
+					Thứ tự dự kiến
 				</Grid.Col>
 				<Grid.Col span={4}>Tên người bệnh</Grid.Col>
 				<Grid.Col span={2} sx={{ textAlign: 'center' }}>
 					Trạng thái
 				</Grid.Col>
-				<Grid.Col span={1} sx={{ textAlign: 'center' }}>
-					Tái khám
+				<Grid.Col span={2}>
+					<Text align="center">Thời gian dự kiến</Text>
 				</Grid.Col>
-				<Grid.Col span={4}></Grid.Col>
+				<Grid.Col span={2}></Grid.Col>
 			</Grid>
-			<Divider />
 			<ScrollArea sx={{ height: 450 }}>
 				<Center
 					sx={{
@@ -164,10 +154,10 @@ export function QueueTable({ data, isLoading }: QueueTableProps) {
 				>
 					<Loader size="lg" />
 				</Center>
-				<Grid sx={{ width: '100%' }} gutter="md" mt="md" align={'baseline'}>
+				<Stack sx={{ width: '100%' }} mt="sm">
 					<LoadingOverlay visible={isLoadingConfirm} />
 					{rows}
-				</Grid>
+				</Stack>
 			</ScrollArea>
 		</>
 	)
