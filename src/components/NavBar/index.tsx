@@ -1,15 +1,19 @@
 import { useState, useEffect } from 'react'
-import { createStyles, Navbar, Group, Code, Text, Button } from '@mantine/core'
 import {
-	IconBellRinging,
-	IconReceipt2,
-	IconLogout,
-	IconPackage,
-} from '@tabler/icons'
+	createStyles,
+	Navbar,
+	Group,
+	Code,
+	Text,
+	Button,
+	Stack,
+} from '@mantine/core'
+import { IconList, IconZoomCheck, IconLogout, IconPackage } from '@tabler/icons'
 import { useLocation, useNavigate } from 'react-router-dom'
 import { useAppDispatch, useAppSelector } from '@/store/hooks'
 import { logout } from '@/store/auth/slice'
 import { selectAuth } from '@/store/auth/selectors'
+import Clock from '../Clock'
 
 const useStyles = createStyles((theme, _params, getRef) => {
 	const icon: string = getRef('icon')
@@ -100,9 +104,9 @@ const useStyles = createStyles((theme, _params, getRef) => {
 })
 
 const data = [
-	{ link: '/', label: 'Hàng chờ khám', icon: IconBellRinging },
+	{ link: '/', label: 'Hàng chờ khám', icon: IconList },
 	{ link: '/testing', label: 'Đợi kết quả', icon: IconPackage },
-	{ link: '/finished', label: 'Người bệnh đã khám', icon: IconReceipt2 },
+	{ link: '/finished', label: 'Người bệnh đã khám', icon: IconZoomCheck },
 ]
 
 export function NavbarSimpleColored({ opened }: { opened: boolean }) {
@@ -150,14 +154,16 @@ export function NavbarSimpleColored({ opened }: { opened: boolean }) {
 				<Text weight={500} size="sm" className={classes.title} mb="xs">
 					Bác sĩ {authData?.information?.name}
 				</Text>
-				<Group className={classes.header} position="apart">
+				<Stack className={classes.header}>
 					{/* <MantineLogo size={28} inverted /> */}
 					<Code className={classes.version}>
 						Phòng {authData?.information?.room?.roomNumber} -{' '}
 						{authData?.information?.room?.roomTypeName}{' '}
 						{authData?.information?.room?.departmentName}
 					</Code>
-				</Group>
+
+					<Clock />
+				</Stack>
 				{links}
 			</Navbar.Section>
 

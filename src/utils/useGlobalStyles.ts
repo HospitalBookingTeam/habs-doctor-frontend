@@ -15,6 +15,9 @@ const useGlobalStyles = createStyles((theme, _params, getRef) => ({
 			paddingRight: '60px',
 		},
 	},
+	accordion: {
+		border: `2px solid ${theme.colors.gray[2]}`,
+	},
 }))
 
 export default useGlobalStyles
