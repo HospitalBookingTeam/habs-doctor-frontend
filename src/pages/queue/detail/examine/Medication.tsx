@@ -4,14 +4,14 @@ import {
 	useUpdateCheckupRecordMedicationByIdMutation,
 } from '@/store/record/api'
 import { useEffect } from 'react'
-import { NumberInput } from '@mantine/core'
-import { Button } from '@mantine/core'
-import { ActionIcon } from '@mantine/core'
-import { createStyles } from '@mantine/core'
-import { Textarea } from '@mantine/core'
-import { Text } from '@mantine/core'
-import { Accordion } from '@mantine/core'
 import {
+	createStyles,
+	Text,
+	Accordion,
+	Button,
+	ActionIcon,
+	Textarea,
+	NumberInput,
 	Stack,
 	Grid,
 	TextInput,
@@ -30,6 +30,8 @@ import { Fragment, useState } from 'react'
 import { useParams } from 'react-router-dom'
 import { MedicineRequest } from '@/entities/medicine'
 import useGlobalStyles from '@/utils/useGlobalStyles'
+import MedicationDoseInput from './MedicationDoseInput'
+import { renderDoseContent } from '@/utils/formats'
 
 const DEFAULT_MED = {
 	key: randomId(),
@@ -42,11 +44,6 @@ const DEFAULT_MED = {
 	nightDose: undefined,
 }
 
-const useStyles = createStyles((theme) => ({
-	accordion: {
-		border: `2px solid ${theme.colors.gray[2]}`,
-	},
-}))
 const Medication = () => {
 	const { classes: globalClasses } = useGlobalStyles()
 	const [value, setValue] = useState<string[]>(['0'])
@@ -62,8 +59,6 @@ const Medication = () => {
 		{ isLoading: isLoadingUpdateRecordPrescription },
 	] = useUpdateCheckupRecordMedicationByIdMutation()
 
-	const { classes } = useStyles()
-
 	const form = useForm<MedicineRequest>({
 		initialValues: {
 			note: '',
@@ -72,16 +67,16 @@ const Medication = () => {
 		validateInputOnChange: true,
 		validate: {
 			details: {
-				quantity: (value: number) =>
-					!value || value <= 0 || value > 1000 ? true : null,
+				medicineId: (value) => (!value ? true : null),
+				quantity: (value: number) => (value <= 0 || value > 1000 ? true : null),
 				morningDose: (value) =>
-					!value || value <= 0 || value > 1000 ? true : null,
+					!value ? null : value <= 0 || value > 1000 ? true : null,
 				middayDose: (value) =>
-					!value || value <= 0 || value > 1000 ? true : null,
+					!value ? null : value <= 0 || value > 1000 ? true : null,
 				eveningDose: (value) =>
-					!value || value <= 0 || value > 1000 ? true : null,
+					!value ? null : value <= 0 || value > 1000 ? true : null,
 				nightDose: (value) =>
-					!value || value <= 0 || value > 1000 ? true : null,
+					!value ? null : value <= 0 || value > 1000 ? true : null,
 			},
 		},
 	})
@@ -115,11 +110,12 @@ const Medication = () => {
 
 	const rows = form.values.details?.map((item, index: number) => {
 		const medItem = medData?.find((_item) => _item.id === item.medicineId)
+
 		return (
 			<Accordion.Item
 				key={item.key}
 				value={index.toString()}
-				className={classes.accordion}
+				className={globalClasses.accordion}
 			>
 				<Stack
 					sx={{ flexDirection: 'row' }}
@@ -128,7 +124,7 @@ const Medication = () => {
 				>
 					<Accordion.Control>
 						<Box>
-							Thuốc {index + 1} - {medItem?.name}
+							Thuốc {index + 1} - {medItem?.name} - {renderDoseContent(item)}
 						</Box>
 					</Accordion.Control>
 					<ActionIcon
@@ -147,6 +143,7 @@ const Medication = () => {
 								size="sm"
 								label="Tên thuốc"
 								placeholder="Thuốc"
+								withAsterisk={true}
 								data={
 									medData?.map((item) => ({
 										value: item.id,
@@ -175,40 +172,51 @@ const Medication = () => {
 							/>
 						</Grid.Col>
 						<Grid.Col span={2}></Grid.Col>
+
+						<Grid.Col span={2}>
+							<MedicationDoseInput
+								label="Sáng"
+								amount={item?.morningDose}
+								getInputProps={() =>
+									form.getInputProps(`details.${index}.morningDose`)
+								}
+							/>
+						</Grid.Col>
+						<Grid.Col span={2}>
+							<MedicationDoseInput
+								label="Trưa"
+								amount={item?.middayDose}
+								getInputProps={() =>
+									form.getInputProps(`details.${index}.middayDose`)
+								}
+							/>
+						</Grid.Col>
+						<Grid.Col span={2}>
+							<MedicationDoseInput
+								label="Chiều"
+								amount={item?.eveningDose}
+								getInputProps={() =>
+									form.getInputProps(`details.${index}.eveningDose`)
+								}
+							/>
+						</Grid.Col>
+						<Grid.Col span={2}>
+							<MedicationDoseInput
+								label="Tối"
+								amount={item?.nightDose}
+								getInputProps={() =>
+									form.getInputProps(`details.${index}.nightDose`)
+								}
+							/>
+						</Grid.Col>
+						<Grid.Col span={4}></Grid.Col>
 						<Grid.Col span={2}>
 							<NumberInput
 								label="Số ngày sử dụng"
 								hideControls={true}
 								className={globalClasses.numberInput}
+								defaultValue={1}
 								{...form.getInputProps(`details.${index}.quantity`)}
-							/>
-						</Grid.Col>
-						<Grid.Col span={2}>
-							<NumberInput
-								label="Sáng"
-								className={globalClasses.numberInput}
-								{...form.getInputProps(`details.${index}.morningDose`)}
-							/>
-						</Grid.Col>
-						<Grid.Col span={2}>
-							<NumberInput
-								label="Trưa"
-								className={globalClasses.numberInput}
-								{...form.getInputProps(`details.${index}.middayDose`)}
-							/>
-						</Grid.Col>
-						<Grid.Col span={2}>
-							<NumberInput
-								label="Chiều"
-								className={globalClasses.numberInput}
-								{...form.getInputProps(`details.${index}.eveningDose`)}
-							/>
-						</Grid.Col>
-						<Grid.Col span={2}>
-							<NumberInput
-								label="Tối"
-								className={globalClasses.numberInput}
-								{...form.getInputProps(`details.${index}.nightDose`)}
 							/>
 						</Grid.Col>
 						<Grid.Col span={12}>

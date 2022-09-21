@@ -33,6 +33,12 @@ interface QueueTableProps {
 	isLoading?: boolean
 }
 
+const statusColors: Record<number, string> = {
+	[CheckupRecordStatus.CHECKED_IN]: 'green',
+	[CheckupRecordStatus.DANG_KHAM]: 'cyan',
+	[CheckupRecordStatus.CHECKED_IN_SAU_XN]: 'pink',
+}
+
 export function QueueTable({ data, isLoading }: QueueTableProps) {
 	const theme = useMantineTheme()
 	const navigate = useNavigate()
@@ -93,7 +99,7 @@ export function QueueTable({ data, isLoading }: QueueTableProps) {
 
 				<Grid.Col span={2} sx={{ textAlign: 'center' }}>
 					<Badge
-						// color={jobColors[item.status.toLowerCase()]}
+						color={statusColors[item.status]}
 						variant={theme.colorScheme === 'dark' ? 'light' : 'outline'}
 					>
 						{translateCheckupRecordStatus(item.status, item.isReExam)}

@@ -1,10 +1,12 @@
 import BackButton from '@/components/Button/BackButton'
+import TestRecordList from '@/components/Record/TestRecordList'
 import { useGetCheckupRecordByIdQuery } from '@/store/record/api'
 import { formatDate } from '@/utils/formats'
 import { Paper, Stack, Divider, Text, Badge } from '@mantine/core'
 import { useParams } from 'react-router-dom'
 import PatientInfo from '../queue/detail/record/PatientInfo'
 import HistoryRecord from './HistoryRecord'
+import MedicationList from './MedicationList'
 
 const RecordHistory = () => {
 	const { id: recordId } = useParams()
@@ -40,6 +42,11 @@ const RecordHistory = () => {
 					<PatientInfo data={recordData?.patientData} />
 					<Divider />
 					<HistoryRecord data={recordData} />
+
+					<Divider />
+					<TestRecordList data={recordData?.testRecords} />
+					<Divider />
+					<MedicationList data={recordData?.prescription} />
 				</Stack>
 			</Paper>
 		</Stack>

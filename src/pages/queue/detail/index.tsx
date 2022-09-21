@@ -14,12 +14,6 @@ import RequestOperationsButton from './examine/modals/RequestOperations'
 import PatientRecord from './record'
 
 const QueueDetail = () => {
-	const { id: queueId } = useParams()
-	const { data, isLoading } = useGetCheckupRecordByIdQuery(Number(queueId), {
-		refetchOnFocus: true,
-		skip: !queueId,
-	})
-	console.log('data', data)
 	const [searchParams, setSearchParams] = useSearchParams()
 	const [tabValue, setTabValue] = useState<string | null>(
 		searchParams.get('tabs') ?? 'examine'

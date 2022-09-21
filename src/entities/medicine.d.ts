@@ -21,6 +21,7 @@ export interface MedicineDetail {
 	nightDose?: number
 	medicineId: number
 	medicineName?: string
+	unit?: string
 }
 
 export interface MedicineRequest {
