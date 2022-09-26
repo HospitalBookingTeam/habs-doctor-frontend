@@ -85,11 +85,11 @@ const OperationsTable = ({ data }: OperationTableProps) => {
 				<Grid.Col span={3}>Ghi chú</Grid.Col>
 				<Grid.Col span={2}>Giá</Grid.Col>
 			</Grid>
-			<ScrollArea sx={{ maxHeight: 300 }}>
+			<ScrollArea.Autosize maxHeight={300}>
 				<Stack sx={{ width: '100%' }} mt="md">
 					{rows}
 				</Stack>
-			</ScrollArea>
+			</ScrollArea.Autosize>
 			<Grid sx={{ width: '100%' }}>
 				<Grid.Col span={2} offset={8}>
 					<Text>Tổng cộng:</Text>

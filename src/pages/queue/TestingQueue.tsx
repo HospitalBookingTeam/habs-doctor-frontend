@@ -52,7 +52,7 @@ const TestingQueue = () => {
 				mb="sm"
 			>
 				<Title order={1} size="h3">
-					Danh sách người bệnh đã khám
+					Danh sách người bệnh đã có KQXN
 				</Title>
 				<TextInput
 					placeholder="Tìm kiếm người bệnh"

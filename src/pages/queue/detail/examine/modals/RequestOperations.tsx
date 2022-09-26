@@ -87,7 +87,7 @@ const RequestOperationsButton = () => {
 				title={showResponse ? 'Thông tin xét nghiệm' : 'Yêu cầu xét nghiệm'}
 				closeOnClickOutside={showResponse}
 				centered={true}
-				size="70%"
+				size={showResponse ? '720px' : '70%'}
 				withCloseButton={!isLoadingRequestOperations}
 			>
 				<Group
@@ -96,11 +96,17 @@ const RequestOperationsButton = () => {
 					sx={{ display: showResponse ? 'flex' : 'none' }}
 				>
 					{responseData?.map((item) => (
-						<Paper withBorder key={item.operationId} shadow="md" p="md">
+						<Paper
+							withBorder
+							key={item.operationId}
+							shadow="md"
+							p="md"
+							sx={{ maxWidth: 350 }}
+						>
 							<Stack>
 								<Text weight={700}>{item.operationName}</Text>
 								<ResponseRow
-									label="STT"
+									label="Số khám bệnh"
 									content={item.numericalOrder.toString()}
 								/>
 								<ResponseRow
@@ -180,7 +186,7 @@ const ResponseRow = ({
 	content: string
 }) => (
 	<Stack sx={{ flexDirection: 'row' }}>
-		<Text color="dimmed" sx={{ width: 80 }}>
+		<Text color="dimmed" sx={{ width: 120 }}>
 			{label}
 		</Text>
 		<Text>{content}</Text>

@@ -136,7 +136,6 @@ export function NavbarSimpleColored({ opened }: { opened: boolean }) {
 	))
 
 	useEffect(() => {
-		console.log('authData', authData)
 		if (!authData?.isAuthenticated) {
 			navigate('/login')
 		}

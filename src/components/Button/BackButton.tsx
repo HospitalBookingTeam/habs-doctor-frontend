@@ -7,7 +7,7 @@ const BackButton = ({ route = '/' }: { route?: string }) => {
 	return (
 		<Button
 			variant="subtle"
-			color="grape"
+			color="blue"
 			onClick={() => navigate(route)}
 			leftIcon={<IconChevronLeft />}
 			pl={0}

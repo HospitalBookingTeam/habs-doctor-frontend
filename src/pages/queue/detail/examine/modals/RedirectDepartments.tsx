@@ -21,11 +21,12 @@ import {
 	SimpleGrid,
 	Paper,
 	Group,
+	ActionIcon,
 } from '@mantine/core'
 import { useForm } from '@mantine/form'
 import { randomId } from '@mantine/hooks'
 import { showNotification } from '@mantine/notifications'
-import { IconPlus } from '@tabler/icons'
+import { IconPlus, IconTrash } from '@tabler/icons'
 import { useState, Fragment } from 'react'
 import { useNavigate, useParams } from 'react-router-dom'
 
@@ -65,25 +66,44 @@ const RequestDepartments = () => {
 					label="Tên khoa"
 					placeholder="Chọn tên khoa phù hợp"
 					data={
-						departmentList?.map((_item) => ({
-							value: _item.id,
-							label: _item.name,
-						})) ?? []
+						departmentList
+							?.filter(
+								(_item) =>
+									!form.values.details?.some(
+										(existingDepartment) =>
+											existingDepartment.departmentId === _item.id &&
+											existingDepartment.departmentId !== item.departmentId
+									)
+							)
+							.map((_item) => ({
+								value: _item.id,
+								label: _item.name,
+							})) ?? []
 					}
 					searchable
 					nothingFound="Không tìm thấy khoa phù hợp"
 					{...form.getInputProps(`details.${index}.departmentId`)}
 				/>
 			</Grid.Col>
-			<Grid.Col span={8}>
+			<Grid.Col span={7}>
 				<Textarea
-					label="Lưu ý"
+					label="Nội dung chuyển khoa"
 					placeholder="Vd. Không uống nước có ga sau khi uống thuốc"
 					autosize
 					minRows={2}
 					maxRows={4}
 					{...form.getInputProps(`details.${index}.clinicalSymptom`)}
 				/>
+			</Grid.Col>
+			<Grid.Col span={1} sx={{ textAlign: 'center' }}>
+				<ActionIcon
+					color="red"
+					size="sm"
+					mr="sm"
+					onClick={() => form.removeListItem('details', index)}
+				>
+					<IconTrash />
+				</ActionIcon>
 			</Grid.Col>
 			<Grid.Col span={12}>
 				<Divider />
@@ -128,7 +148,7 @@ const RequestDepartments = () => {
 				}}
 				title={showResponse ? 'Thông tin chuyển khoa' : 'Yêu cầu chuyển khoa'}
 				closeOnClickOutside={!showResponse}
-				size="70%"
+				size={showResponse ? '720px' : '70%'}
 				centered={true}
 				// withCloseButton={!isLoadingUpdateStatus}
 			>
@@ -138,11 +158,17 @@ const RequestDepartments = () => {
 					sx={{ display: showResponse ? 'flex' : 'none' }}
 				>
 					{responseData?.map((item) => (
-						<Paper withBorder key={item.roomId} shadow="md" p="md">
+						<Paper
+							withBorder
+							key={item.roomId}
+							shadow="md"
+							p="md"
+							sx={{ maxWidth: 350 }}
+						>
 							<Stack>
 								<Text weight={700}>{item.departmentName}</Text>
 								<ResponseRow
-									label="STT"
+									label="Số khám bệnh"
 									content={item.numericalOrder.toString()}
 								/>
 								<ResponseRow
@@ -218,7 +244,7 @@ const ResponseRow = ({
 	content: string
 }) => (
 	<Stack sx={{ flexDirection: 'row' }}>
-		<Text color="dimmed" sx={{ width: 80 }}>
+		<Text color="dimmed" sx={{ width: 120 }}>
 			{label}
 		</Text>
 		<Text>{content}</Text>
