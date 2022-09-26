@@ -35,19 +35,17 @@ const ProgressQueueTable = ({ data, isLoading }: QueueTableProps) => {
 					backgroundColor: isEven ? 'white' : 'whitesmoke',
 					width: '100%',
 				}}
-				py="sm"
+				align="center"
+				p="sm"
 				key={item.id}
 			>
-				<Grid.Col span={1} sx={{ textAlign: 'center' }}>
-					{item.numericalOrder}
-				</Grid.Col>
 				<Grid.Col span={4}>
 					<Text size="sm" weight={500}>
 						{item.patientName}
 					</Text>
 				</Grid.Col>
 
-				<Grid.Col span={2} sx={{ textAlign: 'center' }}>
+				<Grid.Col span={3} sx={{ textAlign: 'center' }}>
 					<Badge
 						// color={jobColors[item.status.toLowerCase()]}
 						variant={theme.colorScheme === 'dark' ? 'light' : 'outline'}
@@ -67,8 +65,11 @@ const ProgressQueueTable = ({ data, isLoading }: QueueTableProps) => {
 				</Grid.Col>
 				<Grid.Col span={4}>
 					<Group spacing={'sm'} position="right">
-						<Button color="cyan" sx={{ width: 140 }}>
-							Xem hồ sơ
+						<Button
+							sx={{ width: 200 }}
+							onClick={() => navigate(`/records/${item.id}`)}
+						>
+							Xem kết quả khám bệnh
 						</Button>
 					</Group>
 				</Grid.Col>
@@ -78,12 +79,9 @@ const ProgressQueueTable = ({ data, isLoading }: QueueTableProps) => {
 
 	return (
 		<>
-			<Grid color="gray.1" pb="md" sx={{ width: '100%' }}>
-				<Grid.Col span={1} sx={{ textAlign: 'center' }}>
-					STT
-				</Grid.Col>
+			<Grid color="gray.1" p="sm" sx={{ width: '100%' }}>
 				<Grid.Col span={4}>Tên người bệnh</Grid.Col>
-				<Grid.Col span={2} sx={{ textAlign: 'center' }}>
+				<Grid.Col span={3} sx={{ textAlign: 'center' }}>
 					Trạng thái
 				</Grid.Col>
 				<Grid.Col span={1} sx={{ textAlign: 'center' }}>

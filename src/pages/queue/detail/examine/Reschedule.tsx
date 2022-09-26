@@ -37,6 +37,9 @@ const Reschedule = () => {
 			note: '',
 			reExamDate: undefined,
 		},
+		validate: {
+			reExamDate: (value: string | undefined) => (!value ? true : null),
+		},
 	})
 
 	const onSubmit = async (values: RequestReExamForm) => {
@@ -81,6 +84,7 @@ const Reschedule = () => {
 							placeholder="Chọn ngày dự kiến"
 							label="Ngày dự kiến"
 							icon={<IconCalendar />}
+							withAsterisk={true}
 							{...form.getInputProps('reExamDate')}
 							sx={{ minWidth: 200 }}
 						/>
@@ -119,7 +123,10 @@ const Reschedule = () => {
 					</Stack>
 				</Stack>
 				<Stack align={'center'} my="sm">
-					<Button type="submit" disabled={isLoadingOperationList}>
+					<Button
+						type="submit"
+						disabled={isLoadingOperationList || !form.isValid()}
+					>
 						Xác nhận tái khám
 					</Button>
 				</Stack>

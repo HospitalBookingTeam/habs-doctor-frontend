@@ -68,9 +68,7 @@ const MedicineDetailRow = ({
 					<Grid.Col span={3}>
 						<RowWithLabel labelSpan={5} label="Đơn vị" content={item.unit} />
 					</Grid.Col>
-					<Grid.Col span={3}>
-						<RowWithLabel labelSpan={5} label="Hàm lượng" content={item.unit} />
-					</Grid.Col>
+					<Grid.Col span={3}></Grid.Col>
 
 					<Grid.Col span={6}>
 						<RowWithLabel label="Trong ngày" content={usageDaily} />

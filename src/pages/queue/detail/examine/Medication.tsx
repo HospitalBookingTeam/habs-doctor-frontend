@@ -5,7 +5,6 @@ import {
 } from '@/store/record/api'
 import { useEffect } from 'react'
 import {
-	createStyles,
 	Text,
 	Accordion,
 	Button,
@@ -21,6 +20,7 @@ import {
 	Box,
 	Select,
 	LoadingOverlay,
+	Group,
 } from '@mantine/core'
 import { useForm } from '@mantine/form'
 import { randomId } from '@mantine/hooks'
@@ -163,15 +163,8 @@ const Medication = () => {
 								variant="filled"
 							/>
 						</Grid.Col>
-						<Grid.Col span={2}>
-							<TextInput
-								readOnly={true}
-								label="Hàm lượng"
-								defaultValue={medItem?.unit}
-								variant="filled"
-							/>
-						</Grid.Col>
-						<Grid.Col span={2}></Grid.Col>
+
+						<Grid.Col span={4}></Grid.Col>
 
 						<Grid.Col span={2}>
 							<MedicationDoseInput
@@ -289,11 +282,10 @@ const Medication = () => {
 					{...form.getInputProps('note')}
 				/>
 
-				<Stack align={'center'} my="sm" sx={{ width: '100%' }}>
+				<Group position={'center'} my="sm" sx={{ width: '100%' }}>
 					<Button
-						size="md"
+						size="sm"
 						disabled={isLoading}
-						fullWidth
 						sx={{ maxWidth: 250 }}
 						variant="outline"
 						leftIcon={<IconPlus />}
@@ -305,14 +297,13 @@ const Medication = () => {
 
 					<Button
 						type="submit"
-						size="md"
-						disabled={isLoading}
-						fullWidth
+						size="sm"
+						disabled={isLoading || !form.values.details?.length}
 						sx={{ maxWidth: 250 }}
 					>
 						Xác nhận kê thuốc
 					</Button>
-				</Stack>
+				</Group>
 			</form>
 		</Box>
 	)

@@ -77,9 +77,9 @@ export function QueueTable({ data, isLoading }: QueueTableProps) {
 	}
 
 	const rows = data?.map((item, index) => {
-		const isInProgress =
-			item?.status === CheckupRecordStatus.DANG_KHAM ||
-			item?.status === CheckupRecordStatus.CHECKED_IN_SAU_XN
+		const isInProgress = item?.status === CheckupRecordStatus.DANG_KHAM
+		// ||
+		// item?.status === CheckupRecordStatus.CHECKED_IN_SAU_XN
 		const isEven = index % 2 === 0
 
 		return (
@@ -139,7 +139,7 @@ export function QueueTable({ data, isLoading }: QueueTableProps) {
 		<>
 			<Grid color="gray.1" pb="md" sx={{ width: '100%' }}>
 				<Grid.Col span={2} sx={{ textAlign: 'center' }}>
-					Thứ tự dự kiến
+					Số khám bệnh
 				</Grid.Col>
 				<Grid.Col span={4}>Tên người bệnh</Grid.Col>
 				<Grid.Col span={2} sx={{ textAlign: 'center' }}>

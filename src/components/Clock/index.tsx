@@ -8,7 +8,7 @@ const Clock = () => {
 	useEffect(() => {
 		const interval = setInterval(
 			() => setCurrentTime(dayjs().format('HH:mm')),
-			1000
+			10000
 		)
 
 		return () => clearInterval(interval)
