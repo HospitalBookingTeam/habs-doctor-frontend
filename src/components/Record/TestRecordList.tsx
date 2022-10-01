@@ -39,12 +39,16 @@ const TestRecordRow = ({ item }: { item: TestRecord }) => (
 					Xem chi tiết
 				</Button>
 			</Group>
-			<RowWithLabel label="Bác sĩ" content={item.doctorName} />
+			<RowWithLabel label="Bác sĩ xét nghiệm" content={item.doctorName} />
 			<RowWithLabel
 				label="Địa điểm"
 				content={`Phòng ${item.roomNumber} - Tầng ${item.floor}`}
 			/>
 			<RowWithLabel label="Thời gian" content={formatDate(item.date)} />
+			<RowWithLabel
+				label="Kết quả tổng quát"
+				content={item?.resultDescription ?? '---'}
+			/>
 		</Stack>
 	</Paper>
 )
