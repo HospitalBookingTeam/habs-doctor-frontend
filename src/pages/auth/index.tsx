@@ -116,7 +116,7 @@ const Login = () => {
 							placeholder="Vui lòng chọn một"
 							data={roomOptions ?? []}
 							searchable={true}
-							nothingFound="Không có ai thay thế"
+							nothingFound="Không tìm thấy"
 							{...form.getInputProps('roomId')}
 						/>
 						{/* <Checkbox label="Keep me logged in" mt="xl" size="md" /> */}

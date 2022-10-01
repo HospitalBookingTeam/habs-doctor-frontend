@@ -17,6 +17,7 @@ export interface TestRecord {
 	numericalOrder: number
 	status: number
 	resultFileLink: string
+    resultDescription?: string
 	patientName: string
 	operationId: number
 	operationName: string
