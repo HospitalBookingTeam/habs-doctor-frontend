@@ -19,6 +19,7 @@ import { showNotification } from '@mantine/notifications'
 import { IconCalendar } from '@tabler/icons'
 import 'dayjs/locale/vi'
 import { useParams } from 'react-router-dom'
+import dayjs from 'dayjs'
 
 const Reschedule = () => {
 	const { data: operationList, isLoading: isLoadingOperationList } =
@@ -52,7 +53,6 @@ const Reschedule = () => {
 			return
 		}
 
-		console.log('values', values)
 		await requestReExamMutation({
 			id: checkupData.id,
 			patientId: checkupData.patientId,
@@ -61,7 +61,9 @@ const Reschedule = () => {
 				examOperationIds: values.examOperationIds,
 			},
 			note: values.note,
-			reExamDate: values.reExamDate,
+			reExamDate: values?.reExamDate
+				? dayjs(values.reExamDate).format('YYYY-MM-DD')
+				: undefined,
 		})
 			.unwrap()
 			.then(() =>
