@@ -87,6 +87,7 @@ const Reschedule = () => {
 							label="Ngày dự kiến"
 							icon={<IconCalendar />}
 							withAsterisk={true}
+							minDate={new Date()}
 							{...form.getInputProps('reExamDate')}
 							sx={{ minWidth: 200 }}
 						/>
