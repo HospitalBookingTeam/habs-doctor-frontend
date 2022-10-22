@@ -23,6 +23,7 @@ const Queue = () => {
 		authData?.information?.room?.id,
 		{
 			refetchOnFocus: true,
+			refetchOnMountOrArgChange: true,
 			skip: !authData?.information,
 		}
 	)
