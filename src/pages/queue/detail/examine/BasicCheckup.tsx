@@ -70,7 +70,7 @@ const BasicCheckup = () => {
 			})
 			return
 		}
-		console.log('values', values)
+
 		await updateRecordMutation({
 			...values,
 			id: checkupData.id,

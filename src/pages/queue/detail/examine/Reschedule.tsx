@@ -1,3 +1,4 @@
+import React, { useEffect } from 'react'
 import OperationsTable from '@/components/Table/OperationsTable'
 import { RequestReExamForm } from '@/entities/record'
 import { useGetCheckupRecordByIdQuery } from '@/store/record/api'
@@ -73,6 +74,18 @@ const Reschedule = () => {
 				})
 			)
 	}
+
+	useEffect(() => {
+		if (isCheckupDataSuccess && checkupData?.hasReExam) {
+			form.setValues({
+				note: checkupData.reExam?.note ?? '',
+				examOperationIds: checkupData.reExam?.operationIds,
+				reExamDate: checkupData.reExam?.date
+					? new Date(checkupData.reExam?.date)
+					: undefined,
+			})
+		}
+	}, [isCheckupDataSuccess, checkupData])
 
 	return (
 		<Stack mt="sm">
