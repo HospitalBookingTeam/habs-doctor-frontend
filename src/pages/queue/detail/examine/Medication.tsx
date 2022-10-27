@@ -90,7 +90,6 @@ const Medication = () => {
 			})
 			return
 		}
-		console.log('values', values)
 		await updateRecordPrescriptionMutation({
 			id: checkupData.id,
 			...values,
