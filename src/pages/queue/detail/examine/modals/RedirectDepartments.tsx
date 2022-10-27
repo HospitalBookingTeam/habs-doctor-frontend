@@ -125,7 +125,6 @@ const RequestDepartments = () => {
 		})
 			.unwrap()
 			.then((payload) => {
-				console.log('payload request departments', payload)
 				setResponseData(payload)
 				showNotification({
 					title: 'Yêu cầu chuyển khoa thành công',

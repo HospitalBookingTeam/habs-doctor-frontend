@@ -17,7 +17,7 @@ export interface TestRecord {
 	numericalOrder: number
 	status: number
 	resultFileLink: string
-    resultDescription?: string
+	resultDescription?: string
 	patientName: string
 	operationId: number
 	operationName: string
@@ -52,6 +52,12 @@ export interface Prescription {
 	details: Detail[]
 }
 
+export interface ReExamCheckup {
+	date: string
+	operationIds: number[]
+	note: string
+}
+
 export interface CheckupRecord {
 	patientData: Patient
 	testRecords: TestRecord[]
@@ -78,6 +84,9 @@ export interface CheckupRecord {
 	icdDiseaseName: string
 	icdCode: string
 	isReExam: boolean
+	hasReExam: boolean
+	reExamNote: string | null
+	reExam: ReExamCheckup | null
 }
 
 export type RecordItem = {
@@ -118,6 +127,6 @@ export type RequestReExam = {
 
 export type RequestReExamForm = Omit<
 	RequestReExam,
-	'id' | 'patientId' | 'departmentId' | 'requiredTest'
+	'id' | 'patientId' | 'departmentId' | 'requiredTest' | 'reExamDate'
 > &
-	RequiredTestReExam
+	RequiredTestReExam & { reExamDate?: Date }
