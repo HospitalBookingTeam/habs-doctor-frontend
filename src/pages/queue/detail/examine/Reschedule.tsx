@@ -1,7 +1,10 @@
 import React, { useEffect, useState } from 'react'
 import OperationsTable from '@/components/Table/OperationsTable'
 import { RequestReExamForm } from '@/entities/record'
-import { useGetCheckupRecordByIdQuery } from '@/store/record/api'
+import {
+	useDeleteReExamByIdMutation,
+	useGetCheckupRecordByIdQuery,
+} from '@/store/record/api'
 import {
 	useGetOperationListQuery,
 	useRequestReExamByIdMutation,
@@ -24,17 +27,27 @@ import { IconCalendar } from '@tabler/icons'
 import 'dayjs/locale/vi'
 import { useParams } from 'react-router-dom'
 import dayjs from 'dayjs'
+import { openConfirmModal } from '@mantine/modals'
 
 const Reschedule = () => {
 	const { data: operationList, isLoading: isLoadingOperationList } =
 		useGetOperationListQuery()
 	const [requestReExamMutation, { isLoading: isLoadingRequestReExamMutation }] =
 		useRequestReExamByIdMutation()
+
+	const [
+		deleteReExamByMutation,
+		{ isLoading: isLoadingDeleteReExamByMutation },
+	] = useDeleteReExamByIdMutation()
+
 	const { id: queueId } = useParams()
-	const { data: checkupData, isSuccess: isCheckupDataSuccess } =
-		useGetCheckupRecordByIdQuery(Number(queueId), {
-			skip: !queueId,
-		})
+	const {
+		data: checkupData,
+		isSuccess: isCheckupDataSuccess,
+		refetch,
+	} = useGetCheckupRecordByIdQuery(Number(queueId), {
+		skip: !queueId,
+	})
 
 	const [isReExamEditable, setIsReExamEditable] = useState(false)
 
@@ -72,10 +85,50 @@ const Reschedule = () => {
 				: undefined,
 		})
 			.unwrap()
-			.then(() =>
+			.then(() => {
 				showNotification({
 					title: 'Hẹn tái khám thành công',
 					message: <Text>Lịch tái khám đã được cập nhật.</Text>,
+				})
+				refetch()
+			})
+	}
+
+	const openDeleteModal = () =>
+		openConfirmModal({
+			title: 'Xác nhận hủy tái khám',
+			children: <Text size="sm">Tiếp tục để hủy lịch tái khám hiện tại.</Text>,
+			centered: true,
+			labels: { confirm: 'Xác nhận', cancel: 'Quay lại' },
+			confirmProps: { color: 'red' },
+			onConfirm: () => handleConfirmDeleteReExam(),
+		})
+
+	const handleConfirmDeleteReExam = async () => {
+		if (!checkupData) {
+			showNotification({
+				title: 'Thông tin người bệnh không tồn tại',
+				message: <Text>Vui lòng kiểm tra lại thông tin khám bệnh.</Text>,
+				color: 'red',
+			})
+			return
+		}
+		await deleteReExamByMutation({ id: checkupData.id })
+			.unwrap()
+			.then(() => {
+				form.setValues({
+					examOperationIds: [],
+					note: '',
+					reExamDate: undefined,
+				})
+				setIsReExamEditable(true)
+				refetch()
+			})
+			.catch(() =>
+				showNotification({
+					title: 'Lỗi hủy tái khám',
+					message: '',
+					color: 'red',
 				})
 			)
 	}
@@ -101,7 +154,11 @@ const Reschedule = () => {
 
 	return (
 		<Stack mt="sm">
-			<LoadingOverlay visible={isLoadingRequestReExamMutation} />
+			<LoadingOverlay
+				visible={
+					isLoadingRequestReExamMutation || isLoadingDeleteReExamByMutation
+				}
+			/>
 			<form onSubmit={form.onSubmit(onSubmit)}>
 				<Stack>
 					{checkupData?.hasReExam && (
@@ -117,7 +174,7 @@ const Reschedule = () => {
 							>
 								{isReExamEditable ? 'Hủy bỏ thay đổi' : 'Sửa đổi tái khám'}
 							</Button>
-							<Button variant="outline" color="red">
+							<Button variant="outline" color="red" onClick={openDeleteModal}>
 								Hủy tái khám
 							</Button>
 						</Group>

@@ -119,6 +119,12 @@ export const recordApi = api.injectEndpoints({
 				body,
 			}),
 		}),
+		deleteReExamById: build.mutation<void, { id: number }>({
+			query: (body) => ({
+				url: `patient/${body.id}/reexam`,
+				method: 'DELETE',
+			}),
+		}),
 		updateStatusRecord: build.mutation<
 			void,
 			{ status: number; id: number; patientId: number }
@@ -162,6 +168,7 @@ export const {
 	useUpdateCheckupRecordByIdMutation,
 	useUpdateCheckupRecordMedicationByIdMutation,
 	useRequestReExamByIdMutation,
+	useDeleteReExamByIdMutation,
 	useUpdateStatusRecordMutation,
 	useRequestRedirectDepartmentsByIdMutation,
 	useRequestOperationsByIdMutation,
@@ -178,6 +185,7 @@ export const {
 		updateCheckupRecordById,
 		updateCheckupRecordMedicationById,
 		requestReExamById,
+		deleteReExamById,
 		updateStatusRecord,
 		requestRedirectDepartmentsById,
 		requestOperationsById,
