@@ -24,7 +24,7 @@ const LayoutAppShell = ({ children }: LayoutAppShellProps) => {
 						theme.colorScheme === 'dark'
 							? theme.colors.dark[8]
 							: theme.colors.gray[2],
-					maxHeight: '100vh',
+					minHeight: '100vh',
 				},
 			}}
 			navbar={<NavbarSimpleColored opened={!!opened} />}

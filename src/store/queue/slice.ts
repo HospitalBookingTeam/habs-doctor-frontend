@@ -25,7 +25,6 @@ export const queueSlice = createSlice({
 			.addMatcher(
 				queueApi.endpoints.getCheckupQueue.matchFulfilled,
 				(state, action) => {
-					console.log('fulfilled', action)
 					state.checkupQueue = action.payload
 				}
 			)

@@ -87,6 +87,7 @@ export interface CheckupRecord {
 	hasReExam: boolean
 	reExamNote: string | null
 	reExam: ReExamCheckup | null
+	reExamTreeCode: string | null
 }
 
 export type RecordItem = {

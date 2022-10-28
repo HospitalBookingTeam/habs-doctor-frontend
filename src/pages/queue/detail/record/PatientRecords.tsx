@@ -1,8 +1,22 @@
 import { Patient, RecordItem } from '@/entities/record'
+import { useGetReExamTreeQuery } from '@/store/record/api'
 import { formatDate } from '@/utils/formats'
-import { Paper, Stack, Title, Button, Text, createStyles } from '@mantine/core'
+import {
+	Paper,
+	Stack,
+	Title,
+	Button,
+	Text,
+	createStyles,
+	Group,
+	LoadingOverlay,
+	Box,
+	Switch,
+} from '@mantine/core'
 import { IconChevronRight } from '@tabler/icons'
+import { useState } from 'react'
 import { Link } from 'react-router-dom'
+import PatientRecordTree from './PatientRecordTree'
 
 const useStyles = createStyles((theme) => ({
 	date: {
@@ -17,23 +31,53 @@ const useStyles = createStyles((theme) => ({
 	},
 }))
 
-const PatientRecords = ({ data }: { data?: RecordItem[] }) => {
+const PatientRecords = ({
+	data,
+	reExamTreeCode,
+}: {
+	data?: RecordItem[]
+	reExamTreeCode?: string | null
+}) => {
+	const [isViewTree, setIsViewTree] = useState(false)
+
+	const { data: reExamTree, isLoading: isLoadingTree } = useGetReExamTreeQuery(
+		reExamTreeCode as string,
+		{
+			skip: !reExamTreeCode || !isViewTree,
+		}
+	)
+
 	return (
 		<Stack>
-			<Title order={3} size="h4">
-				Lịch sử khám bệnh
-			</Title>
-
-			<Stack>
-				{data?.map((item) => (
-					<PatientRecordRow
-						key={item.id}
-						id={item.id}
-						doctorName={item?.doctorName}
-						departmentName={item?.departmentName}
-						date={item?.date}
+			<Group position="apart">
+				<Title order={3} size="h4">
+					Lịch sử khám bệnh
+				</Title>
+				<Box sx={{ alignSelf: 'end' }}>
+					<Switch
+						checked={isViewTree}
+						onChange={(e) => setIsViewTree(e.target.checked)}
+						size="md"
+						label="Xem dạng cây"
 					/>
-				))}
+				</Box>
+			</Group>
+
+			<Stack sx={{ position: 'relative' }}>
+				<LoadingOverlay visible={isLoadingTree} />
+				{isViewTree ? (
+					<PatientRecordTree data={reExamTree} />
+				) : (
+					data?.map((item) => (
+						<PatientRecordRow
+							key={item.id}
+							id={item.id}
+							doctorName={item?.doctorName}
+							departmentName={item?.departmentName}
+							date={item?.date}
+						/>
+					))
+				)}
 			</Stack>
 		</Stack>
 	)
