@@ -8,7 +8,8 @@ const GlobalStyles = () => {
 					boxSizing: 'border-box',
 				},
 				'#root': {
-					height: '100vh',
+					height: '100%',
+					minHeight: '100vh',
 					display: 'flex',
 				},
 				body: {

@@ -16,6 +16,7 @@ import {
 	CheckupRecordByIdResponse,
 	RequestReExam,
 } from '@/entities/record'
+import { ReExamTree } from '@/entities/reexam'
 import { api } from '../api'
 
 export const recordApi = api.injectEndpoints({
@@ -50,6 +51,12 @@ export const recordApi = api.injectEndpoints({
 		getCheckupRecordById: build.query<CheckupRecord, number>({
 			query: (id) => ({
 				url: `checkup-records/${id}`,
+			}),
+			providesTags: (result) => [{ type: 'Record' as const, id: result?.id }],
+		}),
+		getReExamTree: build.query<ReExamTree, string>({
+			query: (id) => ({
+				url: `re-exam-tree/${id}`,
 			}),
 			providesTags: (result) => [{ type: 'Record' as const, id: result?.id }],
 		}),
@@ -165,6 +172,7 @@ export const {
 	useGetIcdListQuery,
 	useGetOperationListQuery,
 	useGetDepartmentListQuery,
+	useGetReExamTreeQuery,
 	useUpdateCheckupRecordByIdMutation,
 	useUpdateCheckupRecordMedicationByIdMutation,
 	useRequestReExamByIdMutation,
@@ -182,6 +190,7 @@ export const {
 		getIcdList,
 		getOperationList,
 		getDepartmentList,
+		getReExamTree,
 		updateCheckupRecordById,
 		updateCheckupRecordMedicationById,
 		requestReExamById,
