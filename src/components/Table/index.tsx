@@ -59,7 +59,6 @@ export function QueueTable({ data, isLoading }: QueueTableProps) {
 			),
 			centered: true,
 			labels: { confirm: 'Tiếp tục', cancel: 'Quay lại' },
-			onCancel: () => console.log('Cancel'),
 			onConfirm: () => handleConfirmQueueCheckupById(queueId),
 		})
 

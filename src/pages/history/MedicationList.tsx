@@ -6,7 +6,6 @@ import useGlobalStyles from '@/utils/useGlobalStyles'
 import { Accordion, Box, Grid, Stack, Title } from '@mantine/core'
 
 const MedicationList = ({ data }: { data?: Prescription }) => {
-	console.log('data prescription', data)
 	return (
 		<Stack>
 			<Title order={3} size="h4">
