@@ -1,26 +1,39 @@
 import TestRecordList from '@/components/Record/TestRecordList'
-import { useGetCheckupRecordByIdQuery } from '@/store/record/api'
-import { Tabs } from '@mantine/core'
+import {
+	useGetCheckupRecordByIdQuery,
+	useGetReExamTreeQuery,
+} from '@/store/record/api'
+import { LoadingOverlay, Tabs } from '@mantine/core'
 import {
 	IconReportMedical,
 	IconPill,
 	IconCalendar,
 	IconMedicalCross,
+	IconTree,
 } from '@tabler/icons'
+import { useState } from 'react'
 import { useParams } from 'react-router-dom'
 import BasicCheckup from './BasicCheckup'
 import Medication from './Medication'
+import PatientRecordTree from './PatientRecordTree'
 import Reschedule from './Reschedule'
 
 const ExamineTabs = () => {
+	const [activeTab, setActiveTab] = useState<string | null>('gallery')
+
 	const { id: queueId } = useParams()
 	const { data, isLoading } = useGetCheckupRecordByIdQuery(Number(queueId), {
 		refetchOnFocus: true,
 		skip: !queueId,
 	})
 
+	const { data: reExamTree, isLoading: isLoadingReExamTree } =
+		useGetReExamTreeQuery(data?.reExamTreeCode as string, {
+			skip: !data?.reExamTreeCode || activeTab !== 'reExamTree',
+		})
+
 	return (
-		<Tabs defaultValue="gallery">
+		<Tabs value={activeTab} onTabChange={setActiveTab}>
 			<Tabs.List grow>
 				<Tabs.Tab value="gallery" icon={<IconReportMedical size={14} />}>
 					Chẩn đoán cơ bản
@@ -40,6 +53,9 @@ const ExamineTabs = () => {
 				>
 					Kết quả xét nghiệm
 				</Tabs.Tab>
+				<Tabs.Tab value="reExamTree" icon={<IconTree size={14} />}>
+					Chuỗi khám
+				</Tabs.Tab>
 			</Tabs.List>
 
 			<Tabs.Panel value="gallery" pt="xs">
@@ -56,6 +72,10 @@ const ExamineTabs = () => {
 
 			<Tabs.Panel value="testRecords" pt="xs">
 				<TestRecordList showTitle={false} data={data?.testRecords} />
+			</Tabs.Panel>
+			<Tabs.Panel value="reExamTree" pt="xs" sx={{ position: 'relative' }}>
+				<LoadingOverlay visible={isLoading || isLoadingReExamTree} />
+				<PatientRecordTree data={reExamTree} />
 			</Tabs.Panel>
 		</Tabs>
 	)

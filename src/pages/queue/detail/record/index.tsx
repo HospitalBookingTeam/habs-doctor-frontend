@@ -32,10 +32,7 @@ const PatientRecord = () => {
 
 			<Divider />
 
-			<PatientRecords
-				data={recordData?.data}
-				reExamTreeCode={data?.reExamTreeCode}
-			/>
+			<PatientRecords data={recordData?.data} />
 		</Stack>
 	)
 }

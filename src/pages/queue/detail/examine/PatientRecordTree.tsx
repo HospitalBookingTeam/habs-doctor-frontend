@@ -1,5 +1,4 @@
 import { useState, useRef, useEffect } from 'react'
-import { ReExamTree } from '@/entities/reexam'
 import {
 	Anchor,
 	Card,
@@ -15,9 +14,12 @@ import { IconChevronDown, IconChevronUp } from '@tabler/icons'
 import { formatDate } from '@/utils/formats'
 import { Link } from 'react-router-dom'
 
+import { ReExamTree } from '@/entities/reexam'
+
 type TreeProps = {
 	data?: ReExamTree
 }
+
 const PatientRecordTree = ({ data }: TreeProps) => {
 	const [isClicked, setIsClicked] = useState(false)
 
@@ -33,7 +35,7 @@ const PatientRecordTree = ({ data }: TreeProps) => {
 	}, [isClicked])
 
 	return (
-		<>
+		<Stack align="center" mt="md">
 			<Card
 				shadow="sm"
 				p="lg"
@@ -44,6 +46,7 @@ const PatientRecordTree = ({ data }: TreeProps) => {
 					setIsClicked((checked) => !checked)
 				}}
 				sx={{
+					width: '100%',
 					'&:hover': {
 						cursor: 'pointer',
 					},
@@ -75,7 +78,7 @@ const PatientRecordTree = ({ data }: TreeProps) => {
 				</Group>
 
 				<Group position="center" color="blue" mt="md">
-					<Text color="blue">Xem chi tiết</Text>
+					<Text color="blue">{isClicked ? 'Rút gọn' : 'Xem chi tiết'}</Text>
 					<ThemeIcon color="blue" variant="outline" radius="lg" size="xs">
 						{isClicked ? <IconChevronUp /> : <IconChevronDown />}
 					</ThemeIcon>
@@ -87,6 +90,7 @@ const PatientRecordTree = ({ data }: TreeProps) => {
 				shadow="md"
 				ref={ref}
 				sx={{
+					width: '100%',
 					overflow: 'hidden',
 					height: isClicked ? 'auto' : 0,
 					opacity: isClicked ? 1 : 0,
@@ -130,7 +134,7 @@ const PatientRecordTree = ({ data }: TreeProps) => {
 					))}
 				</Timeline>
 			</Paper>
-		</>
+		</Stack>
 	)
 }
 

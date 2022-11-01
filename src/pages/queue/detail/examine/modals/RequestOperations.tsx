@@ -62,7 +62,6 @@ const RequestOperationsButton = () => {
 		})
 			.unwrap()
 			.then((payload) => {
-				console.log('payload request operations', payload)
 				setResponseData(payload)
 				showNotification({
 					title: 'Yêu cầu xét nghiệm thành công',

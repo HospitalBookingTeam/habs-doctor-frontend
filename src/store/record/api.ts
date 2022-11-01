@@ -60,6 +60,17 @@ export const recordApi = api.injectEndpoints({
 			}),
 			providesTags: (result) => [{ type: 'Record' as const, id: result?.id }],
 		}),
+		getReExamTreeByPatientId: build.query<ReExamTree[], string>({
+			query: (id) => ({
+				url: `re-exam-tree/patient/${id}`,
+			}),
+			providesTags: (result = []) => [
+				...result.map(
+					({ id }) => ({ type: 'Record', field: 'reExamTree', id } as const)
+				),
+				{ type: 'Record' as const, patient: true, id: 'ListReExamTree' },
+			],
+		}),
 		getIcdList: build.query<Icd[], void>({
 			query: () => ({
 				url: `icd`,
@@ -173,6 +184,7 @@ export const {
 	useGetOperationListQuery,
 	useGetDepartmentListQuery,
 	useGetReExamTreeQuery,
+	useGetReExamTreeByPatientIdQuery,
 	useUpdateCheckupRecordByIdMutation,
 	useUpdateCheckupRecordMedicationByIdMutation,
 	useRequestReExamByIdMutation,
@@ -191,6 +203,7 @@ export const {
 		getOperationList,
 		getDepartmentList,
 		getReExamTree,
+		getReExamTreeByPatientId,
 		updateCheckupRecordById,
 		updateCheckupRecordMedicationById,
 		requestReExamById,
