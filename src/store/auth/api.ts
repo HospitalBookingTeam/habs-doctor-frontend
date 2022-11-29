@@ -1,11 +1,20 @@
 import { AuthForm, AuthUser } from '@/entities/auth'
 import { Room } from '@/entities/room'
+import { LoginStatus } from '@/utils/renderEnums'
 import { retry } from '@reduxjs/toolkit/query/react'
 import { api } from '../api'
 
 export const authApi = api.injectEndpoints({
 	endpoints: (build) => ({
-		login: build.mutation<{ token: string; information: AuthUser }, any>({
+		login: build.mutation<
+			{
+				token: string
+				loginStatus: LoginStatus
+				message: string
+				information: AuthUser
+			},
+			any
+		>({
 			query: (credentials: AuthForm) => ({
 				url: 'login',
 				method: 'POST',
