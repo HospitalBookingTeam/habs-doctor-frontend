@@ -1,5 +1,8 @@
 import { AuthForm } from '@/entities/auth'
 import { useGetRoomListQuery, useLoginMutation } from '@/store/auth/api'
+import { logout } from '@/store/auth/slice'
+import { useAppDispatch } from '@/store/hooks'
+import { LoginStatus } from '@/utils/renderEnums'
 import { createStyles, Image, LoadingOverlay, Text } from '@mantine/core'
 import { Stack } from '@mantine/core'
 import {
@@ -11,7 +14,7 @@ import {
 	Select,
 } from '@mantine/core'
 import { useForm } from '@mantine/form'
-import { openModal } from '@mantine/modals'
+import { openConfirmModal, openModal } from '@mantine/modals'
 import { useNavigate } from 'react-router-dom'
 
 const useStyles = createStyles((theme) => ({
@@ -38,6 +41,7 @@ const Login = () => {
 	const { classes } = useStyles()
 	const [login, { isLoading }] = useLoginMutation()
 	const { data: roomData, isLoading: isLoadingRoomData } = useGetRoomListQuery()
+	const dispatch = useAppDispatch()
 
 	const roomOptions = roomData?.map((item) => ({
 		...item,
@@ -64,7 +68,42 @@ const Login = () => {
 	const onSubmit = async (values: AuthForm) => {
 		await login({ ...values, roomId: Number(values?.roomId) })
 			.unwrap()
-			.then(() => navigate('/'))
+			.then(({ loginStatus, message }) => {
+				if (loginStatus === LoginStatus.THANH_CONG) {
+					navigate('/')
+					return
+				}
+				if (loginStatus === LoginStatus.THAT_BAI) {
+					openModal({
+						children: (
+							<>
+								<Text color="red" weight={'bold'}>
+									{message}
+								</Text>
+							</>
+						),
+						withCloseButton: false,
+						centered: true,
+					})
+					form.reset()
+					return
+				}
+				if (loginStatus === LoginStatus.KHONG_THUOC_CA_LAM_VIEC) {
+					openConfirmModal({
+						children: (
+							<>
+								<Text color="blue" weight={'bolder'}>
+									{message}
+								</Text>
+							</>
+						),
+						centered: true,
+						onConfirm: () => navigate('/'),
+						onCancel: () => dispatch(logout()),
+					})
+					return
+				}
+			})
 			.catch((error) => {
 				openModal({
 					children: (

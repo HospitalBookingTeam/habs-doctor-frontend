@@ -75,3 +75,12 @@ export enum InsuranceSupportStatus {
 
 export const renderEnumInsuranceStatus = (status: number) =>
 	InsuranceSupportStatus[status]
+
+export enum LoginStatus {
+	THANH_CONG,
+	INVALID_TOKEN,
+	EXPIRED_TOKEN,
+	THAT_BAI,
+	CAN_DIEN_THONG_TIN,
+	KHONG_THUOC_CA_LAM_VIEC,
+}
