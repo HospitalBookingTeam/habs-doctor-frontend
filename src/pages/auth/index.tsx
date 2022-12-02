@@ -1,6 +1,6 @@
 import { AuthForm } from '@/entities/auth'
 import { useGetRoomListQuery, useLoginMutation } from '@/store/auth/api'
-import { logout } from '@/store/auth/slice'
+import { logout, setAuthenticated } from '@/store/auth/slice'
 import { useAppDispatch } from '@/store/hooks'
 import { LoginStatus } from '@/utils/renderEnums'
 import { createStyles, Image, LoadingOverlay, Text } from '@mantine/core'
@@ -70,10 +70,11 @@ const Login = () => {
 			.unwrap()
 			.then(({ loginStatus, message }) => {
 				if (loginStatus === LoginStatus.THANH_CONG) {
-					navigate('/')
+					// navigate('/')
 					return
 				}
 				if (loginStatus === LoginStatus.THAT_BAI) {
+					dispatch(logout())
 					openModal({
 						children: (
 							<>
@@ -92,14 +93,16 @@ const Login = () => {
 					openConfirmModal({
 						children: (
 							<>
-								<Text color="blue" weight={'bolder'}>
-									{message}
-								</Text>
+								<Text color="green">{message}</Text>
 							</>
 						),
 						centered: true,
-						onConfirm: () => navigate('/'),
-						onCancel: () => dispatch(logout()),
+						labels: { confirm: 'Tiếp tục', cancel: 'Hủy' },
+						onConfirm: () => dispatch(setAuthenticated(true)),
+						onCancel: () => {
+							dispatch(logout())
+							form.reset()
+						},
 					})
 					return
 				}
