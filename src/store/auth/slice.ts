@@ -2,6 +2,7 @@ import { createSlice } from '@reduxjs/toolkit'
 import { AuthState } from '@/entities/auth'
 import { authApi } from '@/store/auth/api'
 import { removeLocalItem } from '@/utils/storage'
+import { LoginStatus } from '@/utils/renderEnums'
 
 const initialState: AuthState = {
 	token: '',
@@ -18,6 +19,9 @@ export const authSlice = createSlice({
 			removeLocalItem('persist:root')
 			return state
 		},
+		setAuthenticated: (state, action) => {
+			state.isAuthenticated = action.payload
+		},
 	},
 	extraReducers: (builder) => {
 		builder
@@ -25,12 +29,13 @@ export const authSlice = createSlice({
 			.addMatcher(authApi.endpoints.login.matchFulfilled, (state, action) => {
 				state.information = action.payload.information
 				state.token = action.payload.token
-				state.isAuthenticated = true
+				state.isAuthenticated =
+					action.payload.loginStatus === LoginStatus.THANH_CONG
 			})
 			.addMatcher(authApi.endpoints.login.matchRejected, (state, action) => {})
 	},
 })
 
-export const { logout } = authSlice.actions
+export const { logout, setAuthenticated } = authSlice.actions
 
 export default authSlice.reducer
