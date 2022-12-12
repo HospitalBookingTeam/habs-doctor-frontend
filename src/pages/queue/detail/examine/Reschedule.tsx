@@ -200,7 +200,7 @@ const Reschedule = () => {
 									'DD/MM/YYYY'
 								)}
 								readOnly={true}
-							></TextInput>
+							/>
 						)}
 					</Stack>
 
