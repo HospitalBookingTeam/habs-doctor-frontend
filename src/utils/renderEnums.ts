@@ -69,8 +69,8 @@ export const translateCheckupRecordStatus = (
 
 export enum InsuranceSupportStatus {
 	'Không hỗ trợ',
-	'Hỗ trợ một phần',
-	'Hỗ trợ toàn phần',
+	'Một phần',
+	'Toàn phần',
 }
 
 export const renderEnumInsuranceStatus = (status: number) =>

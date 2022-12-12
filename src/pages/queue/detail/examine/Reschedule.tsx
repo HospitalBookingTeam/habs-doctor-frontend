@@ -28,6 +28,7 @@ import 'dayjs/locale/vi'
 import { useParams } from 'react-router-dom'
 import dayjs from 'dayjs'
 import { openConfirmModal } from '@mantine/modals'
+import OperationList from './OperationList'
 
 const Reschedule = () => {
 	const { data: operationList, isLoading: isLoadingOperationList } =
@@ -205,7 +206,7 @@ const Reschedule = () => {
 					</Stack>
 
 					<Stack>
-						<MultiSelect
+						{/* <MultiSelect
 							mt="md"
 							size="sm"
 							label="Các xét nghiệm yêu cầu"
@@ -227,10 +228,20 @@ const Reschedule = () => {
 							data={operationList?.filter((item) =>
 								form.values.examOperationIds?.includes(item.id)
 							)}
+						/> */}
+						<OperationList
+							editReExam={editReExam}
+							updateSelectedOperationIds={(ids) =>
+								form.setValues({
+									examOperationIds: ids,
+								})
+							}
 						/>
 						<Textarea
 							label="Ghi chú"
-							placeholder="Viết ghi chú cho người bệnh"
+							placeholder={
+								editReExam ? 'Viết ghi chú cho người bệnh' : 'Không có ghi chú'
+							}
 							minRows={2}
 							maxRows={4}
 							sx={{ minWidth: 450 }}
