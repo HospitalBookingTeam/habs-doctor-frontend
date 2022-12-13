@@ -43,8 +43,10 @@ const DEFAULT_MED = {
 	eveningDose: undefined,
 	nightDose: undefined,
 }
-
-const Medication = () => {
+type MedicationProps = {
+	updateProgress: () => void
+}
+const Medication = ({ updateProgress }: MedicationProps) => {
 	const { classes: globalClasses } = useGlobalStyles()
 	const [value, setValue] = useState<string[]>(['0'])
 	const { data: medData, isLoading } = useGetMedicineListQuery()
@@ -99,12 +101,13 @@ const Medication = () => {
 			}),
 		})
 			.unwrap()
-			.then(() =>
+			.then(() => {
 				showNotification({
 					title: 'Kê thuốc thành công',
 					message: <Text>Đơn thuốc đã được cập nhật.</Text>,
 				})
-			)
+				updateProgress()
+			})
 	}
 
 	const rows = form.values.details?.map((item, index: number) => {
@@ -242,7 +245,7 @@ const Medication = () => {
 
 	return (
 		<Box mt="md">
-			<form onSubmit={form.onSubmit(onSubmit)}>
+			<form onSubmit={form.onSubmit(onSubmit)} id="form">
 				<LoadingOverlay visible={isLoadingUpdateRecordPrescription} />
 				<ScrollArea sx={{ maxHeight: '100%' }}>
 					<Center
@@ -294,14 +297,14 @@ const Medication = () => {
 						Thêm thuốc
 					</Button>
 
-					<Button
+					{/* <Button
 						type="submit"
 						size="sm"
 						disabled={isLoading || !form.values.details?.length}
 						sx={{ maxWidth: 250 }}
 					>
 						Xác nhận kê thuốc
-					</Button>
+					</Button> */}
 				</Group>
 			</form>
 		</Box>
