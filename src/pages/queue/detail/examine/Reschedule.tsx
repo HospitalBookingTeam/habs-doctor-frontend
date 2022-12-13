@@ -17,7 +17,6 @@ import {
 	Text,
 	LoadingOverlay,
 	Group,
-	Input,
 	TextInput,
 } from '@mantine/core'
 import { DatePicker } from '@mantine/dates'
@@ -30,7 +29,10 @@ import dayjs from 'dayjs'
 import { openConfirmModal } from '@mantine/modals'
 import OperationList from './OperationList'
 
-const Reschedule = () => {
+type RescheduleProps = {
+	updateProgress: () => void
+}
+const Reschedule = ({ updateProgress }: RescheduleProps) => {
 	const { data: operationList, isLoading: isLoadingOperationList } =
 		useGetOperationListQuery()
 	const [requestReExamMutation, { isLoading: isLoadingRequestReExamMutation }] =
@@ -92,6 +94,7 @@ const Reschedule = () => {
 					message: <Text>Lịch tái khám đã được cập nhật.</Text>,
 				})
 				refetch()
+				updateProgress()
 			})
 	}
 
@@ -160,7 +163,7 @@ const Reschedule = () => {
 					isLoadingRequestReExamMutation || isLoadingDeleteReExamByMutation
 				}
 			/>
-			<form onSubmit={form.onSubmit(onSubmit)}>
+			<form onSubmit={form.onSubmit(onSubmit)} id="form">
 				<Stack>
 					{checkupData?.hasReExam && (
 						<Group position="right">
@@ -251,7 +254,7 @@ const Reschedule = () => {
 						/>
 					</Stack>
 				</Stack>
-				{editReExam && (
+				{/* {editReExam && (
 					<Stack align={'center'} my="sm">
 						<Button
 							type="submit"
@@ -262,7 +265,7 @@ const Reschedule = () => {
 								: 'Xác nhận tái khám'}
 						</Button>
 					</Stack>
-				)}
+				)} */}
 			</form>
 		</Stack>
 	)

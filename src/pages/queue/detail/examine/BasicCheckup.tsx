@@ -29,7 +29,10 @@ import { IconTemperatureCelsius } from '@tabler/icons'
 import { useParams } from 'react-router-dom'
 import useGlobalStyles from '@/utils/useGlobalStyles'
 
-const BasicCheckup = () => {
+type BasicCheckupProps = {
+	updateProgress: () => void
+}
+const BasicCheckup = ({ updateProgress }: BasicCheckupProps) => {
 	const { classes: globalClasses, cx: cxGlobal } = useGlobalStyles()
 	const { data, isLoading } = useGetIcdListQuery()
 	const { id: queueId } = useParams()
@@ -77,12 +80,13 @@ const BasicCheckup = () => {
 			patientId: checkupData.patientId,
 		})
 			.unwrap()
-			.then(() =>
+			.then(() => {
 				showNotification({
 					title: 'Cập nhật chẩn đoán thành công',
 					message: <Text>Thông tin chẩn đoán đã được cập nhật.</Text>,
 				})
-			)
+				updateProgress()
+			})
 	}
 
 	useEffect(() => {
@@ -114,7 +118,7 @@ const BasicCheckup = () => {
 					Chỉ số đo
 				</Title>
 
-				<form onSubmit={form.onSubmit(onSubmit)}>
+				<form onSubmit={form.onSubmit(onSubmit)} id="form">
 					<LoadingOverlay visible={isLoadingUpdateRecord} />
 					<Grid gutter="xl">
 						<Grid.Col span={3}>
@@ -209,12 +213,12 @@ const BasicCheckup = () => {
 								{...form.getInputProps('doctorAdvice')}
 							/>
 						</Grid.Col>
-
+						{/*
 						<Grid.Col span={12}>
 							<Center>
 								<Button type="submit">Lưu kết quả</Button>
 							</Center>
-						</Grid.Col>
+						</Grid.Col> */}
 					</Grid>
 				</form>
 			</Stack>

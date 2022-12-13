@@ -1,83 +1,99 @@
-import TestRecordList from '@/components/Record/TestRecordList'
-import {
-	useGetCheckupRecordByIdQuery,
-	useGetReExamTreeQuery,
-} from '@/store/record/api'
-import { LoadingOverlay, Tabs } from '@mantine/core'
-import {
-	IconReportMedical,
-	IconPill,
-	IconCalendar,
-	IconMedicalCross,
-	IconTree,
-} from '@tabler/icons'
+import { Tabs, Stepper, Group, Button, Center } from '@mantine/core'
+import { IconReportMedical, IconPill, IconCalendar } from '@tabler/icons'
 import { useState } from 'react'
-import { useParams } from 'react-router-dom'
 import BasicCheckup from './BasicCheckup'
 import Medication from './Medication'
-import PatientRecordTree from './PatientRecordTree'
 import Reschedule from './Reschedule'
 
 const ExamineTabs = () => {
 	const [activeTab, setActiveTab] = useState<string | null>('gallery')
+	const [active, setActive] = useState(0)
+	const nextStep = () =>
+		setActive((current) => (current < 4 ? current + 1 : current))
+	const prevStep = () =>
+		setActive((current) => (current > 0 ? current - 1 : current))
 
-	const { id: queueId } = useParams()
-	const { data, isLoading } = useGetCheckupRecordByIdQuery(Number(queueId), {
-		refetchOnFocus: true,
-		skip: !queueId,
-	})
-
-	const { data: reExamTree, isLoading: isLoadingReExamTree } =
-		useGetReExamTreeQuery(data?.reExamTreeCode as string, {
-			skip: !data?.reExamTreeCode || activeTab !== 'reExamTree',
-		})
-
+	const isSkip = active === 1 || active === 3
 	return (
-		<Tabs value={activeTab} onTabChange={setActiveTab}>
-			<Tabs.List grow>
-				<Tabs.Tab value="gallery" icon={<IconReportMedical size={14} />}>
-					Chẩn đoán cơ bản
-				</Tabs.Tab>
-				<Tabs.Tab value="messages" icon={<IconPill size={14} />}>
-					Kê thuốc
-				</Tabs.Tab>
-				<Tabs.Tab value="settings" icon={<IconCalendar size={14} />}>
-					Hẹn lịch tái khám
-				</Tabs.Tab>
-				<Tabs.Tab
-					value="testRecords"
-					icon={<IconMedicalCross size={14} />}
-					sx={{
-						display: data?.testRecords?.length ? 'flex' : 'none',
-					}}
+		// <Tabs value={activeTab} onTabChange={setActiveTab}>
+		// 	<Tabs.List grow>
+		// 		<Tabs.Tab value="gallery" icon={<IconReportMedical size={14} />}>
+		// 			Chẩn đoán cơ bản
+		// 		</Tabs.Tab>
+		// 		<Tabs.Tab value="messages" icon={<IconPill size={14} />}>
+		// 			Kê thuốc
+		// 		</Tabs.Tab>
+		// 		<Tabs.Tab value="settings" icon={<IconCalendar size={14} />}>
+		// 			Hẹn lịch tái khám
+		// 		</Tabs.Tab>
+
+		// 	</Tabs.List>
+
+		// 	<Tabs.Panel value="gallery" pt="xs">
+		// 		<BasicCheckup />
+		// 	</Tabs.Panel>
+
+		// 	<Tabs.Panel value="messages" pt="xs">
+		// 		<Medication />
+		// 	</Tabs.Panel>
+
+		// 	<Tabs.Panel value="settings" pt="xs">
+		// 		<Reschedule />
+		// 	</Tabs.Panel>
+		// </Tabs>
+
+		<>
+			<Stepper active={active} onStepClick={setActive} breakpoint="sm">
+				<Stepper.Step
+					label="Chẩn đoán cơ bản"
+					// description="Khám cơ bản"
+					allowStepSelect={active > 0}
 				>
-					Kết quả xét nghiệm
-				</Tabs.Tab>
-				<Tabs.Tab value="reExamTree" icon={<IconTree size={14} />}>
-					Chuỗi khám
-				</Tabs.Tab>
-			</Tabs.List>
+					<BasicCheckup updateProgress={nextStep} />
+				</Stepper.Step>
+				<Stepper.Step
+					label="Yêu cầu xét nghiệm"
+					// description="Xét nghiệm"
+					allowStepSelect={active > 1}
+				>
+					Yêu cầu xét nghiệm
+				</Stepper.Step>
+				<Stepper.Step label="Kê thuốc" allowStepSelect={active > 2}>
+					<Medication updateProgress={nextStep} />
+				</Stepper.Step>
+				<Stepper.Step label="Hẹn tái khám" allowStepSelect={active > 3}>
+					<Reschedule updateProgress={nextStep} />
+				</Stepper.Step>
+				<Stepper.Completed>
+					<Center pt="xl">
+						Đã hoàn thành nhập liệu. Bạn có thể quay lại để chỉnh sửa hoặc hoàn
+						thành khám bệnh.
+					</Center>
+				</Stepper.Completed>
+			</Stepper>
 
-			<Tabs.Panel value="gallery" pt="xs">
-				<BasicCheckup />
-			</Tabs.Panel>
+			<Group position="center" sx={{ position: 'relative', marginTop: 40 }}>
+				<Button variant="default" onClick={prevStep}>
+					Quay lại
+				</Button>
+				{active < 4 && (
+					<Button type="submit" form="form">
+						Lưu và tiếp tục
+					</Button>
+				)}
 
-			<Tabs.Panel value="messages" pt="xs">
-				<Medication />
-			</Tabs.Panel>
-
-			<Tabs.Panel value="settings" pt="xs">
-				<Reschedule />
-			</Tabs.Panel>
-
-			<Tabs.Panel value="testRecords" pt="xs">
-				<TestRecordList showTitle={false} data={data?.testRecords} />
-			</Tabs.Panel>
-			<Tabs.Panel value="reExamTree" pt="xs" sx={{ position: 'relative' }}>
-				<LoadingOverlay visible={isLoading || isLoadingReExamTree} />
-				<PatientRecordTree data={reExamTree} />
-			</Tabs.Panel>
-		</Tabs>
+				{isSkip && (
+					<Button
+						variant="subtle"
+						color="blue"
+						onClick={nextStep}
+						sx={{ position: 'absolute', top: 0, right: 0 }}
+					>
+						Bỏ qua
+					</Button>
+				)}
+			</Group>
+		</>
 	)
 }
 export default ExamineTabs
