@@ -8,6 +8,7 @@ export interface Operation {
 	note: string
 	roomTypeId: number
 	departmentId?: any
+	department?: any
 }
 
 export type RequestOperationsForm = Omit<RequestOperations, 'id'>
@@ -22,4 +23,10 @@ export type RequestOperationsResponse = {
 	floor: string
 	operationId: number
 	operationName: string
+}
+
+export type NewOperation = {
+	id: number
+	name: string
+	data: Operation[]
 }

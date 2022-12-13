@@ -6,6 +6,7 @@ import {
 import { Icd } from '@/entities/icd'
 import { Medicine } from '@/entities/medicine'
 import {
+	NewOperation,
 	Operation,
 	RequestOperations,
 	RequestOperationsResponse,
@@ -80,9 +81,9 @@ export const recordApi = api.injectEndpoints({
 				{ type: 'Record' as const, id: 'LIST' },
 			],
 		}),
-		getOperationList: build.query<Operation[], void>({
+		getOperationList: build.query<NewOperation[], void>({
 			query: () => ({
-				url: 'operations',
+				url: 'operations/new',
 			}),
 			providesTags: (result = []) => [
 				...result.map(

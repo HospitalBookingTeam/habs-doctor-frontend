@@ -22,7 +22,7 @@ export const queueApi = api.injectEndpoints({
 			}),
 			providesTags: (result = []) => [
 				...result.map(
-					({ id }) => ({ type: 'Queue', field: 'finished', id } as const)
+					({ id }) => ({ type: 'Queue', id: `FINISHED_${id}` } as const)
 				),
 				{ type: 'Queue' as const, id: 'FINISHED_LIST' },
 			],
@@ -34,9 +34,9 @@ export const queueApi = api.injectEndpoints({
 			}),
 			providesTags: (result = []) => [
 				...result.map(
-					({ id }) => ({ type: 'Queue', field: 'testing', id } as const)
+					({ id }) => ({ type: 'Queue', id: `TESTING_${id}` } as const)
 				),
-				{ type: 'Queue' as const, id: 'TESTING_L*IST' },
+				{ type: 'Queue' as const, id: 'TESTING_LIST' },
 			],
 		}),
 

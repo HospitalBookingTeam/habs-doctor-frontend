@@ -21,6 +21,7 @@ import {
 	RequestOperationsForm,
 	RequestOperationsResponse,
 } from '@/entities/operation'
+import OperationList from '../OperationList'
 
 const RequestOperationsButton = () => {
 	const navigate = useNavigate()
@@ -124,26 +125,12 @@ const RequestOperationsButton = () => {
 						<Text>Vui lòng chọn các xét nghiệm dưới đây</Text>
 
 						<Stack>
-							<MultiSelect
-								mt="md"
-								size="sm"
-								label="Các xét nghiệm yêu cầu"
-								placeholder="Chọn xét nghiệm"
-								data={
-									operationList?.map((item) => ({
-										value: item.id,
-										label: item.name,
-									})) ?? []
+							<OperationList
+								updateSelectedOperationIds={(ids) =>
+									form.setValues({
+										examOperationIds: ids,
+									})
 								}
-								searchable
-								nothingFound="Không tìm thấy dữ liệu"
-								{...form.getInputProps('examOperationIds')}
-							/>
-
-							<OperationsTable
-								data={operationList?.filter((item) =>
-									form.values.examOperationIds?.includes(item.id)
-								)}
 							/>
 						</Stack>
 						<Stack mt="md" sx={{ flexDirection: 'row' }} justify="end">

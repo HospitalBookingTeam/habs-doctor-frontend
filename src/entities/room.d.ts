@@ -9,3 +9,11 @@ export interface Room {
 	roomTypeName: string
 	isGeneralRoom: boolean
 }
+
+export type TestRoom = {
+	numericalOrder: number
+	roomNumber: string
+	floor: string
+	operationId: number
+	operationName: string
+}
