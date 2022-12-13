@@ -10,7 +10,6 @@ import {
 	Grid,
 	ActionIcon,
 	Stack,
-	Box,
 	Paper,
 } from '@mantine/core'
 
@@ -29,67 +28,70 @@ const OperationsTable = ({
 }: OperationTableProps) => {
 	const theme = useMantineTheme()
 
-	const rows = data?.map((item, index) => {
+	const rowsData = data?.reduce(
+		(prev: (Operation & { operationTypeName: string })[], cur) => {
+			return [
+				...prev,
+				...cur.data.map((_item) => ({
+					..._item,
+					operationTypeName: cur.name,
+				})),
+			]
+		},
+		[]
+	)
+
+	const rows = rowsData?.map((item, index) => {
 		return (
-			<Stack key={item.id}>
-				<Box
-					py="xs"
-					sx={{
-						textAlign: 'center',
-						backgroundColor: theme.colors.green[2],
-						width: '100%',
-					}}
-				>
-					{item.name}
-				</Box>
-				{item.data.map((_item, _index) => (
-					<Grid
-						key={_item.id}
-						sx={{
-							backgroundColor:
-								_index % 2 === 0 ? theme.colors.gray[0] : theme.colors.gray[1],
-							width: '100%',
-						}}
-						p="sm"
+			<Grid
+				key={item.id}
+				sx={{
+					backgroundColor:
+						index % 2 === 0 ? theme.colors.gray[0] : theme.colors.gray[1],
+					width: '100%',
+				}}
+				p="sm"
+			>
+				<Grid.Col span={1}>
+					<Text size="sm" align="center">
+						{index + 1}
+					</Text>
+				</Grid.Col>
+				<Grid.Col span={3}>
+					<Text size="sm" weight={500}>
+						{item.name}
+					</Text>
+				</Grid.Col>
+
+				<Grid.Col span={2}>
+					<Badge
+						// color={jobColors[item.status.toLowerCase()]}
+						variant={theme.colorScheme === 'dark' ? 'light' : 'outline'}
 					>
-						<Grid.Col span={4}>
-							<Text size="sm" weight={500}>
-								{_item.name}
-							</Text>
-						</Grid.Col>
+						{renderEnumInsuranceStatus(item.insuranceStatus)}
+					</Badge>
+				</Grid.Col>
 
-						<Grid.Col span={2}>
-							<Badge
-								// color={jobColors[item.status.toLowerCase()]}
-								variant={theme.colorScheme === 'dark' ? 'light' : 'outline'}
-							>
-								{renderEnumInsuranceStatus(_item.insuranceStatus)}
-							</Badge>
-						</Grid.Col>
-
-						<Grid.Col span={3}>
-							<Text>{_item.note}</Text>
-						</Grid.Col>
-						<Grid.Col span={2}>
-							<Text align="right">{formatCurrency(_item.price)}</Text>
-						</Grid.Col>
-						<Grid.Col span={1}>
-							{editReExam && (
-								<ActionIcon
-									radius="xl"
-									variant="outline"
-									onClick={() => onRemove && onRemove(Number(_item.id))}
-									color="orange"
-									sx={{ margin: '0 auto' }}
-								>
-									<IconMinus />
-								</ActionIcon>
-							)}
-						</Grid.Col>
-					</Grid>
-				))}
-				{index !== data.length - 1 && <Box mb="sm" />}
-			</Stack>
+				<Grid.Col span={3}>
+					<Text>{item.note}</Text>
+				</Grid.Col>
+				<Grid.Col span={2}>
+					<Text align="right">{formatCurrency(item.price)}</Text>
+				</Grid.Col>
+				<Grid.Col span={1}>
+					{editReExam && (
+						<ActionIcon
+							radius="xl"
+							variant="outline"
+							onClick={() => onRemove && onRemove(Number(item.id))}
+							color="orange"
+							sx={{ margin: '0 auto' }}
+						>
+							<IconMinus />
+						</ActionIcon>
+					)}
+				</Grid.Col>
+			</Grid>
 		)
 	})
 
@@ -105,7 +107,10 @@ const OperationsTable = ({
 		<Paper withBorder py="sm">
 			<Stack>
 				<Grid color="gray.1" sx={{ width: '100%', fontWeight: 500 }} px="sm">
-					<Grid.Col span={4}>Tên XN</Grid.Col>
+					<Grid.Col span={1} sx={{ textAlign: 'center' }}>
+						STT
+					</Grid.Col>
+					<Grid.Col span={3}>Tên XN</Grid.Col>
 					<Grid.Col span={2}>BHYT</Grid.Col>
 					<Grid.Col span={3}>Ghi chú</Grid.Col>
 					<Grid.Col span={2} sx={{ textAlign: 'right' }}>
