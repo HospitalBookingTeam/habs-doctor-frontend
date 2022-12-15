@@ -1,28 +1,30 @@
 import { useGetCheckupRecordByIdQuery } from '@/store/record/api'
+import { useRequestOperationsByIdMutation } from '@/store/record/api'
 import {
-	useGetOperationListQuery,
-	useRequestOperationsByIdMutation,
-} from '@/store/record/api'
-import {
-	Button,
 	Stack,
 	Text,
 	Modal,
-	MultiSelect,
 	Group,
 	Paper,
+	LoadingOverlay,
+	Divider,
 } from '@mantine/core'
 import { showNotification } from '@mantine/notifications'
 import { useNavigate, useParams } from 'react-router-dom'
-import { useState } from 'react'
-import OperationsTable from '@/components/Table/OperationsTable'
+import { useState, lazy } from 'react'
 import { useForm } from '@mantine/form'
 import {
 	RequestOperationsForm,
 	RequestOperationsResponse,
 } from '@/entities/operation'
+import OperationList from './OperationList'
 
-const RequestOperationsButton = () => {
+const TestRecordList = lazy(() => import('@/components/Record/TestRecordList'))
+
+type RequestOperationsProps = {
+	updateProgress: () => void
+}
+const RequestOperations = ({ updateProgress }: RequestOperationsProps) => {
 	const navigate = useNavigate()
 	const { id: queueId } = useParams()
 	const { data: checkupData, isSuccess: isCheckupDataSuccess } =
@@ -36,16 +38,12 @@ const RequestOperationsButton = () => {
 
 	const [requestOperationsMutation, { isLoading: isLoadingRequestOperations }] =
 		useRequestOperationsByIdMutation()
-	const { data: operationList, isLoading: isLoadingOperationList } =
-		useGetOperationListQuery()
 
 	const form = useForm<RequestOperationsForm>({
 		initialValues: {
 			examOperationIds: [],
 		},
 	})
-
-	const [opened, setOpened] = useState(false)
 
 	const onSubmit = async (values: RequestOperationsForm) => {
 		if (!checkupData) {
@@ -67,7 +65,7 @@ const RequestOperationsButton = () => {
 					title: 'Yêu cầu xét nghiệm thành công',
 					message: <Text></Text>,
 				})
-				// navigate('/')
+				updateProgress()
 			})
 	}
 
@@ -75,25 +73,46 @@ const RequestOperationsButton = () => {
 
 	return (
 		<>
+			<form onSubmit={form.onSubmit(onSubmit)} id="form">
+				<Stack mt="md">
+					{!!checkupData?.testRecords?.length && (
+						<>
+							<Text>Kết quả xét nghiệm</Text>
+							<TestRecordList
+								showTitle={false}
+								data={checkupData?.testRecords}
+								showSpoiler={true}
+							/>
+							<Divider />
+						</>
+					)}
+
+					<Text>Vui lòng chọn các xét nghiệm dưới đây</Text>
+					<Stack>
+						<LoadingOverlay visible={isLoadingRequestOperations} />
+						<OperationList
+							updateSelectedOperationIds={(ids) =>
+								form.setValues({
+									examOperationIds: ids,
+								})
+							}
+						/>
+					</Stack>
+				</Stack>
+			</form>
+
 			<Modal
-				opened={opened}
+				opened={showResponse}
 				onClose={() => {
-					setOpened(false)
-					if (showResponse) {
-						navigate('/')
-					}
+					navigate('/')
 				}}
-				title={showResponse ? 'Thông tin xét nghiệm' : 'Yêu cầu xét nghiệm'}
-				closeOnClickOutside={showResponse}
+				title={'Thông tin xét nghiệm'}
+				closeOnClickOutside={true}
 				centered={true}
-				size={showResponse ? '720px' : '70%'}
+				size={'720px'}
 				withCloseButton={!isLoadingRequestOperations}
 			>
-				<Group
-					position="center"
-					grow={true}
-					sx={{ display: showResponse ? 'flex' : 'none' }}
-				>
+				<Group position="center" grow={true}>
 					{responseData?.map((item) => (
 						<Paper
 							withBorder
@@ -116,53 +135,8 @@ const RequestOperationsButton = () => {
 						</Paper>
 					))}
 				</Group>
-				<form
-					onSubmit={form.onSubmit(onSubmit)}
-					style={{ display: showResponse ? 'none' : 'block' }}
-				>
-					<Stack>
-						<Text>Vui lòng chọn các xét nghiệm dưới đây</Text>
-
-						<Stack>
-							<MultiSelect
-								mt="md"
-								size="sm"
-								label="Các xét nghiệm yêu cầu"
-								placeholder="Chọn xét nghiệm"
-								data={
-									operationList?.map((item) => ({
-										value: item.id,
-										label: item.name,
-									})) ?? []
-								}
-								searchable
-								nothingFound="Không tìm thấy dữ liệu"
-								{...form.getInputProps('examOperationIds')}
-							/>
-
-							<OperationsTable
-								data={operationList?.filter((item) =>
-									form.values.examOperationIds?.includes(item.id)
-								)}
-							/>
-						</Stack>
-						<Stack mt="md" sx={{ flexDirection: 'row' }} justify="end">
-							<Button
-								variant="default"
-								color="dark"
-								onClick={() => setOpened(false)}
-								disabled={isLoadingRequestOperations}
-							>
-								Quay lại
-							</Button>
-							<Button type="submit" loading={isLoadingRequestOperations}>
-								Xác nhận
-							</Button>
-						</Stack>
-					</Stack>
-				</form>
 			</Modal>
-			<Button
+			{/* <Button
 				fullWidth={true}
 				color="green"
 				variant="outline"
@@ -172,7 +146,7 @@ const RequestOperationsButton = () => {
 				}}
 			>
 				Yêu cầu xét nghiệm
-			</Button>
+			</Button> */}
 		</>
 	)
 }
@@ -191,4 +165,4 @@ const ResponseRow = ({
 		<Text>{content}</Text>
 	</Stack>
 )
-export default RequestOperationsButton
+export default RequestOperations
