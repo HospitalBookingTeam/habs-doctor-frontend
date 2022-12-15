@@ -21,7 +21,6 @@ import RequestOperationsButton from './examine/modals/RequestOperations'
 import PatientRecord from './record'
 
 const PatientRecordTree = lazy(() => import('./examine/PatientRecordTree'))
-const TestRecordList = lazy(() => import('@/components/Record/TestRecordList'))
 
 const tabSx = {
 	borderLeft: '2px solid transparent',
@@ -67,12 +66,12 @@ const QueueDetail = () => {
 			title: 'Chuỗi khám',
 			panel: <PatientRecordTree data={reExamTree} />,
 		},
-		{
-			value: 'testResults',
-			icon: <IconMedicalCross size={14} />,
-			title: 'Kết quả xét nghiệm',
-			panel: <TestRecordList showTitle={false} data={data?.testRecords} />,
-		},
+		// {
+		// 	value: 'testResults',
+		// 	icon: <IconMedicalCross size={14} />,
+		// 	title: 'Kết quả xét nghiệm',
+		// 	panel: <TestRecordList showTitle={false} data={data?.testRecords} />,
+		// },
 	]
 
 	return (
@@ -128,7 +127,7 @@ const QueueDetail = () => {
 						</Paper>
 						<Stack align="flex-end" mb="md" sx={{ width: 200 }}>
 							<FinishRecord />
-							<RequestOperationsButton />
+							{/* <RequestOperationsButton /> */}
 							<RequestDepartments />
 							<RequestEmergency />
 						</Stack>

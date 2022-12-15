@@ -3,6 +3,7 @@ import { IconReportMedical, IconPill, IconCalendar } from '@tabler/icons'
 import { useState } from 'react'
 import BasicCheckup from './BasicCheckup'
 import Medication from './Medication'
+import RequestOperations from './RequestOperations'
 import Reschedule from './Reschedule'
 
 const ExamineTabs = () => {
@@ -56,7 +57,7 @@ const ExamineTabs = () => {
 					// description="Xét nghiệm"
 					allowStepSelect={active > 1}
 				>
-					Yêu cầu xét nghiệm
+					<RequestOperations updateProgress={nextStep} />
 				</Stepper.Step>
 				<Stepper.Step label="Kê thuốc" allowStepSelect={active > 2}>
 					<Medication updateProgress={nextStep} />
