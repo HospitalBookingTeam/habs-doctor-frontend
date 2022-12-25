@@ -3,22 +3,17 @@ import {
 	useGetCheckupRecordByIdQuery,
 	useGetReExamTreeQuery,
 } from '@/store/record/api'
-import { Badge, LoadingOverlay } from '@mantine/core'
+import { Badge, Group, LoadingOverlay, useMantineTheme } from '@mantine/core'
 import { Paper, Stack, Tabs, Box } from '@mantine/core'
-import {
-	IconId,
-	IconStethoscope,
-	IconTree,
-	IconMedicalCross,
-} from '@tabler/icons'
+import { IconId, IconStethoscope, IconTree } from '@tabler/icons'
 import { lazy, useState } from 'react'
 import { useParams, useSearchParams } from 'react-router-dom'
 import ExamineTabs from './examine'
 import FinishRecord from './examine/modals/FinishRecord'
 import RequestDepartments from './examine/modals/RedirectDepartments'
 import RequestEmergency from './examine/modals/RequestEmergency'
-import RequestOperationsButton from './examine/modals/RequestOperations'
 import PatientRecord from './record'
+import { useMediaQuery } from '@mantine/hooks'
 
 const PatientRecordTree = lazy(() => import('./examine/PatientRecordTree'))
 
@@ -35,6 +30,8 @@ const QueueDetail = () => {
 	const [tabValue, setTabValue] = useState<string | null>(
 		searchParams.get('tabs') ?? 'examine'
 	)
+	const theme = useMantineTheme()
+	const matches = useMediaQuery(`(max-width: ${theme.breakpoints.md}px)`)
 
 	const { id: queueId } = useParams()
 	const { data, isLoading } = useGetCheckupRecordByIdQuery(Number(queueId), {
@@ -91,20 +88,24 @@ const QueueDetail = () => {
 			</Stack>
 			<Box sx={{ width: '100%' }}>
 				<Tabs
-					orientation="vertical"
+					orientation={matches ? 'horizontal' : 'vertical'}
 					value={tabValue}
 					onTabChange={(value: string) => {
 						setTabValue(value)
 						setSearchParams({ tabs: value })
 					}}
 				>
-					<Stack sx={{ order: 2, width: 200 }}>
+					<Stack sx={{ order: 2, width: matches ? 'auto' : 200 }}>
 						<Paper p="md">
 							<Tabs.List
-								sx={{
-									borderLeft: '2px solid #dee2e6',
-									borderRight: 0,
-								}}
+								sx={
+									matches
+										? {}
+										: {
+												borderLeft: '2px solid #dee2e6',
+												borderRight: 0,
+										  }
+								}
 							>
 								{tabs
 									.filter(
@@ -118,14 +119,18 @@ const QueueDetail = () => {
 											key={item.value}
 											value={item.value}
 											icon={item.icon}
-											sx={tabSx}
+											sx={matches ? {} : tabSx}
 										>
 											{item.title}
 										</Tabs.Tab>
 									))}
 							</Tabs.List>
 						</Paper>
-						<Stack align="flex-end" mb="md" sx={{ width: 200 }}>
+						<Stack
+							sx={{ flexDirection: matches ? 'row' : 'column', width: 200 }}
+							align="flex-end"
+							mb="md"
+						>
 							<FinishRecord />
 							{/* <RequestOperationsButton /> */}
 							<RequestDepartments />

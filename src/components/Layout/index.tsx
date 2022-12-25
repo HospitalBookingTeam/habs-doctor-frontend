@@ -1,13 +1,5 @@
 import { ReactNode, useState } from 'react'
-import {
-	AppShell,
-	Header,
-	Text,
-	MediaQuery,
-	Burger,
-	useMantineTheme,
-	Box,
-} from '@mantine/core'
+import { AppShell, useMantineTheme, Box } from '@mantine/core'
 import { NavbarSimpleColored } from '../NavBar'
 
 type LayoutAppShellProps = {

@@ -1,4 +1,4 @@
-import { Group, Badge } from '@mantine/core'
+import { Group, Badge, Tooltip } from '@mantine/core'
 import dayjs from 'dayjs'
 import { useEffect, useState } from 'react'
 
@@ -15,9 +15,11 @@ const Clock = () => {
 	}, [])
 
 	return (
-		<Group>
-			<Badge size="xl">{currentTime}</Badge>
-		</Group>
+		<Tooltip label={currentTime} position="right" transitionDuration={0}>
+			<Group>
+				<Badge size="xl">{currentTime}</Badge>
+			</Group>
+		</Tooltip>
 	)
 }
 export default Clock

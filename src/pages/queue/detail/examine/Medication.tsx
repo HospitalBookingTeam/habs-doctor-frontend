@@ -54,6 +54,7 @@ const Medication = ({ updateProgress }: MedicationProps) => {
 	const { data: checkupData, isSuccess: isCheckupDataSuccess } =
 		useGetCheckupRecordByIdQuery(Number(queueId), {
 			skip: !queueId,
+			refetchOnMountOrArgChange: true,
 		})
 
 	const [
