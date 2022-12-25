@@ -2,18 +2,27 @@ import { useState, useEffect } from 'react'
 import {
 	createStyles,
 	Navbar,
-	Group,
+	Tooltip,
+	UnstyledButton,
 	Code,
 	Text,
 	Button,
 	Stack,
+	useMantineTheme,
 } from '@mantine/core'
-import { IconList, IconZoomCheck, IconLogout, IconPackage } from '@tabler/icons'
+import {
+	IconList,
+	IconZoomCheck,
+	IconLogout,
+	IconPackage,
+	TablerIcon,
+} from '@tabler/icons'
 import { useLocation, useNavigate } from 'react-router-dom'
 import { useAppDispatch, useAppSelector } from '@/store/hooks'
 import { logout } from '@/store/auth/slice'
 import { selectAuth } from '@/store/auth/selectors'
 import Clock from '../Clock'
+import { useMediaQuery } from '@mantine/hooks'
 
 const useStyles = createStyles((theme, _params, getRef) => {
 	const icon: string = getRef('icon')
@@ -79,6 +88,11 @@ const useStyles = createStyles((theme, _params, getRef) => {
 					0.1
 				),
 			},
+			[`@media (max-width: ${theme.breakpoints.md}px)`]: {
+				span: {
+					fontSize: theme.fontSizes.xs,
+				},
+			},
 		},
 
 		linkIcon: {
@@ -86,6 +100,9 @@ const useStyles = createStyles((theme, _params, getRef) => {
 			color: theme.white,
 			opacity: 0.75,
 			marginRight: theme.spacing.sm,
+			[`@media (max-width: ${theme.breakpoints.md}px)`]: {
+				marginRight: 0,
+			},
 		},
 
 		linkActive: {
@@ -109,6 +126,32 @@ const data = [
 	{ link: '/finished', label: 'Người bệnh đã khám', icon: IconZoomCheck },
 ]
 
+interface NavbarLinkProps {
+	icon: TablerIcon
+	label: string
+	active?: boolean
+	onClick?: React.MouseEventHandler<HTMLButtonElement>
+}
+
+function NavbarLinkMobile({
+	icon: Icon,
+	label,
+	active,
+	onClick,
+}: NavbarLinkProps) {
+	const { classes, cx } = useStyles()
+	return (
+		<Tooltip label={label} position="right" transitionDuration={0}>
+			<UnstyledButton
+				onClick={onClick}
+				className={cx(classes.link, { [classes.linkActive]: active })}
+			>
+				<Icon stroke={1.5} />
+			</UnstyledButton>
+		</Tooltip>
+	)
+}
+
 export function NavbarSimpleColored({ opened }: { opened: boolean }) {
 	const location = useLocation()
 	const { classes, cx } = useStyles()
@@ -117,23 +160,39 @@ export function NavbarSimpleColored({ opened }: { opened: boolean }) {
 	const dispatch = useAppDispatch()
 	const authData = useAppSelector(selectAuth)
 
-	const links = data.map((item) => (
-		<a
-			className={cx(classes.link, {
-				[classes.linkActive]: item.link === active,
-			})}
-			href={item.link}
-			key={item.label}
-			onClick={(event) => {
-				event.preventDefault()
-				setActive(item.link)
-				navigate(item.link)
-			}}
-		>
-			<item.icon className={classes.linkIcon} stroke={1.5} />
-			<span>{item.label}</span>
-		</a>
-	))
+	const theme = useMantineTheme()
+	const matches = useMediaQuery(`(max-width: ${theme.breakpoints.md}px)`)
+
+	const links = data.map((item) =>
+		matches ? (
+			<NavbarLinkMobile
+				key={item.label}
+				onClick={(event) => {
+					event.preventDefault()
+					setActive(item.link)
+					navigate(item.link)
+				}}
+				icon={item.icon}
+				label={item.label}
+			/>
+		) : (
+			<a
+				className={cx(classes.link, {
+					[classes.linkActive]: item.link === active,
+				})}
+				href={item.link}
+				key={item.label}
+				onClick={(event) => {
+					event.preventDefault()
+					setActive(item.link)
+					navigate(item.link)
+				}}
+			>
+				<item.icon className={classes.linkIcon} stroke={1.5} />
+				<span>{item.label}</span>
+			</a>
+		)
+	)
 
 	useEffect(() => {
 		if (!authData?.isAuthenticated) {
@@ -143,23 +202,44 @@ export function NavbarSimpleColored({ opened }: { opened: boolean }) {
 
 	return (
 		<Navbar
-			p="md"
-			hidden={!opened}
-			width={{ sm: 200, lg: 300 }}
+			p={matches ? 'xs' : 'md'}
+			width={{ base: 70, sm: 150, lg: 250 }}
 			className={classes.navbar}
-			hiddenBreakpoint="sm"
 		>
 			<Navbar.Section grow>
-				<Text weight={500} size="sm" className={classes.title} mb="xs">
-					Bác sĩ {authData?.information?.name}
-				</Text>
+				{matches ? (
+					<Tooltip
+						label={`Bác sĩ ${authData?.information?.name}`}
+						position="right"
+						transitionDuration={0}
+					>
+						<Text weight={500} size="xs" className={classes.title} mb="xs">
+							Bác sĩ
+						</Text>
+					</Tooltip>
+				) : (
+					<Text weight={500} size="sm" className={classes.title} mb="xs">
+						Bác sĩ {authData?.information?.name}
+					</Text>
+				)}
 				<Stack className={classes.header}>
-					{/* <MantineLogo size={28} inverted /> */}
-					<Code className={classes.version}>
-						Phòng {authData?.information?.room?.roomNumber} -{' '}
-						{authData?.information?.room?.roomTypeName}{' '}
-						{authData?.information?.room?.departmentName}
-					</Code>
+					{matches ? (
+						<Tooltip
+							label={`${authData?.information?.room?.roomNumber} -
+						${authData?.information?.room?.roomTypeName}
+						${authData?.information?.room?.departmentName}`}
+							position="right"
+							transitionDuration={0}
+						>
+							<Code className={classes.version}>Phòng</Code>
+						</Tooltip>
+					) : (
+						<Code className={classes.version}>
+							Phòng {authData?.information?.room?.roomNumber} -{' '}
+							{authData?.information?.room?.roomTypeName}{' '}
+							{authData?.information?.room?.departmentName}
+						</Code>
+					)}
 
 					<Clock />
 				</Stack>
@@ -186,17 +266,32 @@ export function NavbarSimpleColored({ opened }: { opened: boolean }) {
 				>
 					<span>Đăng xuất</span>
 				</a> */}
-				<Button
-					leftIcon={<IconLogout className={classes.linkIcon} stroke={1.5} />}
-					className={classes.link}
-					fullWidth
-					variant="subtle"
-					onClick={() => {
-						dispatch(logout())
-					}}
-				>
-					Đăng xuất
-				</Button>
+				{matches ? (
+					<Tooltip label={'Đăng xuất'} position="right" transitionDuration={0}>
+						<UnstyledButton
+							sx={{ maxWidth: '100%' }}
+							onClick={() => {
+								dispatch(logout())
+							}}
+							className={cx(classes.link)}
+						>
+							<IconLogout className={classes.linkIcon} />
+						</UnstyledButton>
+					</Tooltip>
+				) : (
+					<Button
+						leftIcon={<IconLogout className={classes.linkIcon} size={16} />}
+						className={classes.link}
+						fullWidth
+						size="sm"
+						variant="subtle"
+						onClick={() => {
+							dispatch(logout())
+						}}
+					>
+						Đăng xuất
+					</Button>
+				)}
 			</Navbar.Section>
 		</Navbar>
 	)

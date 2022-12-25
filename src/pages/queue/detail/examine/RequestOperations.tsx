@@ -65,7 +65,7 @@ const RequestOperations = ({ updateProgress }: RequestOperationsProps) => {
 					title: 'Yêu cầu xét nghiệm thành công',
 					message: <Text></Text>,
 				})
-				updateProgress()
+				// updateProgress()
 			})
 	}
 

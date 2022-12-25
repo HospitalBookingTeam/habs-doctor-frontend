@@ -1,20 +1,38 @@
-import { Tabs, Stepper, Group, Button, Center } from '@mantine/core'
-import { IconReportMedical, IconPill, IconCalendar } from '@tabler/icons'
-import { useState } from 'react'
+import { Stepper, Group, Button, Center } from '@mantine/core'
+import { useEffect, useState } from 'react'
 import BasicCheckup from './BasicCheckup'
 import Medication from './Medication'
 import RequestOperations from './RequestOperations'
 import Reschedule from './Reschedule'
+import { useGetCheckupRecordByIdQuery } from '@/store/record/api'
+import { useParams } from 'react-router-dom'
 
 const ExamineTabs = () => {
-	const [activeTab, setActiveTab] = useState<string | null>('gallery')
 	const [active, setActive] = useState(0)
+	const [isMounted, setIsMounted] = useState(false)
 	const nextStep = () =>
 		setActive((current) => (current < 4 ? current + 1 : current))
 	const prevStep = () =>
 		setActive((current) => (current > 0 ? current - 1 : current))
 
 	const isSkip = active === 1 || active === 3
+
+	const { id: queueId } = useParams()
+	const { data: checkupData } = useGetCheckupRecordByIdQuery(Number(queueId), {
+		skip: !queueId,
+	})
+
+	useEffect(() => {
+		if (isMounted || !checkupData) return
+		if (checkupData?.prescription) {
+			setActive(2)
+		}
+		if (checkupData?.testRecords?.length) {
+			setActive(1)
+		}
+		setIsMounted(true)
+	}, [checkupData, isMounted])
+
 	return (
 		// <Tabs value={activeTab} onTabChange={setActiveTab}>
 		// 	<Tabs.List grow>

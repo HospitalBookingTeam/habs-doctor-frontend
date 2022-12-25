@@ -39,6 +39,7 @@ const BasicCheckup = ({ updateProgress }: BasicCheckupProps) => {
 	const { data: checkupData, isSuccess: isCheckupDataSuccess } =
 		useGetCheckupRecordByIdQuery(Number(queueId), {
 			skip: !queueId,
+			refetchOnMountOrArgChange: true,
 		})
 
 	const [updateRecordMutation, { isLoading: isLoadingUpdateRecord }] =
