@@ -15,7 +15,6 @@ import {
 	Button,
 	Loader,
 } from '@mantine/core'
-import { Fragment } from 'react'
 import { useNavigate } from 'react-router-dom'
 
 interface QueueTableProps {
@@ -54,7 +53,7 @@ const ProgressQueueTable = ({ data, isLoading }: QueueTableProps) => {
 					</Badge>
 				</Grid.Col>
 
-				<Grid.Col span={1} sx={{ textAlign: 'center' }}>
+				<Grid.Col span={2} sx={{ textAlign: 'center' }}>
 					<Badge
 						size="sm"
 						variant={item.isReExam ? 'light' : 'outline'}
@@ -63,13 +62,13 @@ const ProgressQueueTable = ({ data, isLoading }: QueueTableProps) => {
 						{item.isReExam ? 'Có' : 'Không'}
 					</Badge>
 				</Grid.Col>
-				<Grid.Col span={4}>
+				<Grid.Col span={3}>
 					<Group spacing={'sm'} position="right">
 						<Button
 							sx={{ width: 200 }}
 							onClick={() => navigate(`/records/${item.id}`)}
 						>
-							Xem kết quả khám bệnh
+							Xem kết quả
 						</Button>
 					</Group>
 				</Grid.Col>
@@ -84,10 +83,10 @@ const ProgressQueueTable = ({ data, isLoading }: QueueTableProps) => {
 				<Grid.Col span={3} sx={{ textAlign: 'center' }}>
 					Trạng thái
 				</Grid.Col>
-				<Grid.Col span={1} sx={{ textAlign: 'center' }}>
+				<Grid.Col span={2} sx={{ textAlign: 'center' }}>
 					Tái khám
 				</Grid.Col>
-				<Grid.Col span={4}></Grid.Col>
+				<Grid.Col span={3}></Grid.Col>
 			</Grid>
 			<ScrollArea sx={{ height: 450 }}>
 				<Center
