@@ -6,22 +6,18 @@ import {
 	translateCheckupRecordStatus,
 } from '@/utils/renderEnums'
 import {
-	Avatar,
 	Badge,
-	Table,
-	Group,
 	Text,
 	Center,
-	Anchor,
 	ScrollArea,
 	useMantineTheme,
 	Grid,
-	Divider,
 	Button,
 	LoadingOverlay,
 	Loader,
 	Stack,
 } from '@mantine/core'
+import { useMediaQuery } from '@mantine/hooks'
 import { openConfirmModal } from '@mantine/modals'
 import { showNotification } from '@mantine/notifications'
 import { IconChevronRight } from '@tabler/icons'
@@ -41,6 +37,7 @@ const statusColors: Record<number, string> = {
 
 export function QueueTable({ data, isLoading }: QueueTableProps) {
 	const theme = useMantineTheme()
+	const matches = useMediaQuery(`(max-width: ${theme.breakpoints.md}px)`)
 	const navigate = useNavigate()
 	const [confirmQueueCheckupById, { isLoading: isLoadingConfirm }] =
 		useConfirmCheckupFromQueueByIdMutation()
@@ -124,7 +121,7 @@ export function QueueTable({ data, isLoading }: QueueTableProps) {
 								}
 								openModal(item.patientName, item.id)
 							}}
-							sx={{ width: 170 }}
+							sx={{ width: matches ? 130 : 170 }}
 						>
 							{isInProgress ? 'Tiếp tục khám' : 'Khám bệnh'}
 						</Button>
@@ -138,18 +135,18 @@ export function QueueTable({ data, isLoading }: QueueTableProps) {
 		<>
 			<Grid color="gray.1" pb="md" sx={{ width: '100%' }}>
 				<Grid.Col span={2} sx={{ textAlign: 'center' }}>
-					Số khám bệnh
+					SKB
 				</Grid.Col>
 				<Grid.Col span={4}>Tên người bệnh</Grid.Col>
 				<Grid.Col span={2} sx={{ textAlign: 'center' }}>
 					Trạng thái
 				</Grid.Col>
 				<Grid.Col span={2}>
-					<Text align="center">Thời gian dự kiến</Text>
+					<Text align="center">Dự kiến</Text>
 				</Grid.Col>
 				<Grid.Col span={2}></Grid.Col>
 			</Grid>
-			<ScrollArea sx={{ height: 450 }}>
+			<ScrollArea sx={{ height: 450, width: '100%' }}>
 				<Center
 					sx={{
 						height: 100,
@@ -159,7 +156,7 @@ export function QueueTable({ data, isLoading }: QueueTableProps) {
 				>
 					<Loader size="lg" />
 				</Center>
-				<Stack sx={{ width: '100%' }} mt="sm">
+				<Stack sx={{ width: '100%', minWidth: 720 }} mt="sm">
 					<LoadingOverlay visible={isLoadingConfirm} />
 					{rows}
 				</Stack>

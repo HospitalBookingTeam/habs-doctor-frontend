@@ -1,13 +1,17 @@
+import { formatDate } from '@/utils/formats'
 import { Group, Badge, Tooltip } from '@mantine/core'
 import dayjs from 'dayjs'
 import { useEffect, useState } from 'react'
 
 const Clock = () => {
-	const [currentTime, setCurrentTime] = useState(dayjs().format('HH:mm'))
+	const [currentTime, setCurrentTime] = useState(
+		formatDate(new Date().toString(), 'DD/MM/YYYY, HH:mm')
+	)
 
 	useEffect(() => {
 		const interval = setInterval(
-			() => setCurrentTime(dayjs().format('HH:mm')),
+			() =>
+				setCurrentTime(formatDate(new Date().toString(), 'DD/MM/YYYY, HH:mm')),
 			10000
 		)
 
@@ -17,7 +21,7 @@ const Clock = () => {
 	return (
 		<Tooltip label={currentTime} position="right" transitionDuration={0}>
 			<Group>
-				<Badge size="xl">{currentTime}</Badge>
+				<Badge size="lg">{currentTime}</Badge>
 			</Group>
 		</Tooltip>
 	)

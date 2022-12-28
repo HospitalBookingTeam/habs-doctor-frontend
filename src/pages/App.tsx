@@ -16,31 +16,30 @@ const NotFound = lazy(() => import('@/components/NotFound/NotFoundPage'))
 function App() {
 	return (
 		<Suspense fallback={<LoadingOverlay visible={true} />}>
-			<Container
-				size="xl"
-				sx={{ display: 'flex', alignItems: 'center', justifyContent: 'center' }}
-			>
-				<Routes>
-					<Route path="/" element={<Outlet />}>
-						<Route element={<RequireAuth />}>
-							<Route index element={<Queue />} />
-							<Route path=":id" element={<QueueDetail />} />
-							<Route path="finished" element={<Outlet />}>
-								<Route index element={<FinishedQueue />} />
-							</Route>
-							<Route path="testing" element={<TestingQueue />} />
-							<Route path="records" element={<Outlet />}>
-								<Route path=":id" element={<RecordHistory />} />
-							</Route>
+			<Routes>
+				<Route path="/" element={<Outlet />}>
+					<Route element={<RequireAuth />}>
+						<Route index element={<Queue />} />
+						<Route path=":id" element={<QueueDetail />} />
+						<Route path="finished" element={<Outlet />}>
+							<Route index element={<FinishedQueue />} />
 						</Route>
-
-						<Route path="/login" element={<IsUserRedirect />}>
-							<Route index element={<Login />} />
+						<Route path="testing" element={<TestingQueue />} />
+						<Route path="records" element={<Outlet />}>
+							<Route path=":id" element={<RecordHistory />} />
 						</Route>
 					</Route>
 					<Route path="*" element={<NotFound />} />
-				</Routes>
-			</Container>
+				</Route>
+			</Routes>
+
+			<Routes>
+				<Route path="/" element={<Outlet />}>
+					<Route path="/login" element={<IsUserRedirect />}>
+						<Route index element={<Login />} />
+					</Route>
+				</Route>
+			</Routes>
 		</Suspense>
 	)
 }

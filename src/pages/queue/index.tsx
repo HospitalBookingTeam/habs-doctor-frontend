@@ -53,13 +53,13 @@ const Queue = () => {
 				<TextInput
 					placeholder="Tìm kiếm người bệnh"
 					size="md"
-					sx={{ minWidth: 450 }}
+					sx={{ minWidth: 400 }}
 					icon={<IconSearch size={16} stroke={1.5} />}
 					defaultValue={value}
 					onChange={(event) => setValue(event.currentTarget.value)}
 				/>
 			</Stack>
-			<Paper p="md">
+			<Paper py="md">
 				<QueueTable data={queueData} isLoading={isLoading} />
 			</Paper>
 		</Stack>
