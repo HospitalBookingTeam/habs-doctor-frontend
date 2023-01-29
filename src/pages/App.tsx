@@ -34,10 +34,8 @@ function App() {
 			</Routes>
 
 			<Routes>
-				<Route path="/" element={<Outlet />}>
-					<Route path="/login" element={<IsUserRedirect />}>
-						<Route index element={<Login />} />
-					</Route>
+				<Route path="/login" element={<IsUserRedirect />}>
+					<Route index element={<Login />} />
 				</Route>
 			</Routes>
 		</Suspense>
