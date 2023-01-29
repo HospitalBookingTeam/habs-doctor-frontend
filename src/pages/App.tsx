@@ -1,6 +1,6 @@
 import { lazy, ReactNode, Suspense, useEffect, useLayoutEffect } from 'react'
 import { Routes, Route, Outlet, Navigate, useNavigate } from 'react-router-dom'
-import { Container, LoadingOverlay } from '@mantine/core'
+import { Center, Container, LoadingOverlay } from '@mantine/core'
 import { selectIsAuthenticated } from '@/store/auth/selectors'
 import { useAppSelector } from '@/store/hooks'
 import QueueDetail from './queue/detail'
@@ -63,7 +63,15 @@ const RequireAuth = () => {
 }
 const IsUserRedirect = () => {
 	const isAuthenticated = useAppSelector(selectIsAuthenticated)
-	return !isAuthenticated ? <Outlet /> : <Navigate to={'/'} />
+	return !isAuthenticated ? (
+		<Center sx={{ width: '100%' }}>
+			<Container size="xl">
+				<Outlet />
+			</Container>
+		</Center>
+	) : (
+		<Navigate to={'/'} />
+	)
 }
 
 export default App

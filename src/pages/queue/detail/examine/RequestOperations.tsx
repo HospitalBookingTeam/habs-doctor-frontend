@@ -77,7 +77,7 @@ const RequestOperations = ({ updateProgress }: RequestOperationsProps) => {
 				<Stack mt="md">
 					{!!checkupData?.testRecords?.length && (
 						<>
-							<Text>Kết quả xét nghiệm</Text>
+							<Text weight={'bolder'}>Kết quả xét nghiệm</Text>
 							<TestRecordList
 								showTitle={false}
 								data={checkupData?.testRecords}

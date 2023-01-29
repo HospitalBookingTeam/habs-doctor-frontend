@@ -5,7 +5,7 @@ import { selectAuth } from '@/store/auth/selectors'
 import { useAppSelector } from '@/store/hooks'
 import { useGetCheckupQueueQuery } from '@/store/queue/api'
 import { SEARCH_OPTIONS } from '@/utils/constants'
-import { Stack, Title, Grid, TextInput, Paper, Loader } from '@mantine/core'
+import { Stack, Title, TextInput, Paper } from '@mantine/core'
 import { useDebouncedState } from '@mantine/hooks'
 import { IconSearch } from '@tabler/icons'
 import Fuse from 'fuse.js'
@@ -19,7 +19,7 @@ const Queue = () => {
 	)
 	const [value, setValue] = useDebouncedState('', 200)
 
-	const { data, isLoading } = useGetCheckupQueueQuery(
+	const { data, isLoading, isSuccess } = useGetCheckupQueueQuery(
 		authData?.information?.room?.id,
 		{
 			refetchOnFocus: true,
@@ -29,15 +29,21 @@ const Queue = () => {
 	)
 
 	useEffect(() => {
-		if (!data?.length) return
+		if (!data?.length) {
+			if (isSuccess) {
+				setQueueData(undefined)
+			} else {
+				return
+			}
+		}
 		if (value === '') {
 			setQueueData(data)
 			return
 		}
-		const fuse = new Fuse(data, SEARCH_OPTIONS)
+		const fuse = new Fuse(data as CheckupQueue, SEARCH_OPTIONS)
 		const results: CheckupQueue = fuse.search(value).map(({ item }) => item)
 		setQueueData(results)
-	}, [value, data])
+	}, [value, data, isSuccess])
 
 	return (
 		<Stack p="md">
