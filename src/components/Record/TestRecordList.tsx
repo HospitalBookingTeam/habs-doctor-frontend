@@ -56,6 +56,10 @@ const TestRecordRow = ({
 				</Button>
 			</Group>
 			<RowWithLabel
+				label="Kết quả tổng quát"
+				content={item?.resultDescription ?? '---'}
+			/>
+			<RowWithLabel
 				label="Bác sĩ xét nghiệm"
 				content={item.doctorName ?? '---'}
 			/>
@@ -64,10 +68,6 @@ const TestRecordRow = ({
 				content={`Phòng ${item.roomNumber} - Tầng ${item.floor}`}
 			/>
 			<RowWithLabel label="Thời gian" content={formatDate(item.date)} />
-			<RowWithLabel
-				label="Kết quả tổng quát"
-				content={item?.resultDescription ?? '---'}
-			/>
 		</Stack>
 	)
 	return (

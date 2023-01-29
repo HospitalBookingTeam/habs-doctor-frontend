@@ -82,9 +82,10 @@ export function QueueTable({ data, isLoading }: QueueTableProps) {
 			<Grid
 				key={item.id}
 				sx={{ backgroundColor: isEven ? 'white' : 'whitesmoke', width: '100%' }}
+				align={'center'}
 				py="sm"
 			>
-				<Grid.Col span={2} sx={{ textAlign: 'center' }}>
+				<Grid.Col span={1} sx={{ textAlign: 'center' }}>
 					{item.numericalOrder}
 				</Grid.Col>
 				<Grid.Col span={4}>
@@ -107,13 +108,12 @@ export function QueueTable({ data, isLoading }: QueueTableProps) {
 						{formatDate(item?.estimatedStartTime, 'HH:mm')}
 					</Text>
 				</Grid.Col>
-				<Grid.Col span={2}>
+				<Grid.Col span={3}>
 					<Stack align={'end'}>
 						<Button
-							variant={isInProgress ? 'gradient' : 'filled'}
+							variant={isInProgress ? 'outline' : 'filled'}
 							rightIcon={isInProgress ? <IconChevronRight /> : null}
 							color="green"
-							gradient={{ from: 'teal', to: 'lime', deg: 105 }}
 							onClick={() => {
 								if (isInProgress) {
 									navigate(`/${item.id}`)
@@ -133,8 +133,8 @@ export function QueueTable({ data, isLoading }: QueueTableProps) {
 
 	return (
 		<>
-			<Grid color="gray.1" pb="md" sx={{ width: '100%' }}>
-				<Grid.Col span={2} sx={{ textAlign: 'center' }}>
+			<Grid color="gray.1" pb="md" sx={{ width: '100%', fontWeight: 500 }}>
+				<Grid.Col span={1} sx={{ textAlign: 'center' }}>
 					SKB
 				</Grid.Col>
 				<Grid.Col span={4}>Tên người bệnh</Grid.Col>
@@ -144,7 +144,7 @@ export function QueueTable({ data, isLoading }: QueueTableProps) {
 				<Grid.Col span={2}>
 					<Text align="center">Dự kiến</Text>
 				</Grid.Col>
-				<Grid.Col span={2}></Grid.Col>
+				<Grid.Col span={3}></Grid.Col>
 			</Grid>
 			<ScrollArea sx={{ height: 450, width: '100%' }}>
 				<Center

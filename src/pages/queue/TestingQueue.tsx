@@ -24,7 +24,7 @@ const TestingQueue = () => {
 	)
 	const [value, setValue] = useDebouncedState('', 200)
 
-	const { data, isLoading } = useGetTestingCheckupQueueQuery(
+	const { data, isLoading, isSuccess } = useGetTestingCheckupQueueQuery(
 		authData?.information?.room?.id as number,
 		{
 			refetchOnFocus: true,
@@ -34,15 +34,21 @@ const TestingQueue = () => {
 	)
 
 	useEffect(() => {
-		if (!data?.length) return
+		if (!data?.length) {
+			if (isSuccess) {
+				setQueueData(undefined)
+			} else {
+				return
+			}
+		}
 		if (value === '') {
 			setQueueData(data)
 			return
 		}
-		const fuse = new Fuse(data, SEARCH_OPTIONS)
+		const fuse = new Fuse(data as CheckupQueue, SEARCH_OPTIONS)
 		const results: CheckupQueue = fuse.search(value).map(({ item }) => item)
 		setQueueData(results)
-	}, [value, data])
+	}, [value, data, isSuccess])
 
 	return (
 		<Stack p="md">
@@ -53,7 +59,7 @@ const TestingQueue = () => {
 				mb="sm"
 			>
 				<Title order={1} size="h3">
-					Danh sách người bệnh đã có KQXN
+					Danh sách người bệnh chưa có KQXN
 				</Title>
 				<TextInput
 					placeholder="Tìm kiếm người bệnh"

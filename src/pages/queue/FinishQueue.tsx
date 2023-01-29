@@ -23,7 +23,7 @@ const FinishQueue = () => {
 	)
 	const [value, setValue] = useDebouncedState('', 200)
 
-	const { data, isLoading } = useGetFinishedCheckupQueueQuery(
+	const { data, isLoading, isSuccess } = useGetFinishedCheckupQueueQuery(
 		authData?.information?.room?.id as number,
 		{
 			refetchOnFocus: true,
@@ -33,15 +33,21 @@ const FinishQueue = () => {
 	)
 
 	useEffect(() => {
-		if (!data?.length) return
+		if (!data?.length) {
+			if (isSuccess) {
+				setQueueData(undefined)
+			} else {
+				return
+			}
+		}
 		if (value === '') {
 			setQueueData(data)
 			return
 		}
-		const fuse = new Fuse(data, SEARCH_OPTIONS)
+		const fuse = new Fuse(data as CheckupQueue, SEARCH_OPTIONS)
 		const results: CheckupQueue = fuse.search(value).map(({ item }) => item)
 		setQueueData(results)
-	}, [value, data])
+	}, [value, data, isSuccess])
 
 	return (
 		<Stack p="md">

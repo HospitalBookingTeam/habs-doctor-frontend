@@ -78,7 +78,7 @@ const ProgressQueueTable = ({ data, isLoading }: QueueTableProps) => {
 
 	return (
 		<>
-			<Grid color="gray.1" p="sm" sx={{ width: '100%' }}>
+			<Grid color="gray.1" p="sm" sx={{ width: '100%', fontWeight: 500 }}>
 				<Grid.Col span={4}>Tên người bệnh</Grid.Col>
 				<Grid.Col span={3} sx={{ textAlign: 'center' }}>
 					Trạng thái
