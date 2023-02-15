@@ -48,7 +48,7 @@ export function QueueTable({ data, isLoading }: QueueTableProps) {
 			children: (
 				<Text size="sm">
 					Bạn sẽ khám người bệnh{' '}
-					<Text color="orange" inherit component="span">
+					<Text color="green" inherit component="span">
 						{patientName}
 					</Text>
 					. Vui lòng tiếp tục để xác nhận.

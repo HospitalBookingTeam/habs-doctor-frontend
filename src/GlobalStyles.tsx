@@ -21,6 +21,10 @@ const GlobalStyles = () => {
 					lineHeight: theme.lineHeight,
 					margin: 0,
 				},
+				'.mantine-Modal-header': {
+					borderBottom: '1px solid lightgray',
+					paddingBottom: '4px',
+				},
 				'.mantine-Modal-title': {
 					fontWeight: 700,
 				},
