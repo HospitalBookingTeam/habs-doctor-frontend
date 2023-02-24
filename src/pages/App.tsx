@@ -31,9 +31,6 @@ function App() {
 					</Route>
 					<Route path="*" element={<NotFound />} />
 				</Route>
-			</Routes>
-
-			<Routes>
 				<Route path="/login" element={<IsUserRedirect />}>
 					<Route index element={<Login />} />
 				</Route>

@@ -1,3 +1,5 @@
+import { Patient } from './record'
+
 export interface Operation {
 	id: number
 	name: string
@@ -23,6 +25,9 @@ export type RequestOperationsResponse = {
 	floor: string
 	operationId: number
 	operationName: string
+	qrCode: string
+	patient: Patient
+	doctor: string
 }
 
 export type NewOperation = {

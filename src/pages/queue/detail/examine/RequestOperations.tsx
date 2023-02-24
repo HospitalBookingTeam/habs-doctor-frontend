@@ -8,6 +8,7 @@ import {
 	Paper,
 	LoadingOverlay,
 	Divider,
+	Center,
 } from '@mantine/core'
 import { showNotification } from '@mantine/notifications'
 import { useNavigate, useParams } from 'react-router-dom'
@@ -18,6 +19,7 @@ import {
 	RequestOperationsResponse,
 } from '@/entities/operation'
 import OperationList from './OperationList'
+import PrintOperationDetail from './modals/PrintOperationDetail'
 
 const TestRecordList = lazy(() => import('@/components/Record/TestRecordList'))
 
@@ -112,7 +114,10 @@ const RequestOperations = ({ updateProgress }: RequestOperationsProps) => {
 				size={'720px'}
 				withCloseButton={!isLoadingRequestOperations}
 			>
-				<Group position="center" grow={true}>
+				<Group align="center" position="center" mx="auto" sx={{ width: 200 }}>
+					<PrintOperationDetail data={responseData} />
+				</Group>
+				<Group position="center" grow={true} mt="md">
 					{responseData?.map((item) => (
 						<Paper
 							withBorder

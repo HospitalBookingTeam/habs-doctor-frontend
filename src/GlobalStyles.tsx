@@ -28,6 +28,27 @@ const GlobalStyles = () => {
 				'.mantine-Modal-title': {
 					fontWeight: 700,
 				},
+				'@media all': {
+					'.page-break': {
+						display: 'none',
+					},
+				},
+				'@media print': {
+					'html, body': {
+						height: 'initial !important',
+						margin: '0 !important',
+						padding: '0 !important',
+						overflow: 'initial !important',
+					},
+					'.page-break': {
+						display: 'block',
+						breakAfter: 'page',
+					},
+				},
+				// '@page': {
+				// 	size: 'auto',
+				// 	margin: '20mm',
+				// },
 			})}
 		/>
 	)
