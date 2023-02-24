@@ -11,16 +11,13 @@ import {
 	Stack,
 	Title,
 	Grid,
-	Box,
-	Select,
 	NumberInput,
 	Divider,
 	Text,
 	Textarea,
-	Button,
-	Center,
 	LoadingOverlay,
 	Paper,
+	MultiSelect,
 } from '@mantine/core'
 
 import { useForm } from '@mantine/form'
@@ -52,16 +49,16 @@ const BasicCheckup = ({ updateProgress }: BasicCheckupProps) => {
 			temperature: undefined,
 			doctorAdvice: '',
 			diagnosis: '',
-			icdDiseaseId: undefined,
+			icdDiseaseIds: undefined,
 		},
 		validateInputOnChange: true,
 		validate: {
 			pulse: (value: number) =>
-				Number(value) < 50 || Number(value) > 150 ? true : null,
+				Number(value) < 0 || Number(value) > 200 ? true : null,
 			bloodPressure: (value: number) =>
-				Number(value) < 50 || Number(value) > 120 ? true : null,
+				Number(value) < 0 || Number(value) > 200 ? true : null,
 			temperature: (value: number) =>
-				Number(value) < 36 || Number(value) > 38.5 ? true : null,
+				Number(value) < 0 || Number(value) > 200 ? true : null,
 		},
 	})
 
@@ -98,7 +95,7 @@ const BasicCheckup = ({ updateProgress }: BasicCheckupProps) => {
 				temperature: checkupData?.temperature,
 				doctorAdvice: checkupData?.doctorAdvice ?? '',
 				diagnosis: checkupData?.diagnosis ?? '',
-				icdDiseaseId: checkupData?.icdDiseaseId,
+				icdDiseaseIds: checkupData?.icdDiseaseIds,
 			})
 		}
 	}, [isCheckupDataSuccess, checkupData])
@@ -115,9 +112,6 @@ const BasicCheckup = ({ updateProgress }: BasicCheckupProps) => {
 					</Paper>
 					<Divider />
 				</Stack>
-				<Title order={3} size="h6">
-					Chỉ số đo
-				</Title>
 
 				<form onSubmit={form.onSubmit(onSubmit)} id="form">
 					<LoadingOverlay visible={isLoadingUpdateRecord} />
@@ -178,7 +172,7 @@ const BasicCheckup = ({ updateProgress }: BasicCheckupProps) => {
 						</Grid.Col>
 
 						<Grid.Col span={12}>
-							<Select
+							<MultiSelect
 								size="sm"
 								label="Chẩn đoán"
 								placeholder="Chọn chẩn đoán phù hợp"
@@ -191,13 +185,13 @@ const BasicCheckup = ({ updateProgress }: BasicCheckupProps) => {
 								}
 								searchable
 								nothingFound="Không có dữ liệu"
-								{...form.getInputProps('icdDiseaseId')}
+								{...form.getInputProps('icdDiseaseIds')}
 							/>
 						</Grid.Col>
 						<Grid.Col span={6}>
 							<Textarea
-								label="Chẩn đoán cận lâm sàng"
-								placeholder="Vd. Đau họng"
+								label="Biểu hiện cận lâm sàng"
+								placeholder="Vd. Đau nhẹ"
 								autosize
 								minRows={2}
 								maxRows={4}
@@ -206,8 +200,8 @@ const BasicCheckup = ({ updateProgress }: BasicCheckupProps) => {
 						</Grid.Col>
 						<Grid.Col span={6}>
 							<Textarea
-								label="Lời khuyên"
-								placeholder="Vd. Uống nước"
+								label="Ghi chú thêm"
+								placeholder="Vd. Bé có thể tái khám ngay nếu vẫn còn biểu hiện"
 								autosize
 								minRows={2}
 								maxRows={4}

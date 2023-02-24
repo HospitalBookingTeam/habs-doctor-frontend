@@ -21,9 +21,34 @@ const GlobalStyles = () => {
 					lineHeight: theme.lineHeight,
 					margin: 0,
 				},
+				'.mantine-Modal-header': {
+					borderBottom: '1px solid lightgray',
+					paddingBottom: '4px',
+				},
 				'.mantine-Modal-title': {
 					fontWeight: 700,
 				},
+				'@media all': {
+					'.page-break': {
+						display: 'none',
+					},
+				},
+				'@media print': {
+					'html, body': {
+						height: 'initial !important',
+						margin: '0 !important',
+						padding: '0 !important',
+						overflow: 'initial !important',
+					},
+					'.page-break': {
+						display: 'block',
+						breakAfter: 'page',
+					},
+				},
+				// '@page': {
+				// 	size: 'auto',
+				// 	margin: '20mm',
+				// },
 			})}
 		/>
 	)

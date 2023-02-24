@@ -3,13 +3,23 @@ import { Patient } from '@/entities/record'
 import { formatDate } from '@/utils/formats'
 import { Stack, Title } from '@mantine/core'
 
-const PatientInfo = ({ data }: { data?: Patient }) => {
+const PatientInfo = ({
+	data,
+	gap = 12,
+	showTitle = true,
+}: {
+	data?: Patient
+	gap?: number
+	showTitle?: boolean
+}) => {
 	return (
 		<Stack>
-			<Title order={3} px="0" size="h4">
-				Thông tin người bệnh
-			</Title>
-			<Stack sx={{ gap: 12 }}>
+			{showTitle && (
+				<Title order={3} px="0" size="h4">
+					Thông tin người bệnh
+				</Title>
+			)}
+			<Stack sx={{ gap }}>
 				<RowWithLabel label={'Họ và tên'} content={data?.name} />
 				<RowWithLabel
 					label={'Ngày sinh'}

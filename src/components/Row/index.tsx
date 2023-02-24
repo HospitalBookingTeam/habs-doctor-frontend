@@ -12,10 +12,12 @@ const RowWithLabel = ({
 	label,
 	content,
 	labelSpan = 3,
+	width = '100%',
 }: {
 	label: string
 	content?: string
 	labelSpan?: number
+	width?: string
 }) => {
 	const { classes } = useStyles()
 	return (
@@ -24,7 +26,7 @@ const RowWithLabel = ({
 				// border: '1px solid lightgray',
 				border: '1px solid transparent',
 				borderRadius: 4,
-				width: '100%',
+				width,
 				margin: 0,
 			}}
 		>

@@ -80,7 +80,7 @@ export interface CheckupRecord {
 	patientId: number
 	doctorId: number
 	departmentId: number
-	icdDiseaseId: number
+	icdDiseaseIds: number[]
 	icdDiseaseName: string
 	icdCode: string
 	isReExam: boolean
@@ -111,7 +111,7 @@ export type CheckupFormData = {
 	pulse?: number
 	doctorAdvice?: string
 	diagnosis?: string
-	icdDiseaseId?: number
+	icdDiseaseIds?: number[]
 }
 
 export type RequiredTestReExam = {

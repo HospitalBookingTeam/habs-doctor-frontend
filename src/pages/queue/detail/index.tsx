@@ -14,6 +14,7 @@ import RequestDepartments from './examine/modals/RedirectDepartments'
 import RequestEmergency from './examine/modals/RequestEmergency'
 import PatientRecord from './record'
 import { useMediaQuery } from '@mantine/hooks'
+import PrintDetail from './examine/modals/PrintDetail'
 
 const PatientRecordTree = lazy(() => import('./examine/PatientRecordTree'))
 
@@ -135,6 +136,7 @@ const QueueDetail = () => {
 							{/* <RequestOperationsButton /> */}
 							<RequestDepartments />
 							<RequestEmergency />
+							<PrintDetail data={data} />
 						</Stack>
 					</Stack>
 
