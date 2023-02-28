@@ -1,7 +1,6 @@
 import { createSlice } from '@reduxjs/toolkit'
 import { AuthState } from '@/entities/auth'
 import { authApi } from '@/store/auth/api'
-import { removeLocalItem } from '@/utils/storage'
 import { LoginStatus } from '@/utils/renderEnums'
 
 const initialState: AuthState = {
@@ -16,7 +15,6 @@ export const authSlice = createSlice({
 	reducers: {
 		logout: (state) => {
 			state = { ...initialState }
-			removeLocalItem('persist:root')
 			return state
 		},
 		setAuthenticated: (state, action) => {

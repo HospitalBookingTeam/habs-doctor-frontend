@@ -5,6 +5,8 @@ import { selectIsAuthenticated } from '@/store/auth/selectors'
 import { useAppSelector } from '@/store/hooks'
 import QueueDetail from './queue/detail'
 import LayoutAppShell from '@/components/Layout'
+import { useLazyGetTimeQuery } from '@/store/config/api'
+import { selectTime } from '@/store/config/selectors'
 
 const Login = lazy(() => import('@/pages/auth'))
 const Queue = lazy(() => import('@/pages/queue'))
@@ -14,6 +16,18 @@ const RecordHistory = lazy(() => import('@/pages/history'))
 const NotFound = lazy(() => import('@/components/NotFound/NotFoundPage'))
 
 function App() {
+	const isAuthenticated = useAppSelector(selectIsAuthenticated)
+	const configTime = useAppSelector(selectTime)
+	const [triggerTimeConfig] = useLazyGetTimeQuery()
+	useEffect(() => {
+		const getTime = async () => {
+			await triggerTimeConfig()
+		}
+		if (isAuthenticated && configTime === null) {
+			getTime()
+		}
+	}, [isAuthenticated, configTime])
+
 	return (
 		<Suspense fallback={<LoadingOverlay visible={true} />}>
 			<Routes>

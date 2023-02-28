@@ -8,7 +8,6 @@ import {
 	Paper,
 	LoadingOverlay,
 	Divider,
-	Center,
 } from '@mantine/core'
 import { showNotification } from '@mantine/notifications'
 import { useNavigate, useParams } from 'react-router-dom'

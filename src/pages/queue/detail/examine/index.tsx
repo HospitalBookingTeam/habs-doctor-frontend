@@ -66,21 +66,21 @@ const ExamineTabs = () => {
 				<Stepper.Step
 					label="Chẩn đoán cơ bản"
 					// description="Khám cơ bản"
-					allowStepSelect={active > 0}
+					allowStepSelect={true}
 				>
 					<BasicCheckup updateProgress={nextStep} />
 				</Stepper.Step>
 				<Stepper.Step
 					label="Yêu cầu xét nghiệm"
 					// description="Xét nghiệm"
-					allowStepSelect={active > 1}
+					allowStepSelect={true}
 				>
 					<RequestOperations updateProgress={nextStep} />
 				</Stepper.Step>
-				<Stepper.Step label="Kê thuốc" allowStepSelect={active > 2}>
+				<Stepper.Step label="Kê thuốc" allowStepSelect={true}>
 					<Medication updateProgress={nextStep} />
 				</Stepper.Step>
-				<Stepper.Step label="Hẹn tái khám" allowStepSelect={active > 3}>
+				<Stepper.Step label="Hẹn tái khám" allowStepSelect={true}>
 					<Reschedule updateProgress={nextStep} />
 				</Stepper.Step>
 				<Stepper.Completed>
@@ -97,11 +97,11 @@ const ExamineTabs = () => {
 				</Button>
 				{active < 4 && (
 					<Button type="submit" form="form">
-						Lưu và tiếp tục
+						Tiếp tục
 					</Button>
 				)}
 
-				{isSkip && (
+				{/* {isSkip && (
 					<Button
 						variant="subtle"
 						color="blue"
@@ -110,7 +110,7 @@ const ExamineTabs = () => {
 					>
 						Bỏ qua
 					</Button>
-				)}
+				)} */}
 			</Group>
 		</>
 	)

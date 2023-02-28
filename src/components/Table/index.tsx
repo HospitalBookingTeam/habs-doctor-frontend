@@ -1,5 +1,8 @@
 import { CheckupQueue, CheckupQueueItem } from '@/entities/queue'
-import { useConfirmCheckupFromQueueByIdMutation } from '@/store/queue/api'
+import {
+	useConfirmCheckupFromQueueByIdMutation,
+	useNotifyPatientMutation,
+} from '@/store/queue/api'
 import { formatDate } from '@/utils/formats'
 import {
 	CheckupRecordStatus,
@@ -16,11 +19,13 @@ import {
 	LoadingOverlay,
 	Loader,
 	Stack,
+	Group,
+	ActionIcon,
 } from '@mantine/core'
 import { useMediaQuery } from '@mantine/hooks'
 import { openConfirmModal } from '@mantine/modals'
 import { showNotification } from '@mantine/notifications'
-import { IconChevronRight } from '@tabler/icons'
+import { IconBell, IconChevronRight } from '@tabler/icons'
 import { Fragment } from 'react'
 import { useNavigate } from 'react-router-dom'
 
@@ -41,6 +46,8 @@ export function QueueTable({ data, isLoading }: QueueTableProps) {
 	const navigate = useNavigate()
 	const [confirmQueueCheckupById, { isLoading: isLoadingConfirm }] =
 		useConfirmCheckupFromQueueByIdMutation()
+	const [notifyPatientMutation, { isLoading: isLoadingNotify }] =
+		useNotifyPatientMutation()
 
 	const openModal = (patientName: string, queueId: number) =>
 		openConfirmModal({
@@ -67,6 +74,23 @@ export function QueueTable({ data, isLoading }: QueueTableProps) {
 				showNotification({
 					title: 'Lỗi xác nhận khám bệnh',
 					message: 'Đã có người bệnh khác đang khám.',
+					color: 'red',
+				})
+			)
+	}
+	const handleNotifyPatient = async (queueId: number) => {
+		await notifyPatientMutation(queueId)
+			.unwrap()
+			.then((payload) =>
+				showNotification({
+					title: 'Thông báo thành công',
+					message: 'Thông báo đã được gửi đến người bệnh',
+				})
+			)
+			.catch((error) =>
+				showNotification({
+					title: 'Lỗi thông báo',
+					message: 'Không thành công.',
 					color: 'red',
 				})
 			)
@@ -109,7 +133,10 @@ export function QueueTable({ data, isLoading }: QueueTableProps) {
 					</Text>
 				</Grid.Col>
 				<Grid.Col span={3}>
-					<Stack align={'end'}>
+					<Group align={'end'}>
+						<ActionIcon onClick={() => handleNotifyPatient(item.id)}>
+							<IconBell />
+						</ActionIcon>
 						<Button
 							variant={isInProgress ? 'outline' : 'filled'}
 							rightIcon={isInProgress ? <IconChevronRight /> : null}
@@ -125,7 +152,7 @@ export function QueueTable({ data, isLoading }: QueueTableProps) {
 						>
 							{isInProgress ? 'Tiếp tục khám' : 'Khám bệnh'}
 						</Button>
-					</Stack>
+					</Group>
 				</Grid.Col>
 			</Grid>
 		)

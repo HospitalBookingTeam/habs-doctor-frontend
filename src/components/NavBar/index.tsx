@@ -28,6 +28,9 @@ import { useAppDispatch, useAppSelector } from '@/store/hooks'
 import { logout } from '@/store/auth/slice'
 import { selectAuth } from '@/store/auth/selectors'
 import { useMediaQuery } from '@mantine/hooks'
+import { removeLocalItem } from '@/utils/storage'
+import { persistor } from '@/store'
+import { clearConfig } from '@/store/config/slice'
 
 const useStyles = createStyles((theme, _params, getRef) => {
 	const icon: string = getRef('icon')
@@ -257,6 +260,11 @@ export function NavbarSimpleColored({ opened }: { opened: boolean }) {
 					label="Đăng xuất"
 					onClick={() => {
 						dispatch(logout())
+						dispatch(clearConfig())
+						persistor.pause()
+						persistor.flush().then(() => {
+							return persistor.purge()
+						})
 					}}
 				/>
 			</Navbar.Section>

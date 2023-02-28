@@ -1,4 +1,5 @@
 import { AuthForm } from '@/entities/auth'
+import { persistor } from '@/store'
 import { useGetRoomListQuery, useLoginMutation } from '@/store/auth/api'
 import { logout, setAuthenticated } from '@/store/auth/slice'
 import { useAppDispatch } from '@/store/hooks'
@@ -66,6 +67,7 @@ const Login = () => {
 	})
 
 	const onSubmit = async (values: AuthForm) => {
+		persistor.persist()
 		await login({ ...values, roomId: Number(values?.roomId) })
 			.unwrap()
 			.then(({ loginStatus, message }) => {
