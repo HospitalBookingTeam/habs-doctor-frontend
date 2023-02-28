@@ -46,6 +46,12 @@ export const queueApi = api.injectEndpoints({
 				method: 'POST',
 			}),
 		}),
+		notifyPatient: build.mutation<void, number>({
+			query: (queueId) => ({
+				url: `checkup-records/notify/${queueId}`,
+				method: 'GET',
+			}),
+		}),
 	}),
 })
 
@@ -53,7 +59,7 @@ export const {
 	useGetCheckupQueueQuery,
 	useGetFinishedCheckupQueueQuery,
 	useGetTestingCheckupQueueQuery,
-
+	useNotifyPatientMutation,
 	useConfirmCheckupFromQueueByIdMutation,
 } = queueApi
 
