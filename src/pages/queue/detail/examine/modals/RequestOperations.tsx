@@ -105,10 +105,10 @@ const RequestOperationsButton = () => {
 						>
 							<Stack>
 								<Text weight={700}>{item.operationName}</Text>
-								<ResponseRow
+								{/* <ResponseRow
 									label="Số khám bệnh"
-									content={item.numericalOrder.toString()}
-								/>
+									content={item.numericalOrder?.toString() ?? '---'}
+								/> */}
 								<ResponseRow
 									label="Nơi khám"
 									content={`Phòng ${item.roomNumber} - Tầng ${item.floor}`}
