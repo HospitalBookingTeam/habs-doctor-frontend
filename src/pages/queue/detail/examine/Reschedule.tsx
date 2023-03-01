@@ -236,6 +236,7 @@ const Reschedule = ({ updateProgress }: RescheduleProps) => {
 							editReExam={editReExam}
 							updateSelectedOperationIds={(ids) =>
 								form.setValues({
+									...form.values,
 									examOperationIds: ids,
 								})
 							}

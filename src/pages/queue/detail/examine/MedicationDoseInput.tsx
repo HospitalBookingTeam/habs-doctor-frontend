@@ -27,7 +27,6 @@ const MedicationDoseInput = ({
 			</Chip>
 			{!!checked && (
 				<NumberInput
-					defaultValue={1}
 					className={globalClasses.numberInput}
 					{...getInputProps()}
 				/>

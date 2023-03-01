@@ -118,8 +118,8 @@ const BasicCheckup = ({ updateProgress }: BasicCheckupProps) => {
 					<Grid gutter="xl">
 						<Grid.Col span={3}>
 							<NumberInput
-								label="Nhịp tim"
-								placeholder="vd. 100"
+								label="Cân nặng"
+								placeholder="vd. 6"
 								size="sm"
 								className={cxGlobal(globalClasses.numberInput, {
 									[globalClasses.width60]: true,
@@ -127,7 +127,7 @@ const BasicCheckup = ({ updateProgress }: BasicCheckupProps) => {
 								rightSectionWidth={60}
 								rightSection={
 									<Text px="sm" color="gray">
-										BPM
+										kg
 									</Text>
 								}
 								{...form.getInputProps('bloodPressure')}
@@ -135,7 +135,7 @@ const BasicCheckup = ({ updateProgress }: BasicCheckupProps) => {
 						</Grid.Col>
 						<Grid.Col span={3}>
 							<NumberInput
-								label="Huyết áp"
+								label="Chiều cao"
 								placeholder="vd. 100"
 								size="sm"
 								className={cxGlobal(globalClasses.numberInput, {
@@ -144,7 +144,7 @@ const BasicCheckup = ({ updateProgress }: BasicCheckupProps) => {
 								rightSectionWidth={60}
 								rightSection={
 									<Text px="sm" color="gray">
-										mmHg
+										cm
 									</Text>
 								}
 								{...form.getInputProps('pulse')}

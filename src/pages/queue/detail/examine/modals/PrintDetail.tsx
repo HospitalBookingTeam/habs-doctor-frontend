@@ -46,7 +46,7 @@ const PrintDetail = ({ data }: { data?: CheckupRecord }) => {
 							<Text size="xs">{roomLabel}</Text>
 						</Stack>
 						<Text size="lg" weight="bold">
-							ĐƠN THUỐC
+							KẾT QUẢ KHÁM BỆNH
 						</Text>
 						<Stack align="flex-end">
 							<Barcode
@@ -106,9 +106,11 @@ const PrintDetail = ({ data }: { data?: CheckupRecord }) => {
 								<Stack>
 									<Text weight={'bold'}>
 										TÁI KHÁM:{' '}
-										{data?.reExamDate ? formatDate(data?.reExamDate) : 'Không'}
+										{data?.reExam?.date
+											? formatDate(data?.reExam?.date)
+											: 'Không'}
 									</Text>
-									<Text>Lưu ý: {data?.reExamNote}</Text>
+									<Text>Lưu ý: {data?.reExam?.note}</Text>
 								</Stack>
 								<Stack align="center">
 									<Text size="xs">
