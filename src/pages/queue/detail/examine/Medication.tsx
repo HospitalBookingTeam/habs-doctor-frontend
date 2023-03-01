@@ -37,11 +37,11 @@ const DEFAULT_MED = {
 	key: randomId(),
 	medicineId: '',
 	usage: '',
-	quantity: undefined,
-	morningDose: undefined,
-	middayDose: undefined,
-	eveningDose: undefined,
-	nightDose: undefined,
+	quantity: 0,
+	morningDose: 0,
+	middayDose: 0,
+	eveningDose: 0,
+	nightDose: 0,
 }
 type MedicationProps = {
 	updateProgress: () => void
@@ -113,7 +113,7 @@ const Medication = ({ updateProgress }: MedicationProps) => {
 
 	const rows = form.values.details?.map((item, index: number) => {
 		const medItem = medData?.find((_item) => _item.id === item.medicineId)
-
+		const renderMedTitle = medItem ? `${medItem?.name} (${medItem?.unit})` : ''
 		return (
 			<Accordion.Item
 				key={item.key}
@@ -126,9 +126,12 @@ const Medication = ({ updateProgress }: MedicationProps) => {
 					justify="space-between"
 				>
 					<Accordion.Control>
-						<Box>
-							Thuốc {index + 1} - {medItem?.name} - {renderDoseContent(item)}
-						</Box>
+						<Stack>
+							<Text>
+								{index + 1} - {renderMedTitle} - {renderDoseContent(item)}
+							</Text>
+							<Text size="xs">HDSD: {item?.usage}</Text>
+						</Stack>
 					</Accordion.Control>
 					<ActionIcon
 						color="red"
@@ -167,7 +170,14 @@ const Medication = ({ updateProgress }: MedicationProps) => {
 							/>
 						</Grid.Col>
 
-						<Grid.Col span={4}></Grid.Col>
+						<Grid.Col span={4}>
+							<NumberInput
+								label="Số ngày sử dụng"
+								className={globalClasses.numberInput}
+								sx={{ maxWidth: 150 }}
+								{...form.getInputProps(`details.${index}.quantity`)}
+							/>
+						</Grid.Col>
 
 						<Grid.Col span={2}>
 							<MedicationDoseInput
@@ -205,16 +215,7 @@ const Medication = ({ updateProgress }: MedicationProps) => {
 								}
 							/>
 						</Grid.Col>
-						<Grid.Col span={4}></Grid.Col>
-						<Grid.Col span={2}>
-							<NumberInput
-								label="Số ngày sử dụng"
-								hideControls={true}
-								className={globalClasses.numberInput}
-								defaultValue={1}
-								{...form.getInputProps(`details.${index}.quantity`)}
-							/>
-						</Grid.Col>
+
 						<Grid.Col span={12}>
 							<Textarea
 								label="Hướng dẫn sử dụng"
@@ -295,7 +296,7 @@ const Medication = ({ updateProgress }: MedicationProps) => {
 						type="button"
 						onClick={() => form.insertListItem('details', DEFAULT_MED)}
 					>
-						Thêm thuốc
+						{form.values.details?.length ? 'Thêm thuốc' : 'Kê đơn thuốc'}
 					</Button>
 
 					{/* <Button
