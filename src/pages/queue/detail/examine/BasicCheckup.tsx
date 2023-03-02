@@ -190,7 +190,7 @@ const BasicCheckup = ({ updateProgress }: BasicCheckupProps) => {
 						</Grid.Col>
 						<Grid.Col span={6}>
 							<Textarea
-								label="Biểu hiện cận lâm sàng"
+								label="Biểu hiện lâm sàng"
 								placeholder="Vd. Đau nhẹ"
 								autosize
 								minRows={2}

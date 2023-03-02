@@ -42,7 +42,7 @@ const HistoryRecord = ({ data }: { data?: CheckupRecord }) => {
 				</Grid>
 				<RowWithLabel
 					labelSpan={3}
-					label="Chẩn đoán cận lâm sàng"
+					label="Biểu hiện lâm sàng"
 					content={data?.diagnosis?.toString() ?? '---'}
 				/>
 				<RowWithLabel
