@@ -97,7 +97,7 @@ const PrintOperationDetail = ({
 										<Text>Số khám bệnh: {item.numericalOrder}</Text>
 									</Group>
 									<Text>
-										Mã QR: <QRCodeSVG value={item.qrCode} />
+										<QRCodeSVG value={item.qrCode} />
 									</Text>
 								</Stack>
 
