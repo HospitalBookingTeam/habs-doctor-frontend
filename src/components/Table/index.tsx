@@ -133,7 +133,7 @@ export function QueueTable({ data, isLoading }: QueueTableProps) {
 					</Text>
 				</Grid.Col>
 				<Grid.Col span={3}>
-					<Group align={'end'}>
+					<Group align={'center'} position="right">
 						<ActionIcon onClick={() => handleNotifyPatient(item.id)}>
 							<IconBell />
 						</ActionIcon>
@@ -148,7 +148,7 @@ export function QueueTable({ data, isLoading }: QueueTableProps) {
 								}
 								openModal(item.patientName, item.id)
 							}}
-							sx={{ width: matches ? 130 : 170 }}
+							sx={{ width: matches ? 120 : 150 }}
 						>
 							{isInProgress ? 'Tiếp tục khám' : 'Khám bệnh'}
 						</Button>
@@ -160,20 +160,20 @@ export function QueueTable({ data, isLoading }: QueueTableProps) {
 
 	return (
 		<>
-			<Grid color="gray.1" pb="md" sx={{ width: '100%', fontWeight: 500 }}>
-				<Grid.Col span={1} sx={{ textAlign: 'center' }}>
-					SKB
-				</Grid.Col>
-				<Grid.Col span={4}>Tên người bệnh</Grid.Col>
-				<Grid.Col span={2} sx={{ textAlign: 'center' }}>
-					Trạng thái
-				</Grid.Col>
-				<Grid.Col span={2}>
-					<Text align="center">Dự kiến</Text>
-				</Grid.Col>
-				<Grid.Col span={3}></Grid.Col>
-			</Grid>
 			<ScrollArea sx={{ height: 450, width: '100%' }}>
+				<Grid color="gray.1" pb="md" sx={{ width: '100%', fontWeight: 500 }}>
+					<Grid.Col span={1} sx={{ textAlign: 'center' }}>
+						SKB
+					</Grid.Col>
+					<Grid.Col span={4}>Tên người bệnh</Grid.Col>
+					<Grid.Col span={2} sx={{ textAlign: 'center' }}>
+						Trạng thái
+					</Grid.Col>
+					<Grid.Col span={2}>
+						<Text align="center">Dự kiến</Text>
+					</Grid.Col>
+					<Grid.Col span={3}></Grid.Col>
+				</Grid>
 				<Center
 					sx={{
 						height: 100,

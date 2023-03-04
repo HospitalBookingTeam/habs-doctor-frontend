@@ -16,7 +16,7 @@ const Clock = () => {
 		setCurrentTime(
 			formatDate(dayjs().valueOf() + (configTime ?? 0), DATE_FORMAT)
 		)
-	}, [])
+	}, [configTime])
 
 	useEffect(() => {
 		const interval = setInterval(
@@ -28,7 +28,7 @@ const Clock = () => {
 		)
 
 		return () => clearInterval(interval)
-	}, [])
+	}, [configTime])
 
 	return (
 		<Tooltip label={currentTime} position="right" transitionDuration={0}>
