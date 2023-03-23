@@ -1,3 +1,5 @@
+import { SessionType } from '@/utils/renderEnums'
+
 export type CheckupQueueItem = {
 	id: number
 	status: number
@@ -6,6 +8,7 @@ export type CheckupQueueItem = {
 	patientName: string
 	patientId: number
 	isReExam: boolean
+	session: SessionType
 }
 
 export type CheckupQueue = CheckupQueueItem[]
