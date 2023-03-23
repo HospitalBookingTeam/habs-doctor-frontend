@@ -7,6 +7,7 @@ import { formatDate } from '@/utils/formats'
 import {
 	CheckupRecordStatus,
 	translateCheckupRecordStatus,
+	translateSession,
 } from '@/utils/renderEnums'
 import {
 	Badge,
@@ -132,7 +133,23 @@ export function QueueTable({ data, isLoading }: QueueTableProps) {
 						{formatDate(item?.estimatedStartTime, 'HH:mm')}
 					</Text>
 				</Grid.Col>
-				<Grid.Col span={3}>
+				<Grid.Col span={1}>
+					<Text align="center">
+						<Badge
+							size="md"
+							color={
+								item?.session == 0
+									? 'green'
+									: item?.session == 1
+									? 'blue'
+									: 'orange'
+							}
+						>
+							{translateSession(item?.session)}
+						</Badge>
+					</Text>
+				</Grid.Col>
+				<Grid.Col span={2}>
 					<Group align={'center'} position="right">
 						<ActionIcon onClick={() => handleNotifyPatient(item.id)}>
 							<IconBell />
@@ -148,7 +165,7 @@ export function QueueTable({ data, isLoading }: QueueTableProps) {
 								}
 								openModal(item.patientName, item.id)
 							}}
-							sx={{ width: matches ? 120 : 150 }}
+							sx={{ width: 120 }}
 						>
 							{isInProgress ? 'Tiếp tục khám' : 'Khám bệnh'}
 						</Button>
@@ -160,20 +177,23 @@ export function QueueTable({ data, isLoading }: QueueTableProps) {
 
 	return (
 		<>
+			<Grid color="gray.1" pb="md" sx={{ width: '100%', fontWeight: 500 }}>
+				<Grid.Col span={1} sx={{ textAlign: 'center' }}>
+					SKB
+				</Grid.Col>
+				<Grid.Col span={4}>Tên người bệnh</Grid.Col>
+				<Grid.Col span={2} sx={{ textAlign: 'center' }}>
+					Trạng thái
+				</Grid.Col>
+				<Grid.Col span={2}>
+					<Text align="center">Dự kiến</Text>
+				</Grid.Col>
+				<Grid.Col span={1}>
+					<Text align="center">Ca khám</Text>
+				</Grid.Col>
+				<Grid.Col span={2}></Grid.Col>
+			</Grid>
 			<ScrollArea sx={{ height: 450, width: '100%' }}>
-				<Grid color="gray.1" pb="md" sx={{ width: '100%', fontWeight: 500 }}>
-					<Grid.Col span={1} sx={{ textAlign: 'center' }}>
-						SKB
-					</Grid.Col>
-					<Grid.Col span={4}>Tên người bệnh</Grid.Col>
-					<Grid.Col span={2} sx={{ textAlign: 'center' }}>
-						Trạng thái
-					</Grid.Col>
-					<Grid.Col span={2}>
-						<Text align="center">Dự kiến</Text>
-					</Grid.Col>
-					<Grid.Col span={3}></Grid.Col>
-				</Grid>
 				<Center
 					sx={{
 						height: 100,
