@@ -33,8 +33,6 @@ type RescheduleProps = {
 	updateProgress: () => void
 }
 const Reschedule = ({ updateProgress }: RescheduleProps) => {
-	const { data: operationList, isLoading: isLoadingOperationList } =
-		useGetOperationListQuery()
 	const [requestReExamMutation, { isLoading: isLoadingRequestReExamMutation }] =
 		useRequestReExamByIdMutation()
 

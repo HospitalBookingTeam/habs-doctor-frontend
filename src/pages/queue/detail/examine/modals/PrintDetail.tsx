@@ -83,7 +83,12 @@ const PrintDetail = ({ data }: { data?: CheckupRecord }) => {
 							<Text>Cân nặng: {data?.bloodPressure}kg</Text>
 							<Text>Chiều cao: {data?.pulse}cm</Text>
 						</Group>
-						<Text>Chẩn đoán: {data?.icdDiseaseIds?.join(', ')}</Text>
+						<Text>
+							Chẩn đoán:{' '}
+							{data?.icdDiseases
+								?.map((item) => item.icdDiseaseName)
+								?.join(', ')}
+						</Text>
 						<Text mt="sm" weight="bold">
 							Chỉ định dùng thuốc
 						</Text>

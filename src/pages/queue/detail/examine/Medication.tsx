@@ -186,6 +186,9 @@ const Medication = ({ updateProgress }: MedicationProps) => {
 								getInputProps={() =>
 									form.getInputProps(`details.${index}.morningDose`)
 								}
+								resetValue={() =>
+									form.setFieldValue(`details.${index}.morningDose`, 0)
+								}
 							/>
 						</Grid.Col>
 						<Grid.Col span={2}>
@@ -194,6 +197,9 @@ const Medication = ({ updateProgress }: MedicationProps) => {
 								amount={item?.middayDose}
 								getInputProps={() =>
 									form.getInputProps(`details.${index}.middayDose`)
+								}
+								resetValue={() =>
+									form.setFieldValue(`details.${index}.middayDose`, 0)
 								}
 							/>
 						</Grid.Col>
@@ -204,6 +210,9 @@ const Medication = ({ updateProgress }: MedicationProps) => {
 								getInputProps={() =>
 									form.getInputProps(`details.${index}.eveningDose`)
 								}
+								resetValue={() =>
+									form.setFieldValue(`details.${index}.eveningDose`, 0)
+								}
 							/>
 						</Grid.Col>
 						<Grid.Col span={2}>
@@ -212,6 +221,9 @@ const Medication = ({ updateProgress }: MedicationProps) => {
 								amount={item?.nightDose}
 								getInputProps={() =>
 									form.getInputProps(`details.${index}.nightDose`)
+								}
+								resetValue={() =>
+									form.setFieldValue(`details.${index}.nightDose`, 0)
 								}
 							/>
 						</Grid.Col>

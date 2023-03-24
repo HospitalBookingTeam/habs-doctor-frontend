@@ -8,9 +8,11 @@ const MedicationDoseInput = ({
 	label,
 	amount,
 	getInputProps,
+	resetValue,
 }: {
 	label: string
 	getInputProps: () => GetInputProps<MedicineRequest>
+	resetValue: () => void
 	amount?: number
 }) => {
 	const [checked, setChecked] = useState(false)
@@ -22,7 +24,13 @@ const MedicationDoseInput = ({
 
 	return (
 		<Stack>
-			<Chip checked={checked} onChange={() => setChecked((v) => !v)}>
+			<Chip
+				checked={checked}
+				onChange={() => {
+					setChecked((v) => !v)
+					resetValue()
+				}}
+			>
 				{label}
 			</Chip>
 			{!!checked && (

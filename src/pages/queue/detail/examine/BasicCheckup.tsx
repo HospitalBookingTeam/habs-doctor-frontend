@@ -95,7 +95,9 @@ const BasicCheckup = ({ updateProgress }: BasicCheckupProps) => {
 				temperature: checkupData?.temperature,
 				doctorAdvice: checkupData?.doctorAdvice ?? '',
 				diagnosis: checkupData?.diagnosis ?? '',
-				icdDiseaseIds: checkupData?.icdDiseaseIds,
+				icdDiseaseIds: checkupData?.icdDiseases?.map(
+					(item) => item.icdDiseaseId
+				),
 			})
 		}
 	}, [isCheckupDataSuccess, checkupData])

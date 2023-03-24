@@ -58,6 +58,12 @@ export interface ReExamCheckup {
 	note: string
 }
 
+export interface IcdDiseases {
+	icdDiseaseId: number
+	icdDiseaseName: string
+	icdCode: string
+}
+
 export interface CheckupRecord {
 	patientData: Patient
 	testRecords: TestRecord[]
@@ -80,8 +86,7 @@ export interface CheckupRecord {
 	patientId: number
 	doctorId: number
 	departmentId: number
-	icdDiseaseIds: number[]
-	icdDiseaseName: string
+	icdDiseases: IcdDiseases[]
 	icdCode: string
 	isReExam: boolean
 	hasReExam: boolean

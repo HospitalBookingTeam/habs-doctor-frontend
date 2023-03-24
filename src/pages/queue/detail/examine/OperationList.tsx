@@ -1,6 +1,9 @@
 import { forwardRef, useEffect, useState, useMemo } from 'react'
 import { NewOperation, Operation } from '@/entities/operation'
-import { useGetOperationListQuery } from '@/store/record/api'
+import {
+	useGetCheckupRecordByIdQuery,
+	useGetOperationListQuery,
+} from '@/store/record/api'
 import {
 	Select,
 	Button,
@@ -12,10 +15,10 @@ import {
 	Text,
 	Stack,
 } from '@mantine/core'
-import { GetInputProps } from '@mantine/form/lib/types'
 import { useListState } from '@mantine/hooks'
 import { IconDirection } from '@tabler/icons'
 import OperationsTable from '@/components/Table/OperationsTable'
+import { useParams } from 'react-router-dom'
 
 const useStyles = createStyles((theme) => ({
 	root: {
@@ -34,7 +37,11 @@ const OperationList = ({
 }: OperationListProps) => {
 	const { data: operationList, isLoading: isLoadingOperationList } =
 		useGetOperationListQuery()
-	const { classes } = useStyles()
+	const { id: queueId } = useParams()
+	const { data: checkupData, isSuccess: isCheckupDataSuccess } =
+		useGetCheckupRecordByIdQuery(Number(queueId), {
+			skip: !queueId,
+		})
 
 	const [searchValue, onSearchChange] = useState('')
 	const [selectedIds, setSelectedIds] = useState<number[]>([])
@@ -90,6 +97,7 @@ const OperationList = ({
 
 	const handleSelectOption = (val: string | null) => {
 		if (!val) return
+		if (selectedIds?.includes(Number(val))) return
 		setSelectedIds((ids) => [...ids, Number(val)])
 		updateSelectedOperationIds([...selectedIds, Number(val)])
 	}
@@ -105,6 +113,12 @@ const OperationList = ({
 			}))
 		)
 	}, [isLoadingOperationList, operationList, typesSelected])
+
+	useEffect(() => {
+		if (isCheckupDataSuccess && checkupData?.hasReExam) {
+			setSelectedIds(checkupData?.reExam?.operationIds ?? [])
+		}
+	}, [isCheckupDataSuccess, checkupData])
 
 	return (
 		<>

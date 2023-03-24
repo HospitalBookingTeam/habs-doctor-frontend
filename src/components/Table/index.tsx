@@ -113,7 +113,7 @@ export function QueueTable({ data, isLoading }: QueueTableProps) {
 				<Grid.Col span={1} sx={{ textAlign: 'center' }}>
 					{item.numericalOrder}
 				</Grid.Col>
-				<Grid.Col span={4}>
+				<Grid.Col span={3}>
 					<Text size="sm" weight={500}>
 						{item.patientName}
 					</Text>
@@ -149,7 +149,7 @@ export function QueueTable({ data, isLoading }: QueueTableProps) {
 						</Badge>
 					</Text>
 				</Grid.Col>
-				<Grid.Col span={2}>
+				<Grid.Col span={3}>
 					<Group align={'center'} position="right">
 						<ActionIcon onClick={() => handleNotifyPatient(item.id)}>
 							<IconBell />
@@ -181,7 +181,7 @@ export function QueueTable({ data, isLoading }: QueueTableProps) {
 				<Grid.Col span={1} sx={{ textAlign: 'center' }}>
 					SKB
 				</Grid.Col>
-				<Grid.Col span={4}>Tên người bệnh</Grid.Col>
+				<Grid.Col span={3}>Tên người bệnh</Grid.Col>
 				<Grid.Col span={2} sx={{ textAlign: 'center' }}>
 					Trạng thái
 				</Grid.Col>
@@ -191,7 +191,7 @@ export function QueueTable({ data, isLoading }: QueueTableProps) {
 				<Grid.Col span={1}>
 					<Text align="center">Ca khám</Text>
 				</Grid.Col>
-				<Grid.Col span={2}></Grid.Col>
+				<Grid.Col span={3}></Grid.Col>
 			</Grid>
 			<ScrollArea sx={{ height: 450, width: '100%' }}>
 				<Center
