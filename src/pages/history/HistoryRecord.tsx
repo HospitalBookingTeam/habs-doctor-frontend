@@ -14,8 +14,23 @@ const HistoryRecord = ({ data }: { data?: CheckupRecord }) => {
 					label="Tình trạng"
 					content={data?.isReExam ? 'Tái khám' : 'Khám thường'}
 				/>
-				<RowWithLabel label="Khoa" content={data?.departmentName} />
+				<RowWithLabel label="Khoa" content={data?.departmentName} isOdd />
 				<RowWithLabel label="Bác sĩ" content={data?.doctorName} />
+				<RowWithLabel
+					label="Phòng"
+					content={`Phòng khám ${data?.roomNumber ?? '--'} tầng ${
+						data?.floor ?? '--'
+					}`}
+					isOdd
+				/>
+				<RowWithLabel label="Triệu chứng" content={data?.clinicalSymptom} />
+				<RowWithLabel
+					label="Chẩn đoán"
+					content={data?.icdDiseases
+						?.map((item) => item.icdDiseaseName)
+						?.join(', ')}
+					isOdd
+				/>
 
 				<Grid>
 					<Grid.Col span={3}>
@@ -44,6 +59,7 @@ const HistoryRecord = ({ data }: { data?: CheckupRecord }) => {
 					labelSpan={3}
 					label="Biểu hiện lâm sàng"
 					content={data?.diagnosis?.toString() ?? '---'}
+					isOdd
 				/>
 				<RowWithLabel
 					labelSpan={3}

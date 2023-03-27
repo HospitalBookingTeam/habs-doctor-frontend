@@ -145,7 +145,7 @@ export const recordApi = api.injectEndpoints({
 			}),
 		}),
 		updateStatusRecord: build.mutation<
-			void,
+			any,
 			{ status: number; id: number; patientId: number }
 		>({
 			query: (body) => ({

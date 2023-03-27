@@ -33,12 +33,26 @@ const FinishRecord = () => {
 			status: CheckupRecordStatus.KET_THUC,
 		})
 			.unwrap()
-			.then(() => {
-				showNotification({
-					title: 'Hoàn thành khám bệnh',
-					message: <Text>Quy trình khám bệnh kết thúc thành công</Text>,
-				})
-				navigate('/')
+			.then((resp) => {
+				console.log('resp', resp)
+				if (resp?.success) {
+					showNotification({
+						title: 'Hoàn thành khám bệnh',
+						message: <Text>Quy trình khám bệnh kết thúc thành công</Text>,
+					})
+					if (resp?.nextCheckupRecordId) {
+						navigate(`/${resp?.nextCheckupRecordId}`)
+					} else {
+						navigate('/')
+					}
+					setOpened(false)
+				} else {
+					showNotification({
+						title: 'Đã xảy ra lỗi',
+						message: <Text>Vui lòng liên hệ admin để được hỗ trợ</Text>,
+						color: 'red',
+					})
+				}
 			})
 	}
 
@@ -53,7 +67,7 @@ const FinishRecord = () => {
 				withCloseButton={!isLoadingUpdateStatus}
 			>
 				<Stack>
-					<Text>Vui lòng tiếp tục nếu người bệnh đã được khám xong.</Text>
+					<Text>Vui lòng xác nhận nếu người bệnh đã được khám xong.</Text>
 
 					<Stack mt="md" sx={{ flexDirection: 'row' }} justify="end">
 						<Button
@@ -65,7 +79,7 @@ const FinishRecord = () => {
 							Quay lại
 						</Button>
 						<Button onClick={onConfirm} loading={isLoadingUpdateStatus}>
-							Tiếp tục
+							Xác nhận
 						</Button>
 					</Stack>
 				</Stack>

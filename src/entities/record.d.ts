@@ -93,6 +93,8 @@ export interface CheckupRecord {
 	reExamNote: string | null
 	reExam: ReExamCheckup | null
 	reExamTreeCode: string | null
+	floor?: string
+	roomNumber?: string
 }
 
 export type RecordItem = {
