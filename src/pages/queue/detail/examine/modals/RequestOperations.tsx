@@ -63,7 +63,7 @@ const RequestOperationsButton = () => {
 		})
 			.unwrap()
 			.then((payload) => {
-				setResponseData(payload)
+				// setResponseData(payload)
 				showNotification({
 					title: 'Yêu cầu xét nghiệm thành công',
 					message: <Text></Text>,
@@ -95,7 +95,7 @@ const RequestOperationsButton = () => {
 					grow={true}
 					sx={{ display: showResponse ? 'flex' : 'none' }}
 				>
-					{responseData?.map((item) => (
+					{/* {responseData?.map((item) => (
 						<Paper
 							withBorder
 							key={item.operationId}
@@ -105,17 +105,17 @@ const RequestOperationsButton = () => {
 						>
 							<Stack>
 								<Text weight={700}>{item.operationName}</Text>
-								{/* <ResponseRow
+								<ResponseRow
 									label="Số khám bệnh"
 									content={item.numericalOrder?.toString() ?? '---'}
-								/> */}
+								/>
 								<ResponseRow
 									label="Nơi khám"
 									content={`Phòng ${item.roomNumber} - Tầng ${item.floor}`}
 								/>
 							</Stack>
 						</Paper>
-					))}
+					))} */}
 				</Group>
 				<form
 					onSubmit={form.onSubmit(onSubmit)}

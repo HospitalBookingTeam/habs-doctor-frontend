@@ -6,6 +6,9 @@ import RequestOperations from './RequestOperations'
 import Reschedule from './Reschedule'
 import { useGetCheckupRecordByIdQuery } from '@/store/record/api'
 import { useParams } from 'react-router-dom'
+import { useAppDispatch, useAppSelector } from '@/store/hooks'
+import { selectRecord } from '@/store/record/selectors'
+import { toggleResetCheckup } from '@/store/record/slice'
 
 const ExamineTabs = () => {
 	const [active, setActive] = useState(0)
@@ -16,10 +19,13 @@ const ExamineTabs = () => {
 		setActive((current) => (current > 0 ? current - 1 : current))
 
 	const isSkip = active === 1 || active === 3
+	const recordState = useAppSelector(selectRecord)
+	const dispatch = useAppDispatch()
 
 	const { id: queueId } = useParams()
 	const { data: checkupData } = useGetCheckupRecordByIdQuery(Number(queueId), {
 		skip: !queueId,
+		refetchOnMountOrArgChange: recordState.resetCheckup,
 	})
 
 	useEffect(() => {
@@ -32,6 +38,13 @@ const ExamineTabs = () => {
 		}
 		setIsMounted(true)
 	}, [checkupData, isMounted])
+
+	useEffect(() => {
+		if (recordState.resetCheckup) {
+			setActive(0)
+			dispatch(toggleResetCheckup(false))
+		}
+	}, [recordState.resetCheckup])
 
 	return (
 		// <Tabs value={activeTab} onTabChange={setActiveTab}>

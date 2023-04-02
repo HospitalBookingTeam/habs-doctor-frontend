@@ -3,6 +3,7 @@ import storage from 'redux-persist/es/storage'
 import authReducer from './auth/slice'
 import queueReducer from './queue/slice'
 import configReducer from './config/slice'
+import recordReducer from './record/slice'
 import {
 	persistStore,
 	persistReducer,
@@ -28,6 +29,7 @@ const rootReducer = combineReducers({
 	auth: authReducer,
 	queue: queueReducer,
 	config: configReducer,
+	record: recordReducer,
 })
 
 const persistedReducer = persistReducer(persistConfig, rootReducer)

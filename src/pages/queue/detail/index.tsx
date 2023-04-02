@@ -36,7 +36,7 @@ const QueueDetail = () => {
 
 	const { id: queueId } = useParams()
 	const { data, isLoading } = useGetCheckupRecordByIdQuery(Number(queueId), {
-		refetchOnFocus: true,
+		refetchOnMountOrArgChange: true,
 		skip: !queueId,
 	})
 

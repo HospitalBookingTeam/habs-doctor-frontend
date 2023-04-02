@@ -1,13 +1,12 @@
 import {
 	Department,
 	DepartmentRequest,
-	DepartmentResponse,
+	IRedirectDepartmentResponse,
 } from '@/entities/department'
 import { Icd } from '@/entities/icd'
 import { Medicine } from '@/entities/medicine'
 import {
 	NewOperation,
-	Operation,
 	RequestOperations,
 	RequestOperationsResponse,
 } from '@/entities/operation'
@@ -59,7 +58,6 @@ export const recordApi = api.injectEndpoints({
 			query: (id) => ({
 				url: `re-exam-tree/${id}`,
 			}),
-			providesTags: (result) => [{ type: 'Record' as const, id: result?.id }],
 		}),
 		getReExamTreeByPatientId: build.query<ReExamTree[], string>({
 			query: (id) => ({
@@ -155,7 +153,7 @@ export const recordApi = api.injectEndpoints({
 			}),
 		}),
 		requestRedirectDepartmentsById: build.mutation<
-			DepartmentResponse[],
+			IRedirectDepartmentResponse,
 			DepartmentRequest
 		>({
 			query: (body) => ({
@@ -165,7 +163,7 @@ export const recordApi = api.injectEndpoints({
 			}),
 		}),
 		requestOperationsById: build.mutation<
-			RequestOperationsResponse[],
+			RequestOperationsResponse,
 			RequestOperations
 		>({
 			query: (body) => ({

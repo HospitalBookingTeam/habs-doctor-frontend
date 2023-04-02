@@ -1,5 +1,5 @@
 import { Icd } from '@/entities/icd'
-import { CheckupQueue } from '@/entities/queue'
+import { CheckupQueue, ITestingQueue } from '@/entities/queue'
 import { CheckupRecord } from '@/entities/record'
 import { api } from '../api'
 
@@ -27,7 +27,7 @@ export const queueApi = api.injectEndpoints({
 				{ type: 'Queue' as const, id: 'FINISHED_LIST' },
 			],
 		}),
-		getTestingCheckupQueue: build.query<CheckupQueue, number>({
+		getTestingCheckupQueue: build.query<ITestingQueue, number>({
 			query: (roomId) => ({
 				url: 'checkup-queue/testing',
 				params: { 'room-id': roomId },

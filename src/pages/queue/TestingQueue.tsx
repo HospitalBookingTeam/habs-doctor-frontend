@@ -1,14 +1,8 @@
-import LayoutAppShell from '@/components/Layout'
-import { QueueTable } from '@/components/Table'
 import ProgressQueueTable from '@/components/Table/ProgressQueueTable'
-import { CheckupQueue } from '@/entities/queue'
+import { ITestingQueue } from '@/entities/queue'
 import { selectAuth } from '@/store/auth/selectors'
 import { useAppSelector } from '@/store/hooks'
-import {
-	useGetCheckupQueueQuery,
-	useGetFinishedCheckupQueueQuery,
-	useGetTestingCheckupQueueQuery,
-} from '@/store/queue/api'
+import { useGetTestingCheckupQueueQuery } from '@/store/queue/api'
 import { SEARCH_OPTIONS } from '@/utils/constants'
 import { Stack, Title, Grid, TextInput, Paper, Loader } from '@mantine/core'
 import { useDebouncedState } from '@mantine/hooks'
@@ -19,7 +13,7 @@ import { useEffect, useState } from 'react'
 const TestingQueue = () => {
 	const authData = useAppSelector(selectAuth)
 
-	const [queueData, setQueueData] = useState<CheckupQueue | undefined>(
+	const [queueData, setQueueData] = useState<ITestingQueue | undefined>(
 		undefined
 	)
 	const [value, setValue] = useDebouncedState('', 200)
@@ -45,8 +39,8 @@ const TestingQueue = () => {
 			setQueueData(data)
 			return
 		}
-		const fuse = new Fuse(data as CheckupQueue, SEARCH_OPTIONS)
-		const results: CheckupQueue = fuse.search(value).map(({ item }) => item)
+		const fuse = new Fuse(data as ITestingQueue, SEARCH_OPTIONS)
+		const results: ITestingQueue = fuse.search(value).map(({ item }) => item)
 		setQueueData(results)
 	}, [value, data, isSuccess])
 
@@ -59,7 +53,7 @@ const TestingQueue = () => {
 				mb="sm"
 			>
 				<Title order={1} size="h3">
-					Danh sách người bệnh chưa có KQXN
+					Danh sách người bệnh đợi xét nghiệm
 				</Title>
 				<TextInput
 					placeholder="Tìm kiếm người bệnh"

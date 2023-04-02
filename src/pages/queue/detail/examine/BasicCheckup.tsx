@@ -18,6 +18,7 @@ import {
 	LoadingOverlay,
 	Paper,
 	MultiSelect,
+	Group,
 } from '@mantine/core'
 
 import { useForm } from '@mantine/form'
@@ -105,15 +106,19 @@ const BasicCheckup = ({ updateProgress }: BasicCheckupProps) => {
 	return (
 		<Stack mt={'md'}>
 			<Stack>
-				<Stack>
-					<Title order={3} size="h6">
+				<Group>
+					<Text weight={'bolder'} size="sm" sx={{ minWidth: 80 }}>
+						Họ tên
+					</Text>
+					<Text>{checkupData?.patientName ?? '---'}</Text>
+				</Group>
+				<Group>
+					<Text weight={'bolder'} size="sm" sx={{ minWidth: 80 }}>
 						Triệu chứng
-					</Title>
-					<Paper>
-						<Text>{checkupData?.clinicalSymptom ?? '---'}</Text>
-					</Paper>
-					<Divider />
-				</Stack>
+					</Text>
+					<Text>{checkupData?.clinicalSymptom ?? '---'}</Text>
+				</Group>
+				<Divider />
 
 				<form onSubmit={form.onSubmit(onSubmit)} id="form">
 					<LoadingOverlay visible={isLoadingUpdateRecord} />

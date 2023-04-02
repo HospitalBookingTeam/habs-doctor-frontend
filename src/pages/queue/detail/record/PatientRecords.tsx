@@ -1,4 +1,5 @@
 import { RecordItem } from '@/entities/record'
+import { useGetReExamTreeByPatientIdQuery } from '@/store/record/api'
 import { formatDate } from '@/utils/formats'
 import {
 	Paper,
@@ -27,24 +28,16 @@ const useStyles = createStyles((theme) => ({
 
 const PatientRecords = ({ data }: { data?: RecordItem[] }) => {
 	return (
-		<Stack>
-			<Group position="apart">
-				<Title order={3} size="h4">
-					Lịch sử khám bệnh
-				</Title>
-			</Group>
-
-			<Stack sx={{ position: 'relative' }}>
-				{data?.map((item) => (
-					<PatientRecordRow
-						key={item.id}
-						id={item.id}
-						doctorName={item?.doctorName}
-						departmentName={item?.departmentName}
-						date={item?.date}
-					/>
-				))}
-			</Stack>
+		<Stack sx={{ position: 'relative' }}>
+			{data?.map((item) => (
+				<PatientRecordRow
+					key={item.id}
+					id={item.id}
+					doctorName={item?.doctorName}
+					departmentName={item?.departmentName}
+					date={item?.date}
+				/>
+			))}
 		</Stack>
 	)
 }
@@ -71,7 +64,7 @@ const PatientRecordRow = ({
 			>
 				<Stack>
 					<Text>
-						{departmentName} - {doctorName}
+						{departmentName} - BS. {doctorName}
 					</Text>
 					<Text className={classes.date}>
 						{date ? formatDate(date) : '---'}

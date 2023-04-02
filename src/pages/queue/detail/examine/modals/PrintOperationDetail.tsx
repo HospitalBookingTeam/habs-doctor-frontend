@@ -2,24 +2,24 @@ import { CheckupRecord } from '@/entities/record'
 import { selectAuth } from '@/store/auth/selectors'
 import { useAppSelector } from '@/store/hooks'
 import { Button, Stack, Group, Text, Divider } from '@mantine/core'
-import { IconPrinter, IconTemperatureCelsius } from '@tabler/icons'
-import { useRef, useState } from 'react'
-import Barcode from 'react-barcode'
+import { IconPrinter } from '@tabler/icons'
+import { useRef } from 'react'
 import { useReactToPrint } from 'react-to-print'
-import { formatDate, renderDoseContent } from '@/utils/formats'
-import { RequestOperationsResponse } from '@/entities/operation'
+import { formatDate } from '@/utils/formats'
+import { IncomingTestResponse } from '@/entities/operation'
 import { QRCodeSVG } from 'qrcode.react'
+import Signature from '@/components/Signature'
+import { selectTime } from '@/store/config/selectors'
+import dayjs from 'dayjs'
+const DATE_FORMAT = 'DD/MM/YYYY, HH:mm'
 
-const PrintOperationDetail = ({
-	data,
-}: {
-	data?: RequestOperationsResponse[]
-}) => {
+const PrintOperationDetail = ({ data }: { data?: IncomingTestResponse[] }) => {
 	const componentRef = useRef(null)
 	const handlePrint = useReactToPrint({
 		content: () => componentRef.current,
 	})
 	const authData = useAppSelector(selectAuth)
+	const configTime = useAppSelector(selectTime)
 
 	const roomLabel = `${authData?.information?.room?.roomNumber} -
     ${authData?.information?.room?.roomTypeName}
@@ -56,51 +56,44 @@ const PrintOperationDetail = ({
 									<Text size="xl" weight="bold">
 										PHIẾU CHỈ ĐỊNH
 									</Text>
-									<Text size="lg" weight="bold">
+									<Text
+										size={24}
+										weight="bold"
+										align="center"
+										sx={{ maxWidth: 500 }}
+									>
 										{item.operationName}
 									</Text>
-								</Stack>
-								<Stack align="flex-end">
-									<Barcode
-										value={item?.operationId?.toString() ?? ''}
-										height={40}
-										displayValue={false}
-									/>
-
-									<Text size="xs">Số hồ sơ: {item?.numericalOrder}</Text>
 								</Stack>
 							</Group>
 
 							<Stack spacing="xs" p="md">
-								<Group>
-									<Text>Họ tên: {item?.patient?.name}</Text>
-									<Text>
-										Ngày sinh:{' '}
-										{item?.patient?.dateOfBirth
-											? formatDate(item?.patient?.dateOfBirth)
-											: '---'}
-									</Text>
-									<Text>
-										Giới tính: {item?.patient?.gender === 0 ? 'Nam' : 'Nữ'}
-									</Text>
-								</Group>
-								<Text>SĐT: {item?.patient?.phoneNumber}</Text>
+								<Group position="apart">
+									<Stack>
+										<Text>Họ tên: {item?.patient?.name}</Text>
+										<Text>
+											Ngày sinh:{' '}
+											{item?.patient?.dateOfBirth
+												? formatDate(item?.patient?.dateOfBirth)
+												: '---'}
+										</Text>
+										<Text>
+											Giới tính: {item?.patient?.gender === 0 ? 'Nam' : 'Nữ'}
+										</Text>
+										<Text>SĐT: {item?.patient?.phoneNumber}</Text>
 
-								<Text mt="sm" weight="bold">
-									Yêu cầu xét nghiệm
-								</Text>
-								<Stack spacing={'xs'} align="center" mb="xl">
-									<Group>
+										<Divider />
+										<Text weight="bold">Yêu cầu xét nghiệm</Text>
 										<Text>
 											Phòng {item.roomNumber} - Tầng {item.floor}
 										</Text>
-										<Text>Số khám bệnh: {item.numericalOrder}</Text>
-									</Group>
-									<Text>
-										<QRCodeSVG value={item.qrCode} />
-									</Text>
-								</Stack>
+									</Stack>
+									<Stack spacing={'xs'} align="center">
+										<QRCodeSVG value={item.qrCode} size={200} />
+									</Stack>
+								</Group>
 
+								<Divider />
 								<Stack mt="xl">
 									<Text>HƯỚNG DẪN THỰC HIỆN CẬN LÂM SÀNG</Text>
 									<Group position="apart" align="baseline">
@@ -117,11 +110,15 @@ const PrintOperationDetail = ({
 										</Stack>
 										<Stack align="center">
 											<Text size="xs">
-												{formatDate(new Date().toString(), 'HH:mm, DD/MM/YYYY')}
+												{formatDate(
+													dayjs().valueOf() + (configTime ?? 0),
+													DATE_FORMAT
+												)}
 											</Text>
 											<Text mb="xl" transform="uppercase">
 												Bác sĩ khám bệnh
 											</Text>
+											<Signature />
 											<Text mt="xl" weight={'bold'} transform="uppercase">
 												BS {item?.doctor}
 											</Text>

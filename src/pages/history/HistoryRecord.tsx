@@ -36,15 +36,15 @@ const HistoryRecord = ({ data }: { data?: CheckupRecord }) => {
 					<Grid.Col span={3}>
 						<RowWithLabel
 							labelSpan={7}
-							label="Nhịp tim (BPM)"
-							content={data?.pulse?.toString() ?? '---'}
+							label="Chiều cao (cm)"
+							content={data?.bloodPressure?.toString() ?? '---'}
 						/>
 					</Grid.Col>
 					<Grid.Col span={3}>
 						<RowWithLabel
 							labelSpan={7}
-							label="Huyết áp (mmHg)"
-							content={data?.bloodPressure?.toString() ?? '---'}
+							label="Cân nặng (kg)"
+							content={data?.pulse?.toString() ?? '---'}
 						/>
 					</Grid.Col>
 					<Grid.Col span={3}>

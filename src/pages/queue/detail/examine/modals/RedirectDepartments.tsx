@@ -1,13 +1,15 @@
 import {
 	DepartmentRequest,
 	DepartmentRequestDetail,
-	DepartmentResponse,
+	IRedirectDepartmentResponse,
 } from '@/entities/department'
+import { useAppDispatch } from '@/store/hooks'
 import { useGetCheckupRecordByIdQuery } from '@/store/record/api'
 import {
 	useGetDepartmentListQuery,
 	useRequestRedirectDepartmentsByIdMutation,
 } from '@/store/record/api'
+import { toggleResetCheckup } from '@/store/record/slice'
 import {
 	Button,
 	Grid,
@@ -18,13 +20,13 @@ import {
 	Select,
 	ScrollArea,
 	Divider,
-	SimpleGrid,
 	Paper,
 	Group,
 	ActionIcon,
 } from '@mantine/core'
 import { useForm } from '@mantine/form'
 import { randomId } from '@mantine/hooks'
+import { openModal } from '@mantine/modals'
 import { showNotification } from '@mantine/notifications'
 import { IconPlus, IconTrash } from '@tabler/icons'
 import { useState, Fragment } from 'react'
@@ -38,7 +40,10 @@ const DEFAULT_DEPARTMENT: DepartmentRequestDetail = {
 const RequestDepartments = () => {
 	const [opened, setOpened] = useState(false)
 	const navigate = useNavigate()
-	const [responseData, setResponseData] = useState<DepartmentResponse[]>([])
+	const [responseData, setResponseData] =
+		useState<IRedirectDepartmentResponse>()
+	const [showResponse, setShowResponse] = useState(false)
+	const dispatch = useAppDispatch()
 
 	const { data: departmentList, isLoading: isLoadingDepartmentList } =
 		useGetDepartmentListQuery()
@@ -130,10 +135,10 @@ const RequestDepartments = () => {
 					title: 'Yêu cầu chuyển khoa thành công',
 					message: <Text></Text>,
 				})
+				setShowResponse(true)
+				form.reset()
 			})
 	}
-
-	const showResponse = !!responseData?.length
 
 	return (
 		<>
@@ -141,8 +146,39 @@ const RequestDepartments = () => {
 				opened={opened}
 				onClose={() => {
 					setOpened(false)
-					if (showResponse) {
-						navigate('/')
+					if (!responseData) {
+						navigate('/', { replace: true })
+						return
+					}
+					setShowResponse(false)
+					if (responseData?.success) {
+						showNotification({
+							title: 'Chuyển khoa thành công',
+							message: <Text></Text>,
+						})
+						if (responseData?.nextCheckupRecordId) {
+							navigate(`/${responseData?.nextCheckupRecordId}`, {
+								replace: true,
+							})
+							openModal({
+								title: 'Người bệnh tiếp theo',
+								children: (
+									<Stack align="center">
+										<Text>{responseData?.nextPatientName}</Text>
+									</Stack>
+								),
+								centered: true,
+							})
+							dispatch(toggleResetCheckup(true))
+						} else {
+							navigate('/', { replace: true })
+						}
+					} else {
+						showNotification({
+							title: 'Đã xảy ra lỗi',
+							message: <Text>Vui lòng liên hệ admin để được hỗ trợ</Text>,
+							color: 'red',
+						})
 					}
 				}}
 				title={showResponse ? 'Thông tin chuyển khoa' : 'Yêu cầu chuyển khoa'}
@@ -156,7 +192,7 @@ const RequestDepartments = () => {
 					grow={true}
 					sx={{ display: showResponse ? 'flex' : 'none' }}
 				>
-					{responseData?.map((item) => (
+					{responseData?.redirect?.map((item) => (
 						<Paper
 							withBorder
 							key={item.roomId}

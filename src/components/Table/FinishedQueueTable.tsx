@@ -1,4 +1,4 @@
-import { ITestingQueue } from '@/entities/queue'
+import { CheckupQueue } from '@/entities/queue'
 import { translateCheckupRecordStatus } from '@/utils/renderEnums'
 
 import {
@@ -7,20 +7,22 @@ import {
 	Group,
 	Text,
 	Center,
+	Anchor,
 	ScrollArea,
 	useMantineTheme,
 	Grid,
+	Divider,
 	Button,
 	Loader,
 } from '@mantine/core'
 import { useNavigate } from 'react-router-dom'
 
 interface QueueTableProps {
-	data?: ITestingQueue
+	data?: CheckupQueue
 	isLoading?: boolean
 }
 
-const ProgressQueueTable = ({ data, isLoading }: QueueTableProps) => {
+const FinishedQueueTable = ({ data, isLoading }: QueueTableProps) => {
 	const theme = useMantineTheme()
 	const navigate = useNavigate()
 
@@ -36,13 +38,13 @@ const ProgressQueueTable = ({ data, isLoading }: QueueTableProps) => {
 				p="sm"
 				key={item.id}
 			>
-				<Grid.Col span={3}>
+				<Grid.Col span={4}>
 					<Text size="sm" weight={500}>
 						{item.patientName}
 					</Text>
 				</Grid.Col>
 
-				<Grid.Col span={3}>
+				<Grid.Col span={3} sx={{ textAlign: 'center' }}>
 					<Badge
 						// color={jobColors[item.status.toLowerCase()]}
 						variant={theme.colorScheme === 'dark' ? 'light' : 'outline'}
@@ -51,12 +53,21 @@ const ProgressQueueTable = ({ data, isLoading }: QueueTableProps) => {
 					</Badge>
 				</Grid.Col>
 
-				<Grid.Col span={4}>
-					<Text lineClamp={2}>{item.operationList.join(', ')}</Text>
+				<Grid.Col span={2} sx={{ textAlign: 'center' }}>
+					<Badge
+						size="sm"
+						variant={item.isReExam ? 'light' : 'outline'}
+						color="gray"
+					>
+						{item.isReExam ? 'Có' : 'Không'}
+					</Badge>
 				</Grid.Col>
-				<Grid.Col span={2}>
-					<Group spacing={'sm'} align="end" position="right">
-						<Button onClick={() => navigate(`/records/${item.id}`)}>
+				<Grid.Col span={3}>
+					<Group spacing={'sm'} position="right">
+						<Button
+							sx={{ width: 200 }}
+							onClick={() => navigate(`/records/${item.id}`)}
+						>
 							Xem kết quả
 						</Button>
 					</Group>
@@ -68,10 +79,14 @@ const ProgressQueueTable = ({ data, isLoading }: QueueTableProps) => {
 	return (
 		<>
 			<Grid color="gray.1" p="sm" sx={{ width: '100%', fontWeight: 500 }}>
-				<Grid.Col span={3}>Tên người bệnh</Grid.Col>
-				<Grid.Col span={3}>Trạng thái</Grid.Col>
-				<Grid.Col span={4}>Xét nghiệm</Grid.Col>
-				<Grid.Col span={2}></Grid.Col>
+				<Grid.Col span={4}>Tên người bệnh</Grid.Col>
+				<Grid.Col span={3} sx={{ textAlign: 'center' }}>
+					Trạng thái
+				</Grid.Col>
+				<Grid.Col span={2} sx={{ textAlign: 'center' }}>
+					Tái khám
+				</Grid.Col>
+				<Grid.Col span={3}></Grid.Col>
 			</Grid>
 			<ScrollArea sx={{ height: 450 }}>
 				<Center
@@ -91,4 +106,4 @@ const ProgressQueueTable = ({ data, isLoading }: QueueTableProps) => {
 	)
 }
 
-export default ProgressQueueTable
+export default FinishedQueueTable

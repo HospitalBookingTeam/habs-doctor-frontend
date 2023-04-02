@@ -109,7 +109,7 @@ const PatientRecordTree = ({ data }: TreeProps) => {
 									>
 										<Accordion.Control px={0}>
 											<Text size="sm">
-												{record.department} - {record.doctor}
+												{record.department} - BS. {record.doctor}
 											</Text>
 										</Accordion.Control>
 										<Accordion.Panel>

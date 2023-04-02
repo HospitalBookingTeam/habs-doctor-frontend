@@ -138,3 +138,7 @@ export type RequestReExamForm = Omit<
 	'id' | 'patientId' | 'departmentId' | 'requiredTest' | 'reExamDate'
 > &
 	RequiredTestReExam & { reExamDate?: Date }
+
+export type IRecordState = {
+	resetCheckup: boolean
+}

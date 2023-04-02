@@ -4,6 +4,7 @@ import TestRecordList from '@/components/Record/TestRecordList'
 import {
 	useGetCheckupRecordByIdQuery,
 	useGetReExamTreeByPatientIdQuery,
+	useGetReExamTreeQuery,
 } from '@/store/record/api'
 import { formatDate } from '@/utils/formats'
 import {
@@ -32,12 +33,9 @@ const RecordHistory = () => {
 	)
 
 	const { data: reExamTree, isLoading: isLoadingReExamTree } =
-		useGetReExamTreeByPatientIdQuery(
-			recordData?.patientId?.toString() as string,
-			{
-				skip: !recordData?.patientId || activeTab !== 'reExamTree',
-			}
-		)
+		useGetReExamTreeQuery(recordData?.id?.toString() as string, {
+			skip: !recordData?.id || activeTab !== 'reExamTree',
+		})
 
 	return (
 		<Stack>
@@ -83,9 +81,7 @@ const RecordHistory = () => {
 					<Tabs.Panel value="reExamTree" pt="xs" sx={{ position: 'relative' }}>
 						<LoadingOverlay visible={isLoading || isLoadingReExamTree} />
 						<Stack sx={{ minHeight: 200 }}>
-							{reExamTree?.map((item) => (
-								<PatientRecordTree key={item.id} data={item} />
-							))}
+							<PatientRecordTree data={reExamTree} />
 						</Stack>
 					</Tabs.Panel>
 				</Tabs>

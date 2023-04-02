@@ -9,3 +9,9 @@ export type AutocompleteOption = {
 	label: string
 	value: string | number
 }
+
+export type INextPatientResponse = {
+	success: boolean
+	nextCheckupRecordId: number
+	nextPatientName: string
+}

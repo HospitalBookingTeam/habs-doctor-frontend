@@ -4,9 +4,13 @@ import { useAppSelector } from '@/store/hooks'
 import { Button, Stack, Group, Text, Divider } from '@mantine/core'
 import { IconPrinter, IconTemperatureCelsius } from '@tabler/icons'
 import { useRef, useState } from 'react'
-import Barcode from 'react-barcode'
 import { useReactToPrint } from 'react-to-print'
 import { formatDate, renderDoseContent } from '@/utils/formats'
+import Signature from '@/components/Signature'
+import { selectTime } from '@/store/config/selectors'
+import dayjs from 'dayjs'
+
+const DATE_FORMAT = 'DD/MM/YYYY, HH:mm'
 
 const PrintDetail = ({ data }: { data?: CheckupRecord }) => {
 	const [opened, setOpened] = useState(false)
@@ -15,6 +19,7 @@ const PrintDetail = ({ data }: { data?: CheckupRecord }) => {
 		content: () => componentRef.current,
 	})
 	const authData = useAppSelector(selectAuth)
+	const configTime = useAppSelector(selectTime)
 
 	const roomLabel = `${authData?.information?.room?.roomNumber} -
     ${authData?.information?.room?.roomTypeName}
@@ -45,35 +50,24 @@ const PrintDetail = ({ data }: { data?: CheckupRecord }) => {
 							</Text>
 							<Text size="xs">{roomLabel}</Text>
 						</Stack>
-						<Text size="lg" weight="bold">
+						<Text size="xl" weight="bold">
 							KẾT QUẢ KHÁM BỆNH
 						</Text>
-						<Stack align="flex-end">
-							<Barcode
-								value={data?.id?.toString() ?? ''}
-								height={40}
-								displayValue={false}
-							/>
-
-							<Text size="xs">Mã khám bệnh: {data?.id}</Text>
-							<Text size="xs">Mã toa thuốc: {data?.prescription?.id}</Text>
-						</Stack>
 					</Group>
 
 					<Stack spacing="xs" p="md">
-						<Group>
-							<Text>Họ tên: {data?.patientData?.name}</Text>
-							<Text>
-								Ngày sinh:{' '}
-								{data?.patientData?.dateOfBirth
-									? formatDate(data?.patientData?.dateOfBirth)
-									: '---'}
-							</Text>
-							<Text>
-								Giới tính: {data?.patientData?.gender === 0 ? 'Nam' : 'Nữ'}
-							</Text>
-						</Group>
+						<Text>Họ tên: {data?.patientData?.name}</Text>
+						<Text>
+							Ngày sinh:{' '}
+							{data?.patientData?.dateOfBirth
+								? formatDate(data?.patientData?.dateOfBirth)
+								: '---'}
+						</Text>
+						<Text>
+							Giới tính: {data?.patientData?.gender === 0 ? 'Nam' : 'Nữ'}
+						</Text>
 						<Text>SĐT: {data?.patientData?.phoneNumber}</Text>
+						<Divider />
 						<Text>Biểu hiện lâm sàng: {data?.diagnosis}</Text>
 						<Group>
 							<Text>
@@ -89,6 +83,7 @@ const PrintDetail = ({ data }: { data?: CheckupRecord }) => {
 								?.map((item) => item.icdDiseaseName)
 								?.join(', ')}
 						</Text>
+						<Divider />
 						<Text mt="sm" weight="bold">
 							Chỉ định dùng thuốc
 						</Text>
@@ -104,7 +99,7 @@ const PrintDetail = ({ data }: { data?: CheckupRecord }) => {
 								<Text>Dùng {renderDoseContent(item)}</Text>
 							</Stack>
 						))}
-
+						<Divider />
 						<Stack mt="xl">
 							<Text>Ghi chú: {data?.doctorAdvice}</Text>
 							<Group position="apart" align="baseline">
@@ -119,11 +114,15 @@ const PrintDetail = ({ data }: { data?: CheckupRecord }) => {
 								</Stack>
 								<Stack align="center">
 									<Text size="xs">
-										{formatDate(new Date().toString(), 'HH:mm, DD/MM/YYYY')}
+										{formatDate(
+											dayjs().valueOf() + (configTime ?? 0),
+											DATE_FORMAT
+										)}
 									</Text>
 									<Text mb="xl" transform="uppercase">
 										Bác sĩ khám bệnh
 									</Text>
+									<Signature />
 									<Text mt="xl" weight={'bold'} transform="uppercase">
 										BS {data?.doctorName}
 									</Text>

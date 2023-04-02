@@ -19,6 +19,9 @@ import {
 } from '@/entities/operation'
 import OperationList from './OperationList'
 import PrintOperationDetail from './modals/PrintOperationDetail'
+import { openModal } from '@mantine/modals'
+import { useAppDispatch } from '@/store/hooks'
+import { toggleResetCheckup } from '@/store/record/slice'
 
 const TestRecordList = lazy(() => import('@/components/Record/TestRecordList'))
 
@@ -32,10 +35,9 @@ const RequestOperations = ({ updateProgress }: RequestOperationsProps) => {
 		useGetCheckupRecordByIdQuery(Number(queueId), {
 			skip: !queueId,
 		})
-
-	const [responseData, setResponseData] = useState<RequestOperationsResponse[]>(
-		[]
-	)
+	const dispatch = useAppDispatch()
+	const [responseData, setResponseData] = useState<RequestOperationsResponse>()
+	const [showResponse, setShowResponse] = useState(false)
 
 	const [requestOperationsMutation, { isLoading: isLoadingRequestOperations }] =
 		useRequestOperationsByIdMutation()
@@ -67,10 +69,10 @@ const RequestOperations = ({ updateProgress }: RequestOperationsProps) => {
 					message: <Text></Text>,
 				})
 				// updateProgress()
+				setShowResponse(true)
+				form.reset()
 			})
 	}
-
-	const showResponse = !!responseData?.length
 
 	return (
 		<>
@@ -105,7 +107,40 @@ const RequestOperations = ({ updateProgress }: RequestOperationsProps) => {
 			<Modal
 				opened={showResponse}
 				onClose={() => {
-					navigate('/')
+					if (!responseData) {
+						navigate('/', { replace: true })
+						return
+					}
+					setShowResponse(false)
+					if (responseData?.success) {
+						showNotification({
+							title: 'Hoàn thành xét nghiệm',
+							message: <Text></Text>,
+						})
+						if (responseData?.nextCheckupRecordId) {
+							navigate(`/${responseData?.nextCheckupRecordId}`, {
+								replace: true,
+							})
+							openModal({
+								title: 'Người bệnh tiếp theo',
+								children: (
+									<Stack align="center">
+										<Text>{responseData?.nextPatientName}</Text>
+									</Stack>
+								),
+								centered: true,
+							})
+							dispatch(toggleResetCheckup(true))
+						} else {
+							navigate('/', { replace: true })
+						}
+					} else {
+						showNotification({
+							title: 'Đã xảy ra lỗi',
+							message: <Text>Vui lòng liên hệ admin để được hỗ trợ</Text>,
+							color: 'red',
+						})
+					}
 				}}
 				title={'Thông tin xét nghiệm'}
 				closeOnClickOutside={true}
@@ -114,10 +149,10 @@ const RequestOperations = ({ updateProgress }: RequestOperationsProps) => {
 				withCloseButton={!isLoadingRequestOperations}
 			>
 				<Group align="center" position="center" mx="auto" sx={{ width: 200 }}>
-					<PrintOperationDetail data={responseData} />
+					<PrintOperationDetail data={responseData?.incomingTests} />
 				</Group>
 				<Group position="center" grow={true} mt="md">
-					{responseData?.map((item) => (
+					{responseData?.incomingTests?.map((item) => (
 						<Paper
 							withBorder
 							key={item.operationId}

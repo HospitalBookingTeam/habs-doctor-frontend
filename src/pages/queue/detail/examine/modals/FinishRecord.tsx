@@ -2,13 +2,15 @@ import { useGetCheckupRecordByIdQuery } from '@/store/record/api'
 import { useUpdateStatusRecordMutation } from '@/store/record/api'
 import { CheckupRecordStatus } from '@/utils/renderEnums'
 import { Button, Stack, Text, Modal } from '@mantine/core'
-import { openConfirmModal, closeAllModals } from '@mantine/modals'
 import { showNotification } from '@mantine/notifications'
 import { useNavigate, useParams } from 'react-router-dom'
 import { useState } from 'react'
+import { handleNextPatientDirect } from '../helpers'
+import { useAppDispatch } from '@/store/hooks'
+import { openModal } from '@mantine/modals'
+import { toggleResetCheckup } from '@/store/record/slice'
 
 const FinishRecord = () => {
-	const navigate = useNavigate()
 	const { id: queueId } = useParams()
 	const { data: checkupData, isSuccess: isCheckupDataSuccess } =
 		useGetCheckupRecordByIdQuery(Number(queueId), {
@@ -17,6 +19,8 @@ const FinishRecord = () => {
 	const [updateStatusRecord, { isLoading: isLoadingUpdateStatus }] =
 		useUpdateStatusRecordMutation()
 	const [opened, setOpened] = useState(false)
+	const dispatch = useAppDispatch()
+	const navigate = useNavigate()
 
 	const onConfirm = async () => {
 		if (!checkupData) {
@@ -34,16 +38,25 @@ const FinishRecord = () => {
 		})
 			.unwrap()
 			.then((resp) => {
-				console.log('resp', resp)
 				if (resp?.success) {
 					showNotification({
 						title: 'Hoàn thành khám bệnh',
 						message: <Text>Quy trình khám bệnh kết thúc thành công</Text>,
 					})
 					if (resp?.nextCheckupRecordId) {
-						navigate(`/${resp?.nextCheckupRecordId}`)
+						navigate(`/${resp?.nextCheckupRecordId}`, { replace: true })
+						openModal({
+							title: 'Người bệnh tiếp theo',
+							children: (
+								<Stack align="center">
+									<Text>{resp?.nextPatientName}</Text>
+								</Stack>
+							),
+							centered: true,
+						})
+						dispatch(toggleResetCheckup(true))
 					} else {
-						navigate('/')
+						navigate('/', { replace: true })
 					}
 					setOpened(false)
 				} else {

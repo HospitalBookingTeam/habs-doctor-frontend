@@ -1,13 +1,8 @@
-import LayoutAppShell from '@/components/Layout'
-import { QueueTable } from '@/components/Table'
-import ProgressQueueTable from '@/components/Table/ProgressQueueTable'
+import FinishedQueueTable from '@/components/Table/FinishedQueueTable'
 import { CheckupQueue } from '@/entities/queue'
 import { selectAuth } from '@/store/auth/selectors'
 import { useAppSelector } from '@/store/hooks'
-import {
-	useGetCheckupQueueQuery,
-	useGetFinishedCheckupQueueQuery,
-} from '@/store/queue/api'
+import { useGetFinishedCheckupQueueQuery } from '@/store/queue/api'
 import { SEARCH_OPTIONS } from '@/utils/constants'
 import { Stack, Title, Grid, TextInput, Paper, Loader } from '@mantine/core'
 import { useDebouncedState } from '@mantine/hooks'
@@ -70,7 +65,7 @@ const FinishQueue = () => {
 				/>
 			</Stack>
 			<Paper p="md">
-				<ProgressQueueTable data={queueData} isLoading={isLoading} />
+				<FinishedQueueTable data={queueData} isLoading={isLoading} />
 			</Paper>
 		</Stack>
 	)

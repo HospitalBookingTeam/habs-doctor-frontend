@@ -1,3 +1,4 @@
+import { INextPatientResponse } from './base'
 import { Patient } from './record'
 
 export interface Operation {
@@ -19,8 +20,8 @@ export type RequestOperations = {
 	examOperationIds: number[]
 }
 
-export type RequestOperationsResponse = {
-	numericalOrder: number
+export type IncomingTestResponse = {
+	numericalOrder?: number
 	roomNumber: string
 	floor: string
 	operationId: number
@@ -29,6 +30,10 @@ export type RequestOperationsResponse = {
 	patient: Patient
 	doctor: string
 }
+
+export type RequestOperationsResponse = {
+	incomingTests: IncomingTestResponse[]
+} & INextPatientResponse
 
 export type NewOperation = {
 	id: number

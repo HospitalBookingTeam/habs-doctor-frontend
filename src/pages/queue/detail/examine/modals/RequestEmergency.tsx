@@ -5,6 +5,9 @@ import { Button, Stack, Text, Modal } from '@mantine/core'
 import { showNotification } from '@mantine/notifications'
 import { useNavigate, useParams } from 'react-router-dom'
 import { useState } from 'react'
+import { useAppDispatch } from '@/store/hooks'
+import { openModal } from '@mantine/modals'
+import { toggleResetCheckup } from '@/store/record/slice'
 
 const RequestEmergency = () => {
 	const navigate = useNavigate()
@@ -13,6 +16,8 @@ const RequestEmergency = () => {
 		useGetCheckupRecordByIdQuery(Number(queueId), {
 			skip: !queueId,
 		})
+	const dispatch = useAppDispatch()
+
 	const [updateStatusRecord, { isLoading: isLoadingUpdateStatus }] =
 		useUpdateStatusRecordMutation()
 	const [opened, setOpened] = useState(false)
@@ -32,13 +37,38 @@ const RequestEmergency = () => {
 			status: CheckupRecordStatus.NHAP_VIEN,
 		})
 			.unwrap()
-			.then(() => {
-				showNotification({
-					title: 'Nhập viện thành công',
-					message: <Text>{checkupData.patientName} đã nhập viện.</Text>,
-					color: 'orange',
-				})
-				navigate('/')
+			.then((resp) => {
+				setOpened(false)
+				if (resp?.success) {
+					showNotification({
+						title: 'Nhập viện thành công',
+						message: <Text>{checkupData.patientName} đã nhập viện.</Text>,
+						color: 'orange',
+					})
+					if (resp?.nextCheckupRecordId) {
+						navigate(`/${resp?.nextCheckupRecordId}`, {
+							replace: true,
+						})
+						openModal({
+							title: 'Người bệnh tiếp theo',
+							children: (
+								<Stack align="center">
+									<Text>{resp?.nextPatientName}</Text>
+								</Stack>
+							),
+							centered: true,
+						})
+						dispatch(toggleResetCheckup(true))
+					} else {
+						navigate('/', { replace: true })
+					}
+				} else {
+					showNotification({
+						title: 'Đã xảy ra lỗi',
+						message: <Text>Vui lòng liên hệ admin để được hỗ trợ</Text>,
+						color: 'red',
+					})
+				}
 			})
 	}
 
