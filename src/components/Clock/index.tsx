@@ -1,7 +1,8 @@
+import { useLazyGetTimeQuery } from '@/store/config/api'
 import { selectTime } from '@/store/config/selectors'
 import { useAppSelector } from '@/store/hooks'
 import { formatDate } from '@/utils/formats'
-import { Group, Badge, Tooltip } from '@mantine/core'
+import { Button, Badge, Tooltip } from '@mantine/core'
 import dayjs from 'dayjs'
 import { useEffect, useState } from 'react'
 
@@ -11,6 +12,7 @@ const Clock = () => {
 		formatDate(new Date().toString(), DATE_FORMAT)
 	)
 	const configTime = useAppSelector(selectTime)
+	const [triggerTimeConfig] = useLazyGetTimeQuery()
 
 	useEffect(() => {
 		setCurrentTime(
@@ -30,11 +32,20 @@ const Clock = () => {
 		return () => clearInterval(interval)
 	}, [configTime])
 
+	const updateTimeConfig = async () => {
+		await triggerTimeConfig()
+	}
+
 	return (
 		<Tooltip label={currentTime} position="right" transitionDuration={0}>
-			<Group>
-				<Badge size="lg">{currentTime}</Badge>
-			</Group>
+			<Button
+				variant="white"
+				size="md"
+				sx={{ padding: '4px 8px', height: 'fit-content' }}
+				onClick={updateTimeConfig}
+			>
+				{currentTime}
+			</Button>
 		</Tooltip>
 	)
 }
