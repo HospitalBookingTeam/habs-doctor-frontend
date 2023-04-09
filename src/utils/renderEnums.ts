@@ -101,3 +101,15 @@ export const SESSION_TRANSLATION: {
 
 export const translateSession = (status: number) =>
 	SESSION_TRANSLATION[SessionType[status] as keyof typeof SessionType]
+
+export enum TestRecordStatus {
+	CHUA_DAT_LICH,
+	DA_DAT_LICH,
+	DA_THANH_TOAN,
+	CHECKED_IN,
+	DANG_TIEN_HANH,
+	CHO_KET_QUA,
+	HOAN_THANH,
+	DA_HUY,
+	DA_XOA,
+}

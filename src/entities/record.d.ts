@@ -28,6 +28,7 @@ export interface TestRecord {
 	checkupRecordId: number
 	doctorName: any
 	doctorId: any
+	failReason?: string
 }
 
 export interface Detail {

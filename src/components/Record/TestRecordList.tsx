@@ -11,6 +11,7 @@ import {
 } from '@mantine/core'
 import { IconExternalLink } from '@tabler/icons'
 import RowWithLabel from '../Row'
+import { TestRecordStatus } from '@/utils/renderEnums'
 
 const TestRecordList = ({
 	data,
@@ -40,6 +41,9 @@ const TestRecordRow = ({
 	item: TestRecord
 	showSpoiler: boolean
 }) => {
+	const showFail =
+		item?.status === TestRecordStatus.DA_HUY && !!item?.failReason
+
 	const content = (
 		<Stack spacing={'sm'}>
 			<Group position="apart" grow>
@@ -51,14 +55,24 @@ const TestRecordRow = ({
 					target="_blank"
 					variant="subtle"
 					leftIcon={<IconExternalLink size={14} />}
+					disabled={showFail}
 				>
 					Xem chi tiết
 				</Button>
 			</Group>
-			<RowWithLabel
-				label="Kết quả tổng quát"
-				content={item?.resultDescription ?? '---'}
-			/>
+			{showFail ? (
+				<RowWithLabel
+					label="Lý do hủy"
+					content={item?.failReason ?? '---'}
+					isOdd
+				/>
+			) : (
+				<RowWithLabel
+					label="Kết quả tổng quát"
+					content={item?.resultDescription ?? '---'}
+					isOdd
+				/>
+			)}
 			<RowWithLabel
 				label="Bác sĩ xét nghiệm"
 				content={item.doctorName ?? '---'}
@@ -66,6 +80,7 @@ const TestRecordRow = ({
 			<RowWithLabel
 				label="Địa điểm"
 				content={`Phòng ${item.roomNumber} - Tầng ${item.floor}`}
+				isOdd
 			/>
 			<RowWithLabel label="Thời gian" content={formatDate(item.date)} />
 		</Stack>
