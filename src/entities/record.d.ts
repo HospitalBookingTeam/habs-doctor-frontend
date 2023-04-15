@@ -51,6 +51,7 @@ export interface Prescription {
 	note: string
 	checkupRecordId: number
 	details: Detail[]
+	code?: string
 }
 
 export interface ReExamCheckup {

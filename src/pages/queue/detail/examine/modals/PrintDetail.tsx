@@ -39,7 +39,7 @@ const PrintDetail = ({ data }: { data?: CheckupRecord }) => {
 			</Button>
 			<Stack sx={{ overflow: 'hidden', height: 0 }}>
 				<Stack ref={componentRef} p="md">
-					<Group position="apart" align="start">
+					<Group pt="md" position="apart" align="start">
 						<Stack spacing={'xs'} align="center">
 							<Text size="sm">SỞ Y TẾ TP. Hồ Chí Minh</Text>
 							<Text size="sm" weight="bold">

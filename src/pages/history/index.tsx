@@ -3,7 +3,6 @@ import BackButton from '@/components/Button/BackButton'
 import TestRecordList from '@/components/Record/TestRecordList'
 import {
 	useGetCheckupRecordByIdQuery,
-	useGetReExamTreeByPatientIdQuery,
 	useGetReExamTreeQuery,
 } from '@/store/record/api'
 import { formatDate } from '@/utils/formats'
@@ -52,7 +51,7 @@ const RecordHistory = () => {
 					LỊCH SỬ KHÁM BỆNH
 				</Badge>
 			</Stack>
-			<Paper p="md">
+			<Paper p="md" sx={{ background: 'white' }}>
 				<Tabs value={activeTab} onTabChange={setActiveTab}>
 					<Tabs.List grow>
 						<Tabs.Tab value="record">Thông tin chi tiết</Tabs.Tab>

@@ -12,9 +12,11 @@ const MedicationList = ({ data }: { data?: Prescription }) => {
 				Thông tin đơn thuốc
 			</Title>
 			<Stack>
+				<RowWithLabel label="Mã số" content={data?.code ?? '---'} />
 				<RowWithLabel
 					label="Thời gian"
 					content={data?.timeCreated ? formatDate(data.timeCreated) : '---'}
+					isOdd
 				/>
 				<Accordion
 					variant="separated"
