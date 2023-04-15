@@ -29,6 +29,7 @@ export type IncomingTestResponse = {
 	qrCode: string
 	patient: Patient
 	doctor: string
+	code?: string
 }
 
 export type RequestOperationsResponse = {

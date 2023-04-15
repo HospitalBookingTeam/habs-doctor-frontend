@@ -62,7 +62,7 @@ const RecordHistory = () => {
 						<Stack>
 							<Text>
 								Thời gian:{' '}
-								<Text span color="green">
+								<Text span color="green" weight={'bolder'}>
 									{recordData?.date ? formatDate(recordData.date) : '---'}
 								</Text>
 							</Text>
@@ -71,10 +71,18 @@ const RecordHistory = () => {
 							<Divider />
 							<HistoryRecord data={recordData} />
 
-							<Divider />
-							<TestRecordList data={recordData?.testRecords} />
-							<Divider />
-							<MedicationList data={recordData?.prescription} />
+							{!!recordData?.testRecords?.length && (
+								<>
+									<Divider />
+									<TestRecordList data={recordData?.testRecords} />
+								</>
+							)}
+							{!!recordData?.prescription && (
+								<>
+									<Divider />
+									<MedicationList data={recordData?.prescription} />
+								</>
+							)}
 						</Stack>
 					</Tabs.Panel>
 

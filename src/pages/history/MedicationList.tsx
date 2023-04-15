@@ -62,21 +62,27 @@ const MedicineDetailRow = ({
 			<Accordion.Panel>
 				<Grid>
 					<Grid.Col span={6}>
-						<RowWithLabel label="Tên thuốc" content={item.medicineName} />
+						<RowWithLabel label="Tên thuốc" content={item.medicineName} isOdd />
 					</Grid.Col>
 					<Grid.Col span={3}>
-						<RowWithLabel labelSpan={5} label="Đơn vị" content={item.unit} />
+						<RowWithLabel
+							labelSpan={5}
+							label="Đơn vị"
+							content={item.unit}
+							isOdd
+						/>
 					</Grid.Col>
 					<Grid.Col span={3}></Grid.Col>
 
 					<Grid.Col span={6}>
-						<RowWithLabel label="Trong ngày" content={usageDaily} />
+						<RowWithLabel label="Trong ngày" content={usageDaily} isOdd />
 					</Grid.Col>
 					<Grid.Col span={3}>
 						<RowWithLabel
 							labelSpan={8}
 							label="Số ngày sử dụng"
 							content={item?.quantity.toString() ?? '0'}
+							isOdd
 						/>
 					</Grid.Col>
 					<Grid.Col span={12}>
@@ -84,6 +90,7 @@ const MedicineDetailRow = ({
 							labelSpan={2}
 							label="Hướng dẫn sử dụng"
 							content={item?.usage}
+							isOdd
 						/>
 					</Grid.Col>
 				</Grid>

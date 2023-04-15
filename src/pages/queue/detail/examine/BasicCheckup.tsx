@@ -106,18 +106,26 @@ const BasicCheckup = ({ updateProgress }: BasicCheckupProps) => {
 	return (
 		<Stack mt={'md'}>
 			<Stack>
-				<Group>
-					<Text weight={'bolder'} size="sm" sx={{ minWidth: 80 }}>
-						Họ tên
-					</Text>
-					<Text>{checkupData?.patientName ?? '---'}</Text>
-				</Group>
-				<Group>
-					<Text weight={'bolder'} size="sm" sx={{ minWidth: 80 }}>
-						Triệu chứng
-					</Text>
-					<Text>{checkupData?.clinicalSymptom ?? '---'}</Text>
-				</Group>
+				<Stack spacing={'xs'}>
+					<Group>
+						<Text weight={'bolder'} size="sm" sx={{ minWidth: 80 }}>
+							Mã số
+						</Text>
+						<Text>{checkupData?.code ?? '---'}</Text>
+					</Group>
+					<Group>
+						<Text weight={'bolder'} size="sm" sx={{ minWidth: 80 }}>
+							Họ tên
+						</Text>
+						<Text>{checkupData?.patientName ?? '---'}</Text>
+					</Group>
+					<Group>
+						<Text weight={'bolder'} size="sm" sx={{ minWidth: 80 }}>
+							Triệu chứng
+						</Text>
+						<Text>{checkupData?.clinicalSymptom ?? '---'}</Text>
+					</Group>
+				</Stack>
 				<Divider />
 
 				<form onSubmit={form.onSubmit(onSubmit)} id="form">

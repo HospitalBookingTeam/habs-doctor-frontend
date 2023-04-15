@@ -17,6 +17,7 @@ const useGlobalStyles = createStyles((theme, _params, getRef) => ({
 	},
 	accordion: {
 		border: `2px solid ${theme.colors.gray[2]}`,
+		background: 'white !important',
 	},
 }))
 

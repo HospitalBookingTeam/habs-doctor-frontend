@@ -11,6 +11,7 @@ import { QRCodeSVG } from 'qrcode.react'
 import Signature from '@/components/Signature'
 import { selectTime } from '@/store/config/selectors'
 import dayjs from 'dayjs'
+import Barcode from 'react-barcode'
 const DATE_FORMAT = 'DD/MM/YYYY, HH:mm'
 
 const PrintOperationDetail = ({ data }: { data?: IncomingTestResponse[] }) => {
@@ -39,8 +40,8 @@ const PrintOperationDetail = ({ data }: { data?: IncomingTestResponse[] }) => {
 			<Stack sx={{ overflow: 'hidden', height: 0 }}>
 				<Stack ref={componentRef}>
 					{data?.map((item, index) => (
-						<Stack p="md" key={item.operationId}>
-							<Group position="apart" align="center">
+						<Stack p="md" py="lg" key={item.operationId}>
+							<Group position="apart" align="start">
 								<Stack spacing={'xs'} align="center">
 									<Text size="sm">SỞ Y TẾ TP. Hồ Chí Minh</Text>
 									<Text size="sm" weight="bold">
@@ -60,10 +61,19 @@ const PrintOperationDetail = ({ data }: { data?: IncomingTestResponse[] }) => {
 										size={24}
 										weight="bold"
 										align="center"
-										sx={{ maxWidth: 500 }}
+										sx={{ maxWidth: 250 }}
 									>
 										{item.operationName}
 									</Text>
+								</Stack>
+								<Stack align="end" spacing={0}>
+									<Barcode
+										height={40}
+										width={1}
+										value={item?.code?.split('_')?.[1] ?? '---'}
+										displayValue={false}
+									/>
+									<Text size="xs">Mã số: {item?.code}</Text>
 								</Stack>
 							</Group>
 

@@ -9,6 +9,7 @@ import { formatDate, renderDoseContent } from '@/utils/formats'
 import Signature from '@/components/Signature'
 import { selectTime } from '@/store/config/selectors'
 import dayjs from 'dayjs'
+import Barcode from 'react-barcode'
 
 const DATE_FORMAT = 'DD/MM/YYYY, HH:mm'
 
@@ -38,7 +39,7 @@ const PrintDetail = ({ data }: { data?: CheckupRecord }) => {
 			</Button>
 			<Stack sx={{ overflow: 'hidden', height: 0 }}>
 				<Stack ref={componentRef} p="md">
-					<Group position="apart" align="center">
+					<Group position="apart" align="start">
 						<Stack spacing={'xs'} align="center">
 							<Text size="sm">SỞ Y TẾ TP. Hồ Chí Minh</Text>
 							<Text size="sm" weight="bold">
@@ -53,6 +54,16 @@ const PrintDetail = ({ data }: { data?: CheckupRecord }) => {
 						<Text size="xl" weight="bold">
 							KẾT QUẢ KHÁM BỆNH
 						</Text>
+
+						<Stack align="end" spacing={0}>
+							<Barcode
+								height={40}
+								width={1}
+								value={data?.code?.split('_')?.[1] ?? '---'}
+								displayValue={false}
+							/>
+							<Text size="xs">Mã số: {data?.code}</Text>
+						</Stack>
 					</Group>
 
 					<Stack spacing="xs" p="md">

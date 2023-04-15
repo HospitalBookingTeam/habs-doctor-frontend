@@ -83,9 +83,11 @@ const QueueDetail = () => {
 			>
 				<BackButton />
 
-				<Badge size="xl" radius="md">
-					Khám bệnh
-				</Badge>
+				<Group>
+					<Badge size="xl" radius="md">
+						Khám bệnh
+					</Badge>
+				</Group>
 			</Stack>
 			<Box sx={{ width: '100%' }}>
 				<Tabs
