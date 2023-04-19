@@ -10,6 +10,8 @@ import Signature from '@/components/Signature'
 import { selectTime } from '@/store/config/selectors'
 import dayjs from 'dayjs'
 import Barcode from 'react-barcode'
+import { useGetOperationListQuery } from '@/store/record/api'
+import { Operation } from '@/entities/operation'
 
 const DATE_FORMAT = 'DD/MM/YYYY, HH:mm'
 
@@ -26,6 +28,16 @@ const PrintDetail = ({ data }: { data?: CheckupRecord }) => {
     ${authData?.information?.room?.roomTypeName}
     ${authData?.information?.room?.departmentName}`
 
+	const { data: operationList } = useGetOperationListQuery()
+
+	const operationOptions = operationList?.reduce((prev: Operation[], cur) => {
+		return [
+			...prev,
+			...cur.data.map((_item) => ({
+				..._item,
+			})),
+		]
+	}, [])
 	return (
 		<>
 			<Button
@@ -95,22 +107,26 @@ const PrintDetail = ({ data }: { data?: CheckupRecord }) => {
 								?.join(', ')}
 						</Text>
 						<Divider />
-						<Text mt="sm" weight="bold">
-							Chỉ định dùng thuốc
-						</Text>
-						{data?.prescription?.details?.map((item, index) => (
-							<Stack spacing={'xs'} key={item.id}>
-								<Group>
-									<Text weight={'bold'}>{index + 1}</Text>
-									<Text>
-										{item.medicineName} - {item.unit}
-									</Text>
-									<Text weight={'bold'}>{item.quantity}</Text>
-								</Group>
-								<Text>Dùng {renderDoseContent(item)}</Text>
-							</Stack>
-						))}
-						<Divider />
+						{data?.prescription?.details?.length && (
+							<>
+								<Text mt="sm" weight="bold">
+									Chỉ định dùng thuốc
+								</Text>
+								{data?.prescription?.details?.map((item, index) => (
+									<Stack spacing={'xs'} key={item.id}>
+										<Group>
+											<Text weight={'bold'}>{index + 1}</Text>
+											<Text>
+												{item.medicineName} - {item.unit}
+											</Text>
+											<Text weight={'bold'}>{item.quantity}</Text>
+										</Group>
+										<Text>Dùng {renderDoseContent(item)}</Text>
+									</Stack>
+								))}
+								<Divider />
+							</>
+						)}
 						<Stack mt="xl">
 							<Text>Ghi chú: {data?.doctorAdvice}</Text>
 							<Group position="apart" align="baseline">
@@ -120,6 +136,15 @@ const PrintDetail = ({ data }: { data?: CheckupRecord }) => {
 										{data?.reExam?.date
 											? formatDate(data?.reExam?.date)
 											: 'Không'}
+									</Text>
+									<Text>Yêu cầu xét nghiệm trước:</Text>
+									<Text>
+										{operationOptions
+											?.filter((item) =>
+												data?.reExam?.operationIds?.includes(item.id)
+											)
+											?.map((item) => item.name)
+											?.join(', ')}
 									</Text>
 									<Text>Lưu ý: {data?.reExam?.note}</Text>
 								</Stack>

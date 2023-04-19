@@ -30,6 +30,15 @@ import useGlobalStyles from '@/utils/useGlobalStyles'
 type BasicCheckupProps = {
 	updateProgress: () => void
 }
+
+const INIT = {
+	bloodPressure: undefined,
+	pulse: undefined,
+	temperature: undefined,
+	doctorAdvice: '',
+	diagnosis: '',
+	icdDiseaseIds: undefined,
+}
 const BasicCheckup = ({ updateProgress }: BasicCheckupProps) => {
 	const { classes: globalClasses, cx: cxGlobal } = useGlobalStyles()
 	const { data, isLoading } = useGetIcdListQuery()
@@ -44,14 +53,7 @@ const BasicCheckup = ({ updateProgress }: BasicCheckupProps) => {
 		useUpdateCheckupRecordByIdMutation()
 
 	const form = useForm<CheckupFormData>({
-		initialValues: {
-			bloodPressure: undefined,
-			pulse: undefined,
-			temperature: undefined,
-			doctorAdvice: '',
-			diagnosis: '',
-			icdDiseaseIds: undefined,
-		},
+		initialValues: INIT,
 		validateInputOnChange: true,
 		validate: {
 			pulse: (value: number) =>
@@ -73,6 +75,19 @@ const BasicCheckup = ({ updateProgress }: BasicCheckupProps) => {
 			return
 		}
 
+		if (
+			JSON.stringify({
+				bloodPressure: null,
+				pulse: null,
+				temperature: null,
+				doctorAdvice: '',
+				diagnosis: '',
+				icdDiseaseIds: [],
+			}) === JSON.stringify(values)
+		) {
+			updateProgress()
+			return
+		}
 		await updateRecordMutation({
 			...values,
 			id: checkupData.id,

@@ -57,6 +57,10 @@ const RequestOperations = ({ updateProgress }: RequestOperationsProps) => {
 			})
 			return
 		}
+		if (!values?.examOperationIds?.length) {
+			updateProgress()
+			return
+		}
 		await requestOperationsMutation({
 			id: checkupData.id,
 			...values,

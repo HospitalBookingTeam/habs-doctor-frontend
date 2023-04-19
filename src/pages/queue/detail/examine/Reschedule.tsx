@@ -28,6 +28,8 @@ import { useParams } from 'react-router-dom'
 import dayjs from 'dayjs'
 import { openConfirmModal } from '@mantine/modals'
 import OperationList from './OperationList'
+import { useAppSelector } from '@/store/hooks'
+import { selectTime } from '@/store/config/selectors'
 
 type RescheduleProps = {
 	updateProgress: () => void
@@ -35,7 +37,7 @@ type RescheduleProps = {
 const Reschedule = ({ updateProgress }: RescheduleProps) => {
 	const [requestReExamMutation, { isLoading: isLoadingRequestReExamMutation }] =
 		useRequestReExamByIdMutation()
-
+	const configTime = useAppSelector(selectTime)
 	const [
 		deleteReExamByMutation,
 		{ isLoading: isLoadingDeleteReExamByMutation },
@@ -190,7 +192,7 @@ const Reschedule = ({ updateProgress }: RescheduleProps) => {
 								label="Ngày dự kiến"
 								icon={<IconCalendar />}
 								withAsterisk={true}
-								minDate={new Date()}
+								minDate={new Date(dayjs().valueOf() + (configTime ?? 0))}
 								{...form.getInputProps('reExamDate')}
 								sx={{ minWidth: 200 }}
 							/>

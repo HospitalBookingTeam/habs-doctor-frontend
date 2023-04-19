@@ -51,11 +51,14 @@ const Medication = ({ updateProgress }: MedicationProps) => {
 	const [value, setValue] = useState<string[]>(['0'])
 	const { data: medData, isLoading } = useGetMedicineListQuery()
 	const { id: queueId } = useParams()
-	const { data: checkupData, isSuccess: isCheckupDataSuccess } =
-		useGetCheckupRecordByIdQuery(Number(queueId), {
-			skip: !queueId,
-			refetchOnMountOrArgChange: true,
-		})
+	const {
+		data: checkupData,
+		isSuccess: isCheckupDataSuccess,
+		refetch,
+	} = useGetCheckupRecordByIdQuery(Number(queueId), {
+		skip: !queueId,
+		refetchOnMountOrArgChange: true,
+	})
 
 	const [
 		updateRecordPrescriptionMutation,
@@ -93,6 +96,10 @@ const Medication = ({ updateProgress }: MedicationProps) => {
 			})
 			return
 		}
+		if (JSON.stringify({ details: [] }) === JSON.stringify(values)) {
+			updateProgress()
+			return
+		}
 		await updateRecordPrescriptionMutation({
 			id: checkupData.id,
 			...values,
@@ -108,6 +115,7 @@ const Medication = ({ updateProgress }: MedicationProps) => {
 					message: <Text>Đơn thuốc đã được cập nhật.</Text>,
 				})
 				updateProgress()
+				refetch()
 			})
 	}
 
