@@ -1,9 +1,11 @@
-import { Icd } from '@/entities/icd'
 import { CheckupQueue, ITestingQueue } from '@/entities/queue'
-import { CheckupRecord } from '@/entities/record'
-import { api } from '../api'
+import { baseQueryWithRetry } from '../api'
+import { createApi } from '@reduxjs/toolkit/dist/query/react'
 
-export const queueApi = api.injectEndpoints({
+export const queueApi = createApi({
+	reducerPath: 'queueApi',
+	tagTypes: ['Auth', 'Queue'],
+	baseQuery: baseQueryWithRetry,
 	endpoints: (build) => ({
 		getCheckupQueue: build.query<CheckupQueue, number | undefined>({
 			query: (roomId) => ({
@@ -52,6 +54,31 @@ export const queueApi = api.injectEndpoints({
 				method: 'GET',
 			}),
 		}),
+		removeFromQueue: build.mutation<
+			CheckupQueue,
+			{ checkupRecordId: number; roomId: number }
+		>({
+			query: (body) => ({
+				url: `checkup-queue/remove-from-queue`,
+				method: 'POST',
+				body,
+			}),
+			async onQueryStarted({ roomId, ...patch }, { dispatch, queryFulfilled }) {
+				try {
+					const { data: updatedData } = await queryFulfilled
+
+					dispatch(
+						queueApi.util.updateQueryData(
+							'getCheckupQueue',
+							roomId,
+							(draft) => {
+								return updatedData
+							}
+						)
+					)
+				} catch {}
+			},
+		}),
 	}),
 })
 
@@ -61,6 +88,7 @@ export const {
 	useGetTestingCheckupQueueQuery,
 	useNotifyPatientMutation,
 	useConfirmCheckupFromQueueByIdMutation,
+	useRemoveFromQueueMutation,
 } = queueApi
 
 export const {

@@ -14,12 +14,16 @@ import {
 	Badge,
 	Tabs,
 	LoadingOverlay,
+	Group,
+	Box,
 } from '@mantine/core'
 import { useParams } from 'react-router-dom'
 import PatientInfo from '../queue/detail/record/PatientInfo'
 import HistoryRecord from './HistoryRecord'
 import MedicationList from './MedicationList'
 import PatientRecordTree from '../queue/detail/examine/PatientRecordTree'
+import ReExamNote from './ReExamNote'
+import PrintDetail from '../queue/detail/examine/modals/PrintDetail'
 
 const RecordHistory = () => {
 	const [activeTab, setActiveTab] = useState<string | null>('record')
@@ -32,8 +36,8 @@ const RecordHistory = () => {
 	)
 
 	const { data: reExamTree, isLoading: isLoadingReExamTree } =
-		useGetReExamTreeQuery(recordData?.id?.toString() as string, {
-			skip: !recordData?.id || activeTab !== 'reExamTree',
+		useGetReExamTreeQuery(recordData?.reExamTreeCode?.toString() as string, {
+			skip: !recordData?.reExamTreeCode || activeTab !== 'reExamTree',
 		})
 
 	return (
@@ -47,9 +51,11 @@ const RecordHistory = () => {
 			>
 				<BackButton />
 
-				<Badge size="xl" radius="md">
-					LỊCH SỬ KHÁM BỆNH
-				</Badge>
+				<Group>
+					<Badge size="xl" radius="md">
+						LỊCH SỬ KHÁM BỆNH
+					</Badge>
+				</Group>
 			</Stack>
 			<Paper p="md" sx={{ background: 'white' }}>
 				<Tabs value={activeTab} onTabChange={setActiveTab}>
@@ -59,12 +65,17 @@ const RecordHistory = () => {
 					</Tabs.List>
 					<Tabs.Panel value="record" pt="xs">
 						<Stack>
-							<Text>
-								Thời gian:{' '}
-								<Text span color="green" weight={'bolder'}>
-									{recordData?.date ? formatDate(recordData.date) : '---'}
+							<Group position="apart">
+								<Text>
+									Thời gian:{' '}
+									<Text span color="green" weight={'bolder'}>
+										{recordData?.date ? formatDate(recordData.date) : '---'}
+									</Text>
 								</Text>
-							</Text>
+								<Box sx={{ maxWidth: 150 }}>
+									<PrintDetail data={recordData} />
+								</Box>
+							</Group>
 							<Divider />
 							<PatientInfo data={recordData?.patientData} />
 							<Divider />
@@ -80,6 +91,12 @@ const RecordHistory = () => {
 								<>
 									<Divider />
 									<MedicationList data={recordData?.prescription} />
+								</>
+							)}
+							{!!recordData?.hasReExam && !!recordData?.reExam && (
+								<>
+									<Divider />
+									<ReExamNote {...recordData?.reExam} />
 								</>
 							)}
 						</Stack>

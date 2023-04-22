@@ -5,9 +5,11 @@ export type CheckupQueueItem = {
 	status: number
 	numericalOrder: number
 	estimatedStartTime: string
+	checkinTime: string
 	patientName: string
 	patientId: number
 	isReExam: boolean
+	isKickedFromQueue?: any
 	session: SessionType
 }
 

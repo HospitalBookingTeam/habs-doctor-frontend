@@ -179,6 +179,7 @@ export const {
 	useGetMedicineListQuery,
 	useGetCheckupRecordByPatientIdQuery,
 	useGetCheckupRecordByIdQuery,
+	useLazyGetCheckupRecordByIdQuery,
 	useGetIcdListQuery,
 	useGetOperationListQuery,
 	useGetDepartmentListQuery,

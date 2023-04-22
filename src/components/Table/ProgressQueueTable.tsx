@@ -1,5 +1,8 @@
 import { ITestingQueue } from '@/entities/queue'
-import { translateCheckupRecordStatus } from '@/utils/renderEnums'
+import {
+	CheckupRecordStatus,
+	translateCheckupRecordStatus,
+} from '@/utils/renderEnums'
 
 import {
 	Badge,
@@ -18,6 +21,12 @@ import { useNavigate } from 'react-router-dom'
 interface QueueTableProps {
 	data?: ITestingQueue
 	isLoading?: boolean
+}
+
+const statusColors: Record<number, string> = {
+	[CheckupRecordStatus.CHO_THANH_TOAN_XN]: 'green',
+	[CheckupRecordStatus.DA_CO_KET_QUA_XN]: 'blue',
+	[CheckupRecordStatus.CHO_KET_QUA_XN]: 'orange',
 }
 
 const ProgressQueueTable = ({ data, isLoading }: QueueTableProps) => {
@@ -43,10 +52,7 @@ const ProgressQueueTable = ({ data, isLoading }: QueueTableProps) => {
 				</Grid.Col>
 
 				<Grid.Col span={3}>
-					<Badge
-						// color={jobColors[item.status.toLowerCase()]}
-						variant={theme.colorScheme === 'dark' ? 'light' : 'outline'}
-					>
+					<Badge color={statusColors[item.status]} variant="light">
 						{translateCheckupRecordStatus(item.status, item.isReExam)}
 					</Badge>
 				</Grid.Col>

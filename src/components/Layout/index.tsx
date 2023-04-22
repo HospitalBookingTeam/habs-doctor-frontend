@@ -12,6 +12,9 @@ const LayoutAppShell = ({ children }: LayoutAppShellProps) => {
 	return (
 		<AppShell
 			styles={{
+				root: {
+					width: '100%',
+				},
 				main: {
 					background:
 						theme.colorScheme === 'dark'

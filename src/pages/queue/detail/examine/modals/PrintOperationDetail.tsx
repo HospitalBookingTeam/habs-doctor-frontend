@@ -17,6 +17,12 @@ const DATE_FORMAT = 'DD/MM/YYYY, HH:mm'
 const PrintOperationDetail = ({ data }: { data?: IncomingTestResponse[] }) => {
 	const componentRef = useRef(null)
 	const handlePrint = useReactToPrint({
+		pageStyle: `@media print {
+      @page {
+        size: A5 landscape;
+        margin: 0;
+      }
+    }`,
 		content: () => componentRef.current,
 	})
 	const authData = useAppSelector(selectAuth)
@@ -42,23 +48,23 @@ const PrintOperationDetail = ({ data }: { data?: IncomingTestResponse[] }) => {
 					{data?.map((item, index) => (
 						<Stack p="md" py="lg" key={item.operationId}>
 							<Group position="apart" align="start">
-								<Stack spacing={'xs'} align="center">
-									<Text size="sm">SỞ Y TẾ TP. Hồ Chí Minh</Text>
-									<Text size="sm" weight="bold">
+								<Stack spacing={1} align="center">
+									<Text size="xs">SỞ Y TẾ TP. Hồ Chí Minh</Text>
+									<Text size="xs" weight="bold">
 										BỆNH VIỆN NHI ĐỒNG 2
 									</Text>
 									<Divider variant="dotted" color="dark" size="md" />
-									<Text size="xs" weight="bold">
+									<Text size={10} weight="bold">
 										Khoa khám bệnh
 									</Text>
-									<Text size="xs">{roomLabel}</Text>
+									<Text size={10}>{roomLabel}</Text>
 								</Stack>
 								<Stack align="center">
-									<Text size="xl" weight="bold">
+									<Text size="md" weight="bold">
 										PHIẾU CHỈ ĐỊNH
 									</Text>
 									<Text
-										size={24}
+										size={'lg'}
 										weight="bold"
 										align="center"
 										sx={{ maxWidth: 250 }}
@@ -73,63 +79,67 @@ const PrintOperationDetail = ({ data }: { data?: IncomingTestResponse[] }) => {
 										value={item?.code?.split('_')?.[1] ?? '---'}
 										displayValue={false}
 									/>
-									<Text size="xs">Mã số: {item?.code}</Text>
+									<Text size={10}>Mã số: {item?.code}</Text>
 								</Stack>
 							</Group>
 
-							<Stack spacing="xs" p="md">
+							<Stack spacing="xs" p="sm">
 								<Group position="apart">
 									<Stack>
-										<Text>Họ tên: {item?.patient?.name}</Text>
-										<Text>
-											Ngày sinh:{' '}
-											{item?.patient?.dateOfBirth
-												? formatDate(item?.patient?.dateOfBirth)
-												: '---'}
-										</Text>
-										<Text>
-											Giới tính: {item?.patient?.gender === 0 ? 'Nam' : 'Nữ'}
-										</Text>
-										<Text>SĐT: {item?.patient?.phoneNumber}</Text>
+										<Group>
+											<Text size="sm">Họ tên: {item?.patient?.name}</Text>
+											<Text size="sm">
+												Ngày sinh:{' '}
+												{item?.patient?.dateOfBirth
+													? formatDate(item?.patient?.dateOfBirth)
+													: '---'}
+											</Text>
+											<Text size="sm">
+												Giới tính: {item?.patient?.gender === 0 ? 'Nam' : 'Nữ'}
+											</Text>
+										</Group>
+										<Text size="sm">SĐT: {item?.patient?.phoneNumber}</Text>
 
-										<Divider />
-										<Text weight="bold">Yêu cầu xét nghiệm</Text>
-										<Text>
+										<Text size="sm" weight="bold">
+											Yêu cầu xét nghiệm
+										</Text>
+										<Text size="sm">
 											Phòng {item.roomNumber} - Tầng {item.floor}
 										</Text>
 									</Stack>
 									<Stack spacing={'xs'} align="center">
-										<QRCodeSVG value={item.qrCode} size={200} />
+										<QRCodeSVG value={item.qrCode} size={120} />
 									</Stack>
 								</Group>
-
 								<Divider />
-								<Stack mt="xl">
-									<Text>HƯỚNG DẪN THỰC HIỆN CẬN LÂM SÀNG</Text>
-									<Group position="apart" align="baseline">
-										<Stack sx={{ maxWidth: '45%' }}>
-											<Text>Bước 1: Đóng tiền qua app hoặc quầy thu ngân</Text>
-											<Text>
+								<Stack mt="sm" spacing="xs">
+									<Group position="apart" align="start">
+										<Stack sx={{ maxWidth: '45%' }} spacing="xs">
+											<Text size="sm">HƯỚNG DẪN THỰC HIỆN CẬN LÂM SÀNG</Text>
+											<Text size="sm">
+												Bước 1: Đóng tiền qua app hoặc quầy thu ngân
+											</Text>
+											<Text size="sm">
 												Bước 2: Nộp phiếu chỉ định và làm theo hướng dẫn của
 												nhân viên
 											</Text>
-											<Text weight={'bold'}>
+											<Text size="sm" weight={'bold'}>
 												Bước 3: Sau khi có đầy đủ kết quả, đưa bệnh nhi quay lại
 												phòng khám đã cho chỉ định để khám lại
 											</Text>
 										</Stack>
-										<Stack align="center">
+										<Stack align="center" spacing="xs">
 											<Text size="xs">
 												{formatDate(
 													dayjs().valueOf() + (configTime ?? 0),
 													DATE_FORMAT
 												)}
 											</Text>
-											<Text mb="xl" transform="uppercase">
+											<Text size="sm" transform="uppercase">
 												Bác sĩ khám bệnh
 											</Text>
 											<Signature />
-											<Text mt="xl" weight={'bold'} transform="uppercase">
+											<Text size="sm" weight={'bold'} transform="uppercase">
 												BS {item?.doctor}
 											</Text>
 										</Stack>

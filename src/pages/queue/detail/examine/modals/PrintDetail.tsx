@@ -10,15 +10,28 @@ import Signature from '@/components/Signature'
 import { selectTime } from '@/store/config/selectors'
 import dayjs from 'dayjs'
 import Barcode from 'react-barcode'
-import { useGetOperationListQuery } from '@/store/record/api'
+import {
+	useGetCheckupRecordByIdQuery,
+	useGetOperationListQuery,
+	useLazyGetCheckupRecordByIdQuery,
+} from '@/store/record/api'
 import { Operation } from '@/entities/operation'
+import { useParams } from 'react-router-dom'
 
 const DATE_FORMAT = 'DD/MM/YYYY, HH:mm'
 
 const PrintDetail = ({ data }: { data?: CheckupRecord }) => {
-	const [opened, setOpened] = useState(false)
+	const { id: recordId } = useParams()
+	const [trigger, { isLoading }] = useLazyGetCheckupRecordByIdQuery()
+
 	const componentRef = useRef(null)
 	const handlePrint = useReactToPrint({
+		pageStyle: `@media print {
+      @page {
+        size: A5 portrait;
+        margin: 0;
+      }
+    }`,
 		content: () => componentRef.current,
 	})
 	const authData = useAppSelector(selectAuth)
@@ -38,32 +51,36 @@ const PrintDetail = ({ data }: { data?: CheckupRecord }) => {
 			})),
 		]
 	}, [])
+
+	const onHandlePrint = async () => {
+		await trigger(Number(recordId)).unwrap().then(handlePrint)
+	}
 	return (
 		<>
 			<Button
 				fullWidth={true}
 				color="green"
 				variant="outline"
-				onClick={handlePrint}
+				onClick={onHandlePrint}
 				leftIcon={<IconPrinter />}
 			>
 				In bệnh án
 			</Button>
 			<Stack sx={{ overflow: 'hidden', height: 0 }}>
-				<Stack ref={componentRef} p="md">
+				<Stack ref={componentRef} p="xs">
 					<Group pt="md" position="apart" align="start">
-						<Stack spacing={'xs'} align="center">
-							<Text size="sm">SỞ Y TẾ TP. Hồ Chí Minh</Text>
-							<Text size="sm" weight="bold">
+						<Stack spacing={1} align="center">
+							<Text size="xs">SỞ Y TẾ TP. Hồ Chí Minh</Text>
+							<Text size="xs" weight="bold">
 								BỆNH VIỆN NHI ĐỒNG 2
 							</Text>
-							<Divider variant="dotted" color="dark" size="md" />
-							<Text size="xs" weight="bold">
+							<Divider variant="dotted" color="dark" size="sm" />
+							<Text size={10} weight="bold">
 								Khoa khám bệnh
 							</Text>
-							<Text size="xs">{roomLabel}</Text>
+							<Text size={10}>{roomLabel}</Text>
 						</Stack>
-						<Text size="xl" weight="bold">
+						<Text size="md" py="sm" weight="bold">
 							KẾT QUẢ KHÁM BỆNH
 						</Text>
 
@@ -74,33 +91,36 @@ const PrintDetail = ({ data }: { data?: CheckupRecord }) => {
 								value={data?.code?.split('_')?.[1] ?? '---'}
 								displayValue={false}
 							/>
-							<Text size="xs">Mã số: {data?.code}</Text>
+							<Text size={10}>Mã số: {data?.code}</Text>
 						</Stack>
 					</Group>
 
-					<Stack spacing="xs" p="md">
-						<Text>Họ tên: {data?.patientData?.name}</Text>
-						<Text>
-							Ngày sinh:{' '}
-							{data?.patientData?.dateOfBirth
-								? formatDate(data?.patientData?.dateOfBirth)
-								: '---'}
-						</Text>
-						<Text>
-							Giới tính: {data?.patientData?.gender === 0 ? 'Nam' : 'Nữ'}
-						</Text>
-						<Text>SĐT: {data?.patientData?.phoneNumber}</Text>
-						<Divider />
-						<Text>Biểu hiện lâm sàng: {data?.diagnosis}</Text>
+					<Stack spacing="xs" p="sm">
 						<Group>
-							<Text>
+							<Text size="sm">Họ tên: {data?.patientData?.name}</Text>
+							<Text size="sm">
+								Ngày sinh:{' '}
+								{data?.patientData?.dateOfBirth
+									? formatDate(data?.patientData?.dateOfBirth)
+									: '---'}
+							</Text>
+							<Text size="sm">
+								Giới tính: {data?.patientData?.gender === 0 ? 'Nam' : 'Nữ'}
+							</Text>
+						</Group>
+
+						<Text size="sm">SĐT: {data?.patientData?.phoneNumber}</Text>
+						<Divider />
+						<Text size="sm">Biểu hiện lâm sàng: {data?.diagnosis}</Text>
+						<Group>
+							<Text size="sm">
 								Nhiệt độ: {data?.temperature}
 								<IconTemperatureCelsius color="gray" size={14} stroke={1} />
 							</Text>
-							<Text>Cân nặng: {data?.bloodPressure}kg</Text>
-							<Text>Chiều cao: {data?.pulse}cm</Text>
+							<Text size="sm">Cân nặng: {data?.bloodPressure}kg</Text>
+							<Text size="sm">Chiều cao: {data?.pulse}cm</Text>
 						</Group>
-						<Text>
+						<Text size="sm">
 							Chẩn đoán:{' '}
 							{data?.icdDiseases
 								?.map((item) => item.icdDiseaseName)
@@ -109,36 +129,40 @@ const PrintDetail = ({ data }: { data?: CheckupRecord }) => {
 						<Divider />
 						{data?.prescription?.details?.length && (
 							<>
-								<Text mt="sm" weight="bold">
+								<Text mt="sm" size="sm" weight="bold">
 									Chỉ định dùng thuốc
 								</Text>
 								{data?.prescription?.details?.map((item, index) => (
 									<Stack spacing={'xs'} key={item.id}>
 										<Group>
-											<Text weight={'bold'}>{index + 1}</Text>
-											<Text>
-												{item.medicineName} - {item.unit}
+											<Text size="sm" weight={'bold'}>
+												{index + 1}
 											</Text>
-											<Text weight={'bold'}>{item.quantity}</Text>
+											<Text size="sm">{item.medicineName}</Text>
+											<Text size="sm" weight={'bold'}>
+												{item.quantity} {item.unit}
+											</Text>
 										</Group>
-										<Text>Dùng {renderDoseContent(item)}</Text>
+										<Text size="sm">{item.usage}</Text>
+										{/* <Text size="sm">{item.note}</Text> */}
+										<Text size="xs">{renderDoseContent(item)}</Text>
 									</Stack>
 								))}
 								<Divider />
 							</>
 						)}
 						<Stack mt="xl">
-							<Text>Ghi chú: {data?.doctorAdvice}</Text>
+							<Text size="sm">Ghi chú: {data?.doctorAdvice}</Text>
 							<Group position="apart" align="baseline">
 								<Stack>
-									<Text weight={'bold'}>
+									<Text size="sm" weight={'bold'}>
 										TÁI KHÁM:{' '}
 										{data?.reExam?.date
 											? formatDate(data?.reExam?.date)
 											: 'Không'}
 									</Text>
-									<Text>Yêu cầu xét nghiệm trước:</Text>
-									<Text>
+									<Text size="sm">Yêu cầu xét nghiệm trước:</Text>
+									<Text size="sm">
 										{operationOptions
 											?.filter((item) =>
 												data?.reExam?.operationIds?.includes(item.id)
@@ -146,7 +170,7 @@ const PrintDetail = ({ data }: { data?: CheckupRecord }) => {
 											?.map((item) => item.name)
 											?.join(', ')}
 									</Text>
-									<Text>Lưu ý: {data?.reExam?.note}</Text>
+									<Text size="sm">Lưu ý: {data?.reExam?.note}</Text>
 								</Stack>
 								<Stack align="center">
 									<Text size="xs">
@@ -155,11 +179,11 @@ const PrintDetail = ({ data }: { data?: CheckupRecord }) => {
 											DATE_FORMAT
 										)}
 									</Text>
-									<Text mb="xl" transform="uppercase">
+									<Text size="sm" mb="lg" transform="uppercase">
 										Bác sĩ khám bệnh
 									</Text>
 									<Signature />
-									<Text mt="xl" weight={'bold'} transform="uppercase">
+									<Text mt="lg" weight={'bold'} size="sm" transform="uppercase">
 										BS {data?.doctorName}
 									</Text>
 								</Stack>

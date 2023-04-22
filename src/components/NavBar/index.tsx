@@ -48,11 +48,6 @@ const useStyles = createStyles((theme, _params, getRef) => {
 		},
 
 		version: {
-			backgroundColor: theme.fn.lighten(
-				theme.fn.variant({ variant: 'filled', color: theme.primaryColor })
-					.background,
-				0.1
-			),
 			color: theme.white,
 		},
 
@@ -118,9 +113,9 @@ const useStyles = createStyles((theme, _params, getRef) => {
 })
 
 const data = [
-	{ link: '', label: 'Hàng chờ khám', icon: IconList },
+	{ link: '', link2: '/', label: 'Chờ khám', icon: IconList },
 	{ link: '/testing', label: 'Đợi kết quả', icon: IconPackage },
-	{ link: '/finished', label: 'Người bệnh đã khám', icon: IconZoomCheck },
+	{ link: '/finished', label: 'Đã khám', icon: IconZoomCheck },
 ]
 
 interface NavbarLinkProps {
@@ -176,9 +171,8 @@ export function NavbarSimpleColored({ opened }: { opened: boolean }) {
 	const theme = useMantineTheme()
 	const matches = useMediaQuery(`(max-width: ${theme.breakpoints.lg}px)`)
 
-	const roomLabel = `${authData?.information?.room?.roomNumber} -
-    ${authData?.information?.room?.roomTypeName}
-    ${authData?.information?.room?.departmentName}`
+	const roomLabel = `${authData?.information?.room?.roomTypeName}
+    ${authData?.information?.room?.departmentName} ${authData?.information?.room?.roomNumber}`
 
 	const links = data.map((item) => (
 		<NavbarLinkMobile
@@ -190,7 +184,7 @@ export function NavbarSimpleColored({ opened }: { opened: boolean }) {
 			}}
 			icon={item.icon}
 			label={item.label}
-			active={active === item.link}
+			active={active === item.link || active === item?.link2}
 		/>
 	))
 
@@ -203,7 +197,7 @@ export function NavbarSimpleColored({ opened }: { opened: boolean }) {
 	return (
 		<Navbar
 			p={matches ? 'xs' : 'md'}
-			width={{ base: 70, lg: 250 }}
+			width={{ base: 70, lg: 200 }}
 			className={classes.navbar}
 		>
 			<Navbar.Section grow>
@@ -247,7 +241,7 @@ export function NavbarSimpleColored({ opened }: { opened: boolean }) {
 						styles={{ display: 'none' }}
 					>
 						<Text size="xs" weight={500} className={classes.version}>
-							Phòng {roomLabel}
+							{roomLabel}
 						</Text>
 					</MediaQuery>
 				</Stack>

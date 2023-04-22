@@ -1,7 +1,10 @@
 import { CheckupQueue, CheckupQueueItem } from '@/entities/queue'
+import { selectAuth } from '@/store/auth/selectors'
+import { useAppSelector } from '@/store/hooks'
 import {
 	useConfirmCheckupFromQueueByIdMutation,
 	useNotifyPatientMutation,
+	useRemoveFromQueueMutation,
 } from '@/store/queue/api'
 import { formatDate } from '@/utils/formats'
 import {
@@ -22,11 +25,12 @@ import {
 	Stack,
 	Group,
 	ActionIcon,
+	Tooltip,
 } from '@mantine/core'
 import { useMediaQuery } from '@mantine/hooks'
 import { openConfirmModal } from '@mantine/modals'
 import { showNotification } from '@mantine/notifications'
-import { IconBell, IconChevronRight } from '@tabler/icons'
+import { IconBell, IconChevronRight, IconUserMinus } from '@tabler/icons'
 import { Fragment } from 'react'
 import { useNavigate } from 'react-router-dom'
 
@@ -37,8 +41,8 @@ interface QueueTableProps {
 
 const statusColors: Record<number, string> = {
 	[CheckupRecordStatus.CHECKED_IN]: 'green',
-	[CheckupRecordStatus.DANG_KHAM]: 'cyan',
-	[CheckupRecordStatus.CHECKED_IN_SAU_XN]: 'pink',
+	[CheckupRecordStatus.DANG_KHAM]: 'orange',
+	[CheckupRecordStatus.CHECKED_IN_SAU_XN]: 'blue',
 }
 
 export function QueueTable({ data, isLoading }: QueueTableProps) {
@@ -49,6 +53,10 @@ export function QueueTable({ data, isLoading }: QueueTableProps) {
 		useConfirmCheckupFromQueueByIdMutation()
 	const [notifyPatientMutation, { isLoading: isLoadingNotify }] =
 		useNotifyPatientMutation()
+	const [removeFromQueueMutation, { isLoading: isLoadingRemove }] =
+		useRemoveFromQueueMutation()
+
+	const authData = useAppSelector(selectAuth)
 
 	const openModal = (patientName: string, queueId: number) =>
 		openConfirmModal({
@@ -97,6 +105,52 @@ export function QueueTable({ data, isLoading }: QueueTableProps) {
 			)
 	}
 
+	const handleRemovePatient = async (patientName: string, queueId: number) => {
+		openConfirmModal({
+			title: 'Xóa khỏi hàng chờ',
+			children: (
+				<Stack spacing={'xs'}>
+					<Text size="sm">
+						Bạn sẽ xóa người bệnh{' '}
+						<Text color="red" inherit component="span">
+							{patientName}
+						</Text>{' '}
+						khỏi hàng chờ.
+					</Text>
+					<Text size="sm">Vui lòng tiếp tục để xác nhận.</Text>
+				</Stack>
+			),
+			centered: true,
+			color: 'red',
+			labels: { confirm: 'Xác nhận', cancel: 'Hủy' },
+			confirmProps: {
+				color: 'red',
+			},
+			onConfirm: () => handleConfirmRemoveQueue(queueId),
+		})
+	}
+	const handleConfirmRemoveQueue = async (queueId: number) => {
+		if (!authData?.information) return
+		await removeFromQueueMutation({
+			checkupRecordId: queueId,
+			roomId: authData?.information?.room?.id,
+		})
+			.unwrap()
+			.then((payload) =>
+				showNotification({
+					title: 'Đã xóa khỏi hàng chờ',
+					message: '',
+				})
+			)
+			.catch((error) =>
+				showNotification({
+					title: 'Lỗi',
+					message: 'Không thành công.',
+					color: 'red',
+				})
+			)
+	}
+
 	const rows = data?.map((item, index) => {
 		const isInProgress = item?.status === CheckupRecordStatus.DANG_KHAM
 		// ||
@@ -120,18 +174,18 @@ export function QueueTable({ data, isLoading }: QueueTableProps) {
 				</Grid.Col>
 
 				<Grid.Col span={2} sx={{ textAlign: 'center' }}>
-					<Badge
-						color={statusColors[item.status]}
-						variant={theme.colorScheme === 'dark' ? 'light' : 'outline'}
-					>
+					<Badge color={statusColors[item.status]} variant={'light'}>
 						{translateCheckupRecordStatus(item.status, item.isReExam)}
 					</Badge>
 				</Grid.Col>
 
-				<Grid.Col span={2}>
+				<Grid.Col span={1}>
 					<Text align="center">
 						{formatDate(item?.estimatedStartTime, 'HH:mm')}
 					</Text>
+				</Grid.Col>
+				<Grid.Col span={1}>
+					<Text align="center">{formatDate(item?.checkinTime, 'HH:mm')}</Text>
 				</Grid.Col>
 				<Grid.Col span={1}>
 					<Text align="center">
@@ -144,6 +198,7 @@ export function QueueTable({ data, isLoading }: QueueTableProps) {
 									? 'blue'
 									: 'orange'
 							}
+							variant="outline"
 						>
 							{translateSession(item?.session)}
 						</Badge>
@@ -151,9 +206,19 @@ export function QueueTable({ data, isLoading }: QueueTableProps) {
 				</Grid.Col>
 				<Grid.Col span={3}>
 					<Group align={'center'} position="right">
-						<ActionIcon onClick={() => handleNotifyPatient(item.id)}>
-							<IconBell />
-						</ActionIcon>
+						<Tooltip label="Xóa khỏi hàng chờ">
+							<ActionIcon
+								onClick={() => handleRemovePatient(item.patientName, item.id)}
+								color="red"
+							>
+								<IconUserMinus />
+							</ActionIcon>
+						</Tooltip>
+						<Tooltip label="Thông báo đến khám">
+							<ActionIcon onClick={() => handleNotifyPatient(item.id)}>
+								<IconBell />
+							</ActionIcon>
+						</Tooltip>
 						<Button
 							variant={isInProgress ? 'outline' : 'filled'}
 							rightIcon={isInProgress ? <IconChevronRight /> : null}
@@ -185,11 +250,14 @@ export function QueueTable({ data, isLoading }: QueueTableProps) {
 				<Grid.Col span={2} sx={{ textAlign: 'center' }}>
 					Trạng thái
 				</Grid.Col>
-				<Grid.Col span={2}>
+				<Grid.Col span={1}>
 					<Text align="center">Dự kiến</Text>
 				</Grid.Col>
 				<Grid.Col span={1}>
-					<Text align="center">Ca khám</Text>
+					<Text align="center">Checkin</Text>
+				</Grid.Col>
+				<Grid.Col span={1}>
+					<Text align="center">Ca</Text>
 				</Grid.Col>
 				<Grid.Col span={3}></Grid.Col>
 			</Grid>
@@ -204,7 +272,7 @@ export function QueueTable({ data, isLoading }: QueueTableProps) {
 					<Loader size="lg" />
 				</Center>
 				<Stack sx={{ width: '100%', minWidth: 720 }} mt="sm">
-					<LoadingOverlay visible={isLoadingConfirm} />
+					<LoadingOverlay visible={isLoadingConfirm || isLoadingRemove} />
 					{rows}
 				</Stack>
 			</ScrollArea>

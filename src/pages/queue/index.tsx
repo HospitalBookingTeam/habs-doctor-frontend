@@ -1,4 +1,3 @@
-import LayoutAppShell from '@/components/Layout'
 import { QueueTable } from '@/components/Table'
 import { CheckupQueue } from '@/entities/queue'
 import { selectAuth } from '@/store/auth/selectors'
@@ -46,7 +45,7 @@ const Queue = () => {
 	}, [value, data, isSuccess])
 
 	return (
-		<Stack p="md">
+		<Stack p="xs">
 			<Stack
 				sx={{ flexDirection: 'row' }}
 				align="center"
