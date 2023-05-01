@@ -1,7 +1,7 @@
 import { CheckupRecord } from '@/entities/record'
 import { selectAuth } from '@/store/auth/selectors'
 import { useAppSelector } from '@/store/hooks'
-import { Button, Stack, Group, Text, Divider } from '@mantine/core'
+import { Button, Stack, Group, Text, Divider, List } from '@mantine/core'
 import { IconPrinter, IconTemperatureCelsius } from '@tabler/icons'
 import { useRef, useState } from 'react'
 import { useReactToPrint } from 'react-to-print'
@@ -127,13 +127,25 @@ const PrintDetail = ({ data }: { data?: CheckupRecord }) => {
 								?.join(', ')}
 						</Text>
 						<Divider />
-						{data?.prescription?.details?.length && (
+						{!!data?.testRecords?.length && (
 							<>
-								<Text mt="sm" size="sm" weight="bold">
+								<Text size="sm" weight="bold">
+									Xét nghiệm đi kèm
+								</Text>
+								<List size="sm">
+									{data?.testRecords?.map((item) => (
+										<List.Item key={item.id}>{item.operationName}</List.Item>
+									))}
+								</List>
+							</>
+						)}
+						{!!data?.prescription?.details?.length && (
+							<>
+								<Text size="sm" weight="bold">
 									Chỉ định dùng thuốc
 								</Text>
 								{data?.prescription?.details?.map((item, index) => (
-									<Stack spacing={'xs'} key={item.id}>
+									<Stack spacing={0} key={item.id}>
 										<Group>
 											<Text size="sm" weight={'bold'}>
 												{index + 1}
@@ -143,7 +155,7 @@ const PrintDetail = ({ data }: { data?: CheckupRecord }) => {
 												{item.quantity} {item.unit}
 											</Text>
 										</Group>
-										<Text size="sm">{item.usage}</Text>
+										{item?.usage && <Text size="sm">{item.usage}</Text>}
 										{/* <Text size="sm">{item.note}</Text> */}
 										<Text size="xs">{renderDoseContent(item)}</Text>
 									</Stack>
@@ -151,10 +163,10 @@ const PrintDetail = ({ data }: { data?: CheckupRecord }) => {
 								<Divider />
 							</>
 						)}
-						<Stack mt="xl">
-							<Text size="sm">Ghi chú: {data?.doctorAdvice}</Text>
+						<Stack>
 							<Group position="apart" align="baseline">
 								<Stack>
+									<Text size="sm">Ghi chú: {data?.doctorAdvice}</Text>
 									<Text size="sm" weight={'bold'}>
 										TÁI KHÁM:{' '}
 										{data?.reExam?.date
@@ -179,11 +191,11 @@ const PrintDetail = ({ data }: { data?: CheckupRecord }) => {
 											DATE_FORMAT
 										)}
 									</Text>
-									<Text size="sm" mb="lg" transform="uppercase">
+									<Text size="sm" transform="uppercase">
 										Bác sĩ khám bệnh
 									</Text>
 									<Signature />
-									<Text mt="lg" weight={'bold'} size="sm" transform="uppercase">
+									<Text weight={'bold'} size="sm" transform="uppercase">
 										BS {data?.doctorName}
 									</Text>
 								</Stack>
