@@ -23,7 +23,7 @@ import HistoryRecord from './HistoryRecord'
 import MedicationList from './MedicationList'
 import PatientRecordTree from '../queue/detail/examine/PatientRecordTree'
 import ReExamNote from './ReExamNote'
-import PrintDetail from '../queue/detail/examine/modals/PrintDetail'
+import PrintDetail from './PrintDetail'
 
 const RecordHistory = () => {
 	const [activeTab, setActiveTab] = useState<string | null>('record')

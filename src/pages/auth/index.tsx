@@ -137,16 +137,16 @@ const Login = () => {
 
 						<TextInput
 							withAsterisk={true}
-							label="Username"
-							placeholder="doctor"
+							label="Tài khoản"
+							placeholder="Vui lòng nhập"
 							size="md"
 							{...form.getInputProps('username')}
 						/>
 						<PasswordInput
 							withAsterisk={true}
 							autoComplete="current-password"
-							label="Password"
-							placeholder="123"
+							label="Mật khẩu"
+							placeholder="Vui lòng nhập"
 							mt="md"
 							size="md"
 							{...form.getInputProps('password')}

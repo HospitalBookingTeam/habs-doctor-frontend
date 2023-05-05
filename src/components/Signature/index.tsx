@@ -1,7 +1,7 @@
 import { formatDate } from '@/utils/formats'
 import { Paper, Stack, Text } from '@mantine/core'
 
-const Signature = () => {
+const Signature = ({ date }: { date?: string | number }) => {
 	return (
 		<Paper withBorder p="sm" radius={0} color="green">
 			<Stack>
@@ -12,7 +12,7 @@ const Signature = () => {
 					Ký bởi: BỆNH VIỆN NHI ĐỒNG 2
 				</Text>
 				<Text color="red" size="xs">
-					Ký ngày: {formatDate(new Date().toString(), 'DD-MM-YYYY')}
+					Ký ngày: {formatDate(date ?? new Date().toString(), 'DD-MM-YYYY')}
 				</Text>
 			</Stack>
 		</Paper>

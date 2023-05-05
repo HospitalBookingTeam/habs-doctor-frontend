@@ -138,7 +138,7 @@ const PrintOperationDetail = ({ data }: { data?: IncomingTestResponse[] }) => {
 											<Text size="sm" transform="uppercase">
 												Bác sĩ khám bệnh
 											</Text>
-											<Signature />
+											<Signature date={dayjs().valueOf() + (configTime ?? 0)} />
 											<Text size="sm" weight={'bold'} transform="uppercase">
 												BS {item?.doctor}
 											</Text>

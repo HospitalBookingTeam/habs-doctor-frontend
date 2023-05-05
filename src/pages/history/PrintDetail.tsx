@@ -11,7 +11,6 @@ import { selectTime } from '@/store/config/selectors'
 import dayjs from 'dayjs'
 import Barcode from 'react-barcode'
 import {
-	useGetCheckupRecordByIdQuery,
 	useGetOperationListQuery,
 	useLazyGetCheckupRecordByIdQuery,
 } from '@/store/record/api'
@@ -35,10 +34,9 @@ const PrintDetail = ({ data }: { data?: CheckupRecord }) => {
 		content: () => componentRef.current,
 	})
 	const authData = useAppSelector(selectAuth)
-	const configTime = useAppSelector(selectTime)
 
-	const roomLabel = `Phòng ${authData?.information?.room?.departmentName} ${authData?.information?.room?.roomNumber} -
-    Tầng ${authData?.information?.room?.floor}`
+	const roomLabel = `Phòng ${data?.departmentName} ${data?.roomNumber} -
+    Tầng ${data?.floor}`
 
 	const { data: operationList } = useGetOperationListQuery()
 
@@ -185,15 +183,12 @@ const PrintDetail = ({ data }: { data?: CheckupRecord }) => {
 								</Stack>
 								<Stack align="center">
 									<Text size="xs">
-										{formatDate(
-											dayjs().valueOf() + (configTime ?? 0),
-											DATE_FORMAT
-										)}
+										{formatDate(data?.date ?? '', DATE_FORMAT)}
 									</Text>
 									<Text size="sm" transform="uppercase">
 										Bác sĩ khám bệnh
 									</Text>
-									<Signature />
+									<Signature date={data?.date} />
 									<Text weight={'bold'} size="sm" transform="uppercase">
 										BS {data?.doctorName}
 									</Text>
